@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">LocationNotification</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_user_details">UserDetailsActivity</string>
+    <string name="user_edit_title">TITLE</string>
+    <string name="edit_repeate_dates">REPEAT</string>
+    <string name="always_repeat_notification">always</string>
+    <string name="radio_text_between_dates">Dates:</string>
+    <string name="radio_text_always">Always</string>
+    <string name="radio_always">Always</string>
+    <string name="radio_dates">Dates:</string>
+    <string name="edit_dash">   -   </string>
+    <string name="AddReminder">Add</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_show_on_map">ShowOnMap</string>
+    <string name="action_search">search</string>
+    <string name="action_show_pn_map">Show on map</string>
+    <string name="edit_user_pick_location_title">LOCATION</string>
+    <string name="edit_user_pick_location">Pick location</string>
+    <string name="edit_user_start">Start:</string>
+    <string name="edit_user_end">End:</string>
+    <string name="edit_user_description_title">DESCRIPTION</string>
+    <string name="action_remove">remove</string>
+</resources>
