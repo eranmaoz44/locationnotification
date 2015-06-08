@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="http://schemas.android.com/tools">
-    <!-- From: file:/E:/android-project-locationnotification/libraries/dateAndTimePicker/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <color name="mdtp_accent_color">#009688</color>
     <color name="mdtp_accent_color_dark">#00796b</color>

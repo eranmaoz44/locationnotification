@@ -22,4 +22,4 @@
           android:drawable="@color/mdtp_neutral_pressed" />
 
     <item android:drawable="@color/mdtp_white" />
-</selector><!-- From: file:/E:/android-project-locationnotification/libraries/dateAndTimePicker/src/main/res/drawable-land-v19/mdtp_done_background_color.xml -->
+</selector><!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/src/main/res/drawable-land-v19/mdtp_done_background_color.xml -->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- From: file:/E:/android-project-locationnotification/libraries/dateAndTimePicker/build/intermediates/bundles/debug/res/values-ja/values.xml -->
+    <!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/build/intermediates/bundles/debug/res/values-ja/values.xml -->
     <eat-comment/>
     <string msgid="3968620852217927702" name="mdtp_day_picker_description">"日グリッド（月別）"</string>
     <string msgid="6908431551612331381" name="mdtp_deleted_key">"<ns1:g id="KEY">%1$s</ns1:g>を削除しました"</string>

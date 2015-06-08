@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android-project-locationnotification.iml" filepath="$PROJECT_DIR$/android-project-locationnotification.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/dateAndTimePicker/dateAndTimePicker.iml" filepath="$PROJECT_DIR$/libraries/dateAndTimePicker/dateAndTimePicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
+      <module fileurl="file://$PROJECT_DIR$/locationnotification.iml" filepath="$PROJECT_DIR$/locationnotification.iml" />
     </modules>
   </component>
 </project>

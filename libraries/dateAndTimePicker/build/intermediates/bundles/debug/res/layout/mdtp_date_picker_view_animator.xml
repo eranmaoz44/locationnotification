@@ -21,4 +21,4 @@
      android:gravity="center"
      android:paddingLeft="8dp"
      android:paddingRight="8dp"
-     android:background="@color/mdtp_date_picker_view_animator" /><!-- From: file:/E:/android-project-locationnotification/libraries/dateAndTimePicker/src/main/res/layout/mdtp_date_picker_view_animator.xml -->
+     android:background="@color/mdtp_date_picker_view_animator" /><!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/src/main/res/layout/mdtp_date_picker_view_animator.xml -->

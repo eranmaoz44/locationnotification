@@ -40,4 +40,4 @@
         style="@style/mdtp_ActionButton.Text"
         android:text="@android:string/ok" />
 </LinearLayout>
-<!-- From: file:/E:/android-project-locationnotification/libraries/dateAndTimePicker/src/main/res/layout/mdtp_done_button.xml -->
+<!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/src/main/res/layout/mdtp_done_button.xml -->

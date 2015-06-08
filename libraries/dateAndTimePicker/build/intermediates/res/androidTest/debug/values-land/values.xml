@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/E:/android-project-locationnotification/libraries/dateAndTimePicker/build/intermediates/bundles/debug/res/values-land/values.xml -->
+    <!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/build/intermediates/bundles/debug/res/values-land/values.xml -->
     <eat-comment/>
     <dimen name="mdtp_dialog_height">200dip</dimen>
     <dimen name="mdtp_left_side_width">270dip</dimen>
