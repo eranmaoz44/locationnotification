@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.melnykov.fab.FloatingActionButton;
 
@@ -39,9 +41,10 @@ import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 import static junit.framework.Assert.assertTrue;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Toolbar toolBar;
     private FloatingActionButton fab;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +64,32 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, GeofencingService.class);
         startService(intent);
 
+        buildGoogleApiClient();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    protected void buildGoogleApiClient() {
+        if (null == mGoogleApiClient)
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+
+    }
 
     public void attachList(RecyclerView recyclerView){
         fab.attachToRecyclerView(recyclerView);
@@ -103,15 +130,16 @@ public class MainActivity extends ActionBarActivity {
         String imageUri = "drawable://";
         Calendar calendar=Calendar.getInstance();
         Date date=new Date();
-        Location location=null;
-        //TODO: pass paramter mGoogleApiClient to getLastLocation
-//            location=LocationServices.FusedLocationApi.getLastLocation();
+        Location location = null;
+        if(mGoogleApiClient.isConnected()) {
+            location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
         MyLocation myLocation=null;
         if(null!=location){
             myLocation=new MyLocation(location.getLatitude(),location.getLongitude(), Constants.RADIUS);
 
         } else {
-            myLocation=new MyLocation(0.0,0.0,Constants.RADIUS);
+            myLocation=new MyLocation(-1.0,-1.0,-1);
         }
 
         Reminder r=new Reminder(true,"",imageUri,false,date,date,Constants.NEW_REMINDER_ID,myLocation,"");
@@ -132,6 +160,21 @@ public class MainActivity extends ActionBarActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 
 //    @Override

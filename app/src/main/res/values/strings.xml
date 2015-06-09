@@ -26,4 +26,5 @@
     <string name="edit_user_end">End:</string>
     <string name="edit_user_description_title">DESCRIPTION</string>
     <string name="action_remove">remove</string>
+    <string name="location_unavailable">(LOCATION_UNAVAILABLE)</string>
 </resources>

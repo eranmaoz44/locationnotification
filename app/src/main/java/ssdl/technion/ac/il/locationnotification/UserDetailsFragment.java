@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -52,6 +55,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import static junit.framework.Assert.assertTrue;
 
@@ -136,7 +141,12 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         setTextViewDates();
 
-        textViewPlacePicker.setText(reminder.getLocation().getLatitude() + ", " + reminder.getLocation().getLongitude());
+        MyLocation loc=reminder.getLocation();
+        if(-1!=loc.getRadius()){
+            (new NameFetcher()).execute(loc);
+        } else {
+             textViewPlacePicker.setText(getString(R.string.location_unavailable));
+        }
         if(!reminder.getAlwaysOn()) {
             ((RadioButton)radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
             radioCheckChanged(R.id.radio_dates);
@@ -429,9 +439,11 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
                 case PLACE_PICKER_REQUEST:
                     Place place = PlacePicker.getPlace(data, getActivity());
-                    reminder.setLocation(new MyLocation(place.getLatLng().latitude,place.getLatLng().longitude,Constants.RADIUS));
+                    MyLocation myLocation=new MyLocation(place.getLatLng().latitude,place.getLatLng().longitude,Constants.RADIUS);
+                    reminder.setLocation(myLocation);
                     updateSqlAndRefresh();
-                    textViewPlacePicker.setText(place.getLatLng().latitude+", "+place.getLatLng().longitude);
+                    (new NameFetcher()).execute(myLocation);
+
 //                    String toastMsg = String.format("Place: %s", place.getName());
 //                    Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_LONG).show();
                     break;
@@ -439,6 +451,52 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         }
     }
+
+    private class NameFetcher extends AsyncTask<MyLocation,Void,String>{
+
+        private MyLocation loc;
+        @Override
+        protected String doInBackground(MyLocation... params) {
+            loc=params[0];
+            final String latLngStr="("+loc.getLatitude()+", "+loc.getLongitude()+")";
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(UserDetailsFragment.this.getActivity().getApplicationContext(), Locale.getDefault());
+
+            try {
+                addresses = geocoder.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v("NameFetcher","IOException");
+                return latLngStr;
+            }
+
+            if(addresses.size()<1){
+                Log.v("NameFetcher","addresses.size()<1)");
+                return latLngStr;
+            }
+            Address addr=addresses.get(0);
+            //TODO: get location name some how, like "Nola pub" instead of "Hankin 32" etc..
+            String name=null;
+            String address=addr.getAddressLine(0);
+            if(null!=name){
+                return name;
+            } else if(null!=address){
+                return address;
+            } else {
+                return latLngStr;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Log.v("NameFetcher","onPostExecutre "+s);
+            super.onPostExecute(s);
+            textViewPlacePicker.setText(s);
+        }
+    }
+
+
 
     private class PlacePickerListener implements View.OnClickListener {
 

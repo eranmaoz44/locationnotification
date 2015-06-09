@@ -31,7 +31,6 @@ public class UserDetailsActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v("fuck", "shit0");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
 
