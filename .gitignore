@@ -1,7 +1,7 @@
-.gradle\
-.idea\
-app\
-build\
-libraries\dateAndTimePicker
+.gradle/
+.idea/
+app/
+build/
+libraries\dateAndTimePicker/
 libraries\libraries.iml
 local.properties
