@@ -104,7 +104,7 @@ public class SQLUtils extends SQLiteOpenHelper {
 
 
 		String sql = "INSERT into " + TABLE +
-			" (onOff, title, imgPath, alwaysOn, dateFrom, dateTo, id, latitude, longitude, radius, memo) VALUES ('" + boolToInt(r.getOnOff()) + "','" + r.getTitle() +"','"+r.getImgPath()+"','"+boolToInt(r.getAlwaysOn())+"','"+dateToString(r.getDateFrom())+"','"+dateToString(r.getDateTo())+"','"+r.getId()+"','"+latitude+"','"+longitude+"','"+radius+"','"+r.getMemo()+ "')";
+			" (onOff, title, imgPath, alwaysOn, dateFrom, dateTo, id, latitude, longitude, radius, memo) VALUES ('" + boolToInt(r.getOnOff()) + "','" +escapeString(r.getTitle()) +"','"+r.getImgPath()+"','"+boolToInt(r.getAlwaysOn())+"','"+dateToString(r.getDateFrom())+"','"+dateToString(r.getDateTo())+"','"+r.getId()+"','"+latitude+"','"+longitude+"','"+radius+"','"+escapeString(r.getMemo())+ "')";
 
 		db.execSQL(sql);
 		
@@ -126,6 +126,10 @@ public class SQLUtils extends SQLiteOpenHelper {
             assertTrue(0==1);
         }
         return date;
+    }
+
+    private String escapeString(String s){
+        return s.replaceAll("'","''");
     }
 
     private int boolToInt(Boolean b){
@@ -196,9 +200,9 @@ public class SQLUtils extends SQLiteOpenHelper {
 
 
         String sql = "UPDATE " + TABLE  +" SET "+
-                "onOff='"+boolToInt(r.getOnOff())+"', title='"+r.getTitle()+"', imgPath='"+r.getImgPath()+
+                "onOff='"+boolToInt(r.getOnOff())+"', title='"+escapeString(r.getTitle())+"', imgPath='"+r.getImgPath()+
         "', alwaysOn='"+boolToInt(r.getAlwaysOn())+"', dateFrom='"+dateToString(r.getDateFrom())+"', dateTo='"+dateToString(r.getDateTo())+
-        "', latitude='"+latitude+"', longitude='"+longitude+"', radius='"+radius+"', memo='"+r.getMemo()+"' WHERE id='"+r.getId()+"'";
+        "', latitude='"+latitude+"', longitude='"+longitude+"', radius='"+radius+"', memo='"+escapeString(r.getMemo())+"' WHERE id='"+r.getId()+"'";
 
         db.execSQL(sql);
 
