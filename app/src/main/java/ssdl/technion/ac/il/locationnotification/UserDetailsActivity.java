@@ -1,5 +1,6 @@
 package ssdl.technion.ac.il.locationnotification;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -88,6 +89,10 @@ public class UserDetailsActivity extends ActionBarActivity {
         if (id == R.id.action_remove) {
             SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
             sqlUtils.deleteData(r.getId());
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,true);
+            resultIntent.putExtra(Constants.REMINDER_TAG,r);
+            setResult(Activity.RESULT_OK, resultIntent);
             finish();
             return true;
         } else if (id==R.id.action_save){
@@ -118,6 +123,10 @@ public class UserDetailsActivity extends ActionBarActivity {
             Log.v("SQL", "updateData");
             Toast.makeText(this,getString(R.string.updated_successfully),Toast.LENGTH_SHORT).show();
         }
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,false);
+        resultIntent.putExtra(Constants.REMINDER_TAG,r);
+        setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 

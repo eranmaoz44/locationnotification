@@ -44,6 +44,8 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 import com.inthecheesefactory.thecheeselibrary.fragment.StatedFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -489,6 +491,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         @Override
         public void onClick(View v) {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            focusOnPrevLoc(builder);
 
             Context context =getActivity();
             try {
@@ -497,6 +500,18 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                 e.printStackTrace();
             } catch (GooglePlayServicesNotAvailableException e) {
                 e.printStackTrace();
+            }
+        }
+
+        private void focusOnPrevLoc(PlacePicker.IntentBuilder builder) {
+            if(-1!=reminder.getLocation().getRadius()){
+                MyLocation loc=reminder.getLocation();
+                LatLng latLng=new LatLng(loc.getLatitude(),loc.getLongitude());
+                final double HEADING_NORTH_EAST = 45;
+                final double HEADING_SOUTH_WEST = 215;
+                LatLng northEast = SphericalUtil.computeOffset(latLng, 709, HEADING_NORTH_EAST);
+                LatLng southWest = SphericalUtil.computeOffset(latLng, 709,HEADING_SOUTH_WEST );
+                builder.setLatLngBounds(new LatLngBounds(southWest,northEast));
             }
         }
 

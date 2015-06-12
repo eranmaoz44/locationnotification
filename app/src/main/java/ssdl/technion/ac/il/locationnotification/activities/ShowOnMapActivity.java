@@ -38,8 +38,11 @@ import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
 
+import static junit.framework.Assert.assertTrue;
+
 
 public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoadedCallback, GoogleMap.OnInfoWindowClickListener {
+    private static final int REMINDER_REQUEST_CODE = 70455;
     GoogleMap map;
     List<Reminder> dataSet;
     Map<Marker, Reminder> markerToReminder;
@@ -78,7 +81,6 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
                 } else {
                     imageView.setImageResource(R.drawable.image_3);
                 }
-
                 return $;
             }
 
@@ -128,7 +130,9 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
                     .position(loc)
                             //.snippet(r.getMemo()) TODO
                             //.icon(BitmapDescriptorFactory.fromFile()) TODO
-                    .title(r.getId()));
+                    .title(r.getId())
+                    .alpha(0.66f)
+            );
             markerToReminder.put(m, r);
             map.addCircle(new CircleOptions().center(loc)
                     .radius(r.getLocation().getRadius())//meters
@@ -161,6 +165,8 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
                             .position(latLng)
                             .title(getString(R.string.current_location))
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+
+
             );
             int radius= Constants.RADIUS;
             map.addCircle(new CircleOptions().center(latLng)
@@ -186,6 +192,38 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
         Reminder r = markerToReminder.get(marker);
         Intent intent = new Intent(this, UserDetailsActivity.class);
         intent.putExtra(Constants.REMINDER_TAG, r);
-        startActivity(intent);
+        startActivityForResult(intent, REMINDER_REQUEST_CODE);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case REMINDER_REQUEST_CODE:
+                if(Activity.RESULT_OK==resultCode){
+                   boolean isDeleted=data.getBooleanExtra(Constants.REMINDER_DELETED_TAG,false);
+                    Reminder r=data.getParcelableExtra(Constants.REMINDER_TAG);
+                    Marker m=findMarker(r.getId());
+                    if(isDeleted){
+                        markerToReminder.remove(m);
+                        m.remove();
+                    } else {
+                        markerToReminder.put(m,r);
+                        m.showInfoWindow();
+                    }
+                }
+                break;
+        }
+    }
+
+    private Marker findMarker(String rId){
+        for(Marker m : markerToReminder.keySet()){
+            if(0==markerToReminder.get(m).getId().compareTo(rId)){
+                return m;
+            }
+        }
+        assertTrue(0==1);
+        return null;
+    }
+
 }
