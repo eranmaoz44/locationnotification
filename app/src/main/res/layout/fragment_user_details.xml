@@ -62,7 +62,8 @@
                     android:layout_below="@+id/tv_edit_title"
                     android:layout_marginBottom="@dimen/edit_componets_margin"
                     android:singleLine="true"
-                    android:transitionName="tran3" />
+                    android:transitionName="tran3"
+                    android:hint="@string/enter_title"/>
 
                 <TextView
 
@@ -104,17 +105,16 @@
 
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radio_repeat"
-                    android:layout_marginBottom="@dimen/edit_componets_margin"
-                    android:text="@string/edit_user_start" />
+                    android:text="@string/edit_user_start"
+                    android:paddingRight="@dimen/datesPadding"/>
 
                 <TextView
                     android:id="@+id/date1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radio_repeat"
-                    android:layout_marginBottom="@dimen/edit_componets_margin"
                     android:layout_toEndOf="@+id/start"
-
+                    android:paddingRight="@dimen/datesPadding"
                     android:layout_toRightOf="@+id/start" />
 
                 <ImageButton
@@ -122,34 +122,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radio_repeat"
-                    android:layout_marginBottom="@dimen/edit_componets_margin"
                     android:layout_toEndOf="@+id/date1"
                     android:layout_toRightOf="@+id/date1"
                     android:background="#00000000"
                     android:enabled="false"
-                    android:src="@drawable/calender_icon" />
+                    android:src="@drawable/calender_icon"
+                    android:paddingRight="@dimen/datesPadding"/>
 
                 <TextView
                     android:id="@+id/dash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radio_repeat"
-                    android:layout_marginBottom="@dimen/edit_componets_margin"
                     android:layout_marginLeft="3dp"
                     android:layout_marginRight="3dp"
                     android:layout_toEndOf="@+id/btn_date1"
                     android:layout_toRightOf="@+id/btn_date1"
-                    android:text="@string/edit_dash" />
+                    android:text="@string/edit_dash"
+                    android:paddingRight="@dimen/datesPadding"/>
 
                 <TextView
                     android:id="@+id/end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radio_repeat"
-                    android:layout_marginBottom="@dimen/edit_componets_margin"
                     android:layout_toEndOf="@+id/dash"
                     android:layout_toRightOf="@+id/dash"
-                    android:text="@string/edit_user_end" />
+                    android:text="@string/edit_user_end"
+                    android:paddingRight="@dimen/datesPadding"/>
 
                 <TextView
                     android:id="@+id/date2"
@@ -158,9 +158,9 @@
 
 
                     android:layout_below="@+id/radio_repeat"
-                    android:layout_marginBottom="@dimen/edit_componets_margin"
                     android:layout_toEndOf="@+id/end"
                     android:layout_toRightOf="@+id/end"
+                    android:paddingRight="@dimen/datesPadding"
 
                     />
 
@@ -168,14 +168,13 @@
                     android:id="@+id/btn_date2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/btn_date1"
-                    android:layout_below="@+id/radio_repeat"
-                    android:layout_marginBottom="@dimen/edit_componets_margin"
-                    android:layout_toEndOf="@+id/date2"
-                    android:layout_toRightOf="@+id/date2"
                     android:background="#00000000"
                     android:enabled="false"
-                    android:src="@drawable/calender_icon" />
+                    android:src="@drawable/calender_icon"
+                    android:layout_alignTop="@+id/date2"
+                    android:layout_toRightOf="@+id/date2"
+                    android:layout_toEndOf="@+id/date2"
+                    android:paddingRight="@dimen/datesPadding"/>
 
 
                 <TextView
@@ -185,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/btn_date1"
-
+                    android:layout_marginTop="@dimen/edit_componets_margin"
                     android:text="@string/edit_user_pick_location_title" />
 
                 <TextView
@@ -195,10 +194,14 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_location_title"
                     android:layout_marginBottom="@dimen/edit_componets_margin"
-                    android:clickable="true"
                     android:drawableLeft="@drawable/location_ic"
                     android:drawableStart="@drawable/location_ic"
-                    android:text="@string/edit_user_pick_location" />
+                    android:text="@string/edit_user_pick_location"
+                    android:hint="@string/edit_user_pick_location"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:focusableInTouchMode="true"
+                    />
 
                 <TextView
 

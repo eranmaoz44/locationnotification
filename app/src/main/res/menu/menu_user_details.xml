@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ssdl.technion.ac.il.locationnotification.UserDetailsActivity">
     <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_check_circle_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/action_save"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_remove"
         android:icon="@android:drawable/ic_menu_delete"
         android:orderInCategory="100"

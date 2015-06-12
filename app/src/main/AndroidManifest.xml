@@ -38,7 +38,8 @@
         <activity
             android:name=".UserDetailsActivity"
             android:exported="true"
-            android:label="@string/title_activity_user_details"></activity>
+            android:label="@string/title_activity_user_details"
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".activities.SearchActivity"
             android:label="@string/title_activity_search"

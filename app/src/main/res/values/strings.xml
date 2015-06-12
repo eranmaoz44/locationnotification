@@ -27,4 +27,13 @@
     <string name="edit_user_description_title">DESCRIPTION</string>
     <string name="action_remove">remove</string>
     <string name="location_unavailable">(LOCATION_UNAVAILABLE)</string>
+    <string name="illegal_date">Illegal date</string>
+    <string name="image_uploaded_successfuly">Image uploaded successfully!</string>
+    <string name="action_save">Save</string>
+    <string name="added_successfully">Added successfully</string>
+    <string name="updated_successfully">Updated successfully</string>
+    <string name="invalid_input">Invalid input!</string>
+    <string name="enter_title">Enter title</string>
+    <string name="title_error_message">Title is required!</string>
+    <string name="location_error_message">Location is required!</string>
 </resources>

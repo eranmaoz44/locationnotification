@@ -47,6 +47,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.inthecheesefactory.thecheeselibrary.fragment.StatedFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -73,10 +75,12 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     TextView textViewDate2;
     ImageButton buttonDate1;
     ImageButton buttonDate2;
+    TextView tvDash;
+    TextView tvDateStart;
+    TextView tvDateEnd;
     TextView textViewPlacePicker;
     Switch onOffSwitch;
     final int ACTION_REQUEST_GALLERY = 21235;    Reminder reminder;
-    SQLUtils sqlUtils;
     String iconPath;
 
     private final int PLACE_PICKER_REQUEST=20000;
@@ -84,7 +88,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sqlUtils=new SQLUtils(getActivity().getApplicationContext());
 
     }
 
@@ -107,17 +110,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         super.onActivityCreated(savedInstanceState);
         reminder=((UserDetailsActivity)getActivity()).getReminder();
         assertTrue(null != reminder);
-
-        if(0==reminder.getId().compareTo(Constants.NEW_REMINDER_ID)){
-            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-            int id = sharedPref.getInt(Constants.ID_KEY, 0);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(Constants.ID_KEY, id + 1);
-            editor.commit();
-            reminder.setId(String.valueOf(id));
-            insertSqlAndRefresh();
-            Log.v("SQL", "insertData");
-        }
 
         editTextTitle.setText(reminder.getTitle());
         editDescription.setText(reminder.getMemo());
@@ -145,7 +137,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         if(-1!=loc.getRadius()){
             (new NameFetcher()).execute(loc);
         } else {
-             textViewPlacePicker.setText(getString(R.string.location_unavailable));
+             textViewPlacePicker.setText(getString(R.string.edit_user_pick_location));
         }
         if(!reminder.getAlwaysOn()) {
             ((RadioButton)radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
@@ -204,7 +196,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                                         break;
                                     case 1:
                                         reminder.setImgPath("Drawable/");
-                                        sqlUtils.updateData(reminder);
                                         imageOfReminder.setImageResource(R.drawable.image_3);
                                     default:
                                         break;
@@ -226,6 +217,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         dateDialogHelper2 = new DateDialogHelper(textViewDate2);
         buttonDate2.setEnabled(false);
         buttonDate2.setOnClickListener(dateDialogHelper2);
+        tvDateStart=(TextView)view.findViewById(R.id.start);
+        tvDateEnd=(TextView)view.findViewById(R.id.end);
+        tvDash=(TextView)view.findViewById(R.id.dash);
     }
 
     private void setTextViewDates() {
@@ -246,15 +240,26 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     private void radioCheckChanged(int checkedId){
         if (checkedId == R.id.radio_dates) {
             reminder.setAlwaysOn(false);
-            updateSqlAndRefresh();
             buttonDate1.setEnabled(true);
             buttonDate2.setEnabled(true);
+            setDatesVisibility(View.VISIBLE);
         } else {
             reminder.setAlwaysOn(true);
-            updateSqlAndRefresh();
             buttonDate1.setEnabled(false);
             buttonDate2.setEnabled(false);
+            setDatesVisibility(View.GONE);
         }
+    }
+
+    private void setDatesVisibility(int visibility){
+        ViewGroup v=(ViewGroup)getView();
+        buttonDate1.setVisibility(visibility);
+        buttonDate2.setVisibility(visibility);
+        textViewDate1.setVisibility(visibility);
+        textViewDate2.setVisibility(visibility);
+        tvDateStart.setVisibility(visibility);
+        tvDateEnd.setVisibility(visibility);
+        tvDash.setVisibility(visibility);
     }
 
     private void setupRadioGroup(View view) {
@@ -299,8 +304,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         reminder.setOnOff(isChecked);
-        sqlUtils.updateData(reminder);
-        refreshMainActivity();
     }
 
     private class DateDialogHelper implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
@@ -343,7 +346,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             Calendar c=Calendar.getInstance();
             c.set(year,monthOfYear,dayOfMonth);
             if(!isLegalDate(textView,c)){
-                Toast.makeText(getActivity(), "Illigal date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getActivity().getString(R.string.illegal_date), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -362,7 +365,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             } else {
                 reminder.setDateTo(rDate);
             }
-            updateSqlAndRefresh();
         }
     }
     private boolean isLegalDate(TextView textView,Calendar calendar){
@@ -374,20 +376,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             res=dateDialogHelper1.getDate().compareTo(calendar);
             return  dateDialogHelper1.getDate().before(calendar);
         }
-
-    }
-
-    void updateSqlAndRefresh(){
-        sqlUtils.updateData(reminder);
-        refreshMainActivity();
-    }
-    void insertSqlAndRefresh(){
-        sqlUtils.insertData(reminder);
-        refreshMainActivity();
-    }
-
-    //your function YOAV
-    void refreshMainActivity(){
 
     }
 
@@ -413,11 +401,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             switch(id){
                 case R.id.et_edit_title:
                     reminder.setTitle(txt);
-                    updateSqlAndRefresh();
                     break;
                 case R.id.et_description:
                     reminder.setMemo(txt);
-                    updateSqlAndRefresh();
                     break;
                 default:
                     assertTrue(0==1);
@@ -441,7 +427,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                     Place place = PlacePicker.getPlace(data, getActivity());
                     MyLocation myLocation=new MyLocation(place.getLatLng().latitude,place.getLatLng().longitude,Constants.RADIUS);
                     reminder.setLocation(myLocation);
-                    updateSqlAndRefresh();
                     (new NameFetcher()).execute(myLocation);
 
 //                    String toastMsg = String.format("Place: %s", place.getName());
@@ -578,8 +563,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         protected void onPostExecute(Bitmap bitmap) {
             imageOfReminder.setImageBitmap(bitmap);
             reminder.setImgPath(iconPath);
-            updateSqlAndRefresh();
-            Toast.makeText(getActivity(), "image uploaded successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getActivity().getString(R.string.image_uploaded_successfuly), Toast.LENGTH_SHORT).show();
             Log.v("Images", "Finished displaying");
         }
     }
