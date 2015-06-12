@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,14 +13,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.SphericalUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -38,6 +43,8 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
     GoogleMap map;
     List<Reminder> dataSet;
     Map<Marker, Reminder> markerToReminder;
+    Location currLoc;
+    final String CURRENT_LOCATION_MARKER="CurrentLocationMarker";
 
     private List<Reminder> getList() {
         SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
@@ -54,6 +61,10 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
+                // Can't make marker unclickable, so this is a test whether its the curr loc marker
+                if(!markerToReminder.containsKey(marker)){
+                    return null;
+                }
                 View $ = getLayoutInflater().inflate(R.layout.map_info_window, null);
                 Reminder r = markerToReminder.get(marker);
                 ((TextView) $.findViewById(R.id.tv_miw_text)).setText(r.getTitle());
@@ -78,6 +89,7 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
         });
 
         dataSet = getList();
+        currLoc=getIntent().getParcelableExtra(Constants.LOCATION_TAG);
     }
 
 
@@ -125,9 +137,48 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
             bounds.include(loc);
         }
         try {
+            addCurrLoc(bounds);
+            setMinimalBounds(bounds);
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 200));
+            focusOnCurrLoc();
         } catch (Exception e) {
         }
+    }
+
+    private void focusOnCurrLoc() {
+        if(null!=currLoc){
+            LatLng latLng=new LatLng(currLoc.getLatitude(),currLoc.getLongitude());
+            CameraUpdate center=
+                    CameraUpdateFactory.newLatLng(latLng);
+            map.moveCamera(center);
+        }
+    }
+
+    private void addCurrLoc(LatLngBounds.Builder bounds) {
+        if(null!=currLoc){
+            LatLng latLng=new LatLng(currLoc.getLatitude(),currLoc.getLongitude());
+            map.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(getString(R.string.current_location))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            );
+            int radius= Constants.RADIUS;
+            map.addCircle(new CircleOptions().center(latLng)
+                    .radius(radius)//meters
+                    .strokeColor(Color.GREEN)
+                    .fillColor(Color.GREEN).strokeWidth(2));
+            bounds.include(latLng);
+        }
+    }
+
+    private void setMinimalBounds(LatLngBounds.Builder bounds) {
+        final double HEADING_NORTH_EAST = 45;
+        final double HEADING_SOUTH_WEST = 215;
+        LatLng center = bounds.build().getCenter();
+        LatLng northEast = SphericalUtil.computeOffset(center, 709, HEADING_NORTH_EAST);
+        LatLng southWest = SphericalUtil.computeOffset(center, 709,HEADING_SOUTH_WEST );
+        bounds.include(northEast);
+        bounds.include(southWest);
     }
 
     @Override

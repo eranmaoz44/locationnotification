@@ -36,4 +36,5 @@
     <string name="enter_title">Enter title</string>
     <string name="title_error_message">Title is required!</string>
     <string name="location_error_message">Location is required!</string>
+    <string name="current_location">Current location</string>
 </resources>

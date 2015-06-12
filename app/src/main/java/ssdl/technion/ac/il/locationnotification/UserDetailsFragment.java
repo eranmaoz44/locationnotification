@@ -467,7 +467,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             if(null!=name){
                 return name;
             } else if(null!=address){
-                return address;
+                String city=addr.getAddressLine(1);
+                return address+(null != city ? ", "+city : "");
             } else {
                 return latLngStr;
             }

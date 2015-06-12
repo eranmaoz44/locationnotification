@@ -117,7 +117,13 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 startActivity(new Intent(this, SearchActivity.class));
                 break;
             case R.id.action_show_on_map:
-                startActivity(new Intent(this, ShowOnMapActivity.class));
+                Location location = null;
+                if(mGoogleApiClient.isConnected()) {
+                    location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                }
+                Intent intent=new Intent(this,ShowOnMapActivity.class);
+                intent.putExtra(Constants.LOCATION_TAG,location);
+                startActivity(intent);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -128,7 +134,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void startAddReminder() {
         String imageUri = "drawable://";
-        Calendar calendar=Calendar.getInstance();
         Date date=new Date();
         Location location = null;
         if(mGoogleApiClient.isConnected()) {
