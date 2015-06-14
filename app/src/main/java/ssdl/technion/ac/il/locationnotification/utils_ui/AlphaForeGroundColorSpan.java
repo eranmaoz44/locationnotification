@@ -1,4 +1,4 @@
- package ssdl.technion.ac.il.locationnotification.utils;
+ package ssdl.technion.ac.il.locationnotification.utils_ui;
 
 /**
  * Created by Dave on 24.11.2014.
