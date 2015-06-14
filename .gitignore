@@ -1,8 +1,0 @@
-.gradle/
-.idea/
-app/
-build/
-libraries\dateAndTimePicker/
-libraries\libraries.iml
-local.properties
-app/app.iml
