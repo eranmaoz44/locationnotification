@@ -80,6 +80,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                                 ParseInstallation.getCurrentInstallation().saveInBackground();
 
                                 user.put("FacebookId", jsonObject.get("id"));
+                                user.put("name", jsonObject.get("name"));
                                 user.saveInBackground();
                             } catch (JSONException e) {
                                 e.printStackTrace();

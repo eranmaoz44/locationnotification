@@ -5,9 +5,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.google.android.gms.location.places.Place;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,7 +22,7 @@ import static junit.framework.Assert.assertTrue;
  */
 public class Reminder implements Parcelable {
 
-    private final int NUM_OF_FIELDS=11;
+    private final int NUM_OF_FIELDS = 11;
 
     private Boolean onOff;
     private String title;
@@ -36,32 +36,51 @@ public class Reminder implements Parcelable {
     private MyLocation location;
     private String memo;
 
-    public Reminder(Boolean onOff, String title, String imgPath,Boolean alwaysOn, Date dateFrom, Date dateTo,String id,MyLocation location,String memo) {
+    public Reminder(Boolean onOff, String title, String imgPath, Boolean alwaysOn, Date dateFrom, Date dateTo, String id, MyLocation location, String memo) {
         this.onOff = onOff;
         this.title = title;
         this.imgPath = imgPath;
-        this.alwaysOn=alwaysOn;
-        this.dateFrom=dateFrom;
-        this.dateTo=dateTo;
-        this.id=id;
-        this.location=location;
-        this.memo=memo;
+        this.alwaysOn = alwaysOn;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.id = id;
+        this.location = location;
+        this.memo = memo;
     }
-    
+
+    public JSONObject toJson() throws JSONException {
+        JSONObject $ = new JSONObject();
+        $.put("onOff", onOff);
+        $.put("title", title);
+        $.put("imgPath", imgPath);
+        $.put("alwaysOn", alwaysOn);
+        $.put("dateFrom", dateFrom.toString());
+        $.put("dateTo", dateTo.toString());
+        $.put("id", id);
+        $.put("location", location.toJson());
+        $.put("memo", memo);
+        return $;
+    }
+
+    public Reminder(JSONObject jsonObject) throws JSONException {
+        this(jsonObject.getBoolean("onOff"), jsonObject.getString("title"), jsonObject.getString("imgPath"), jsonObject.getBoolean("alwaysOn"), new Date(jsonObject.getString("dateFrom")),
+                new Date(jsonObject.getString("dateTo")), jsonObject.getString("id"), new MyLocation(jsonObject.getJSONObject("location")), jsonObject.getString("memo"));
+    }
+
     //parcel part
-    public Reminder(Parcel in){
-        String[] data= new String[NUM_OF_FIELDS];
+    public Reminder(Parcel in) {
+        String[] data = new String[NUM_OF_FIELDS];
 
         in.readStringArray(data);
-        this.onOff= Boolean.parseBoolean(data[0]);
-        this.title= data[1];
-        this.imgPath= data[2];
-        this.alwaysOn=Boolean.parseBoolean(data[3]);
-        this.dateFrom=stringToDate(data[4]);
-        this.dateTo=stringToDate(data[5]);
-        this.id=data[6];
-        this.location=new MyLocation(Double.parseDouble(data[7]),Double.parseDouble(data[8]),Integer.parseInt(data[9]));
-        this.memo=data[10];
+        this.onOff = Boolean.parseBoolean(data[0]);
+        this.title = data[1];
+        this.imgPath = data[2];
+        this.alwaysOn = Boolean.parseBoolean(data[3]);
+        this.dateFrom = stringToDate(data[4]);
+        this.dateTo = stringToDate(data[5]);
+        this.id = data[6];
+        this.location = new MyLocation(Double.parseDouble(data[7]), Double.parseDouble(data[8]), Integer.parseInt(data[9]));
+        this.memo = data[10];
     }
 
     @Override
@@ -78,7 +97,6 @@ public class Reminder implements Parcelable {
                 ", memo='" + memo + '\'' +
                 '}';
     }
-
 
 
     public Boolean getOnOff() {
@@ -154,22 +172,22 @@ public class Reminder implements Parcelable {
         this.memo = memo;
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         Date today = new Date();
-        Boolean result=onOff && (alwaysOn || (isBeforeDate(dateFrom,today) && isBeforeDate(today,dateTo)));
+        Boolean result = onOff && (alwaysOn || (isBeforeDate(dateFrom, today) && isBeforeDate(today, dateTo)));
         Log.v("Services", toString() + " isActive=" + result);
         return result;
     }
 
-    private boolean isBeforeDate (Date d1, Date d2){
-        Calendar c1=Calendar.getInstance();
-        Calendar c2=Calendar.getInstance();
+    private boolean isBeforeDate(Date d1, Date d2) {
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
         c1.setTime(d1);
         c2.setTime(d2);
 
-        return c1.get(Calendar.YEAR)< c2.get(Calendar.YEAR) ||
-                (c1.get(Calendar.YEAR)== c2.get(Calendar.YEAR) &&
-                        c1.get(Calendar.DAY_OF_YEAR)<=
+        return c1.get(Calendar.YEAR) < c2.get(Calendar.YEAR) ||
+                (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) &&
+                        c1.get(Calendar.DAY_OF_YEAR) <=
                                 c2.get(Calendar.DAY_OF_YEAR));
     }
 
@@ -180,11 +198,11 @@ public class Reminder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[]{onOff.toString(),title,imgPath,alwaysOn.toString(),dateToString(dateFrom),dateToString(dateTo),
-        id,String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),String.valueOf(location.getRadius()),memo});
+        dest.writeStringArray(new String[]{onOff.toString(), title, imgPath, alwaysOn.toString(), dateToString(dateFrom), dateToString(dateTo),
+                id, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), String.valueOf(location.getRadius()), memo});
     }
 
-    public static final Creator<Reminder> CREATOR= new Creator<Reminder>(){
+    public static final Creator<Reminder> CREATOR = new Creator<Reminder>() {
 
         @Override
         public Reminder createFromParcel(Parcel source) {
@@ -197,19 +215,19 @@ public class Reminder implements Parcelable {
         }
     };
 
-    private String dateToString(Date d){
+    private String dateToString(Date d) {
         final SimpleDateFormat sdf = Constants.dateFormat;
         String dateString = sdf.format(d);
         return dateString;
     }
 
-    private Date stringToDate(String s){
+    private Date stringToDate(String s) {
         final SimpleDateFormat sdf = Constants.dateFormat;
         Date date = null;
         try {
             date = sdf.parse(s);
         } catch (ParseException e) {
-            assertTrue(0==1);
+            assertTrue(0 == 1);
         }
         return date;
     }

@@ -99,7 +99,7 @@ public class UserDetailsActivity extends ActionBarActivity {
                     @Override
                     public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
                         shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
-                        ((ListView)shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray));
+                        ((ListView)shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, getReminder(), shareDialog));
                     }
                 });
                 request.executeAsync();
