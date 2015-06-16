@@ -85,7 +85,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sqlUtils=new SQLUtils(getActivity().getApplicationContext());
-
     }
 
     @Override

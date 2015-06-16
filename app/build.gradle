@@ -30,4 +30,8 @@ dependencies {
     compile 'com.inthecheesefactory.thecheeselibrary:stated-fragment:0.9.3'
     compile project(':libraries:dateAndTimePicker')
 
+    repositories { mavenCentral() }
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
+    compile 'com.parse.bolts:bolts-android:1.+'
+    compile fileTree(dir: 'libs', include: 'Parse-*.jar')
 }

@@ -40,4 +40,4 @@
     </LinearLayout>
 
     <include layout="@layout/mdtp_done_button" />
-</LinearLayout><!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/src/main/res/layout-land/mdtp_date_picker_dialog.xml -->
+</LinearLayout><!-- From: file:/C:/Users/nir/Documents/locationnotification_/libraries/dateAndTimePicker/src/main/res/layout-land/mdtp_date_picker_dialog.xml -->

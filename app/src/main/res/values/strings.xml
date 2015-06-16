@@ -27,4 +27,8 @@
     <string name="edit_user_description_title">DESCRIPTION</string>
     <string name="action_remove">remove</string>
     <string name="location_unavailable">(LOCATION_UNAVAILABLE)</string>
+    <string name="facebook_app_id">1456159818017930</string>
+    <string name="action_share">share</string>
+    <string name="Distance">Distance:</string>
+
 </resources>

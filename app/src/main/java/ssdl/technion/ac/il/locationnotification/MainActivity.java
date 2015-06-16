@@ -1,35 +1,37 @@
 package ssdl.technion.ac.il.locationnotification;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.melnykov.fab.FloatingActionButton;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
+import com.parse.ParseUser;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.activities.SearchActivity;
@@ -37,8 +39,6 @@ import ssdl.technion.ac.il.locationnotification.activities.ShowOnMapActivity;
 import ssdl.technion.ac.il.locationnotification.services.GeofencingService;
 import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
-
-import static junit.framework.Assert.assertTrue;
 
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -49,8 +49,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView( R.layout.activity_main);
-        toolBar= (Toolbar)findViewById(R.id.tool_bar);
+        setContentView(R.layout.activity_main);
+        toolBar = (Toolbar) findViewById(R.id.tool_bar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +65,30 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         startService(intent);
 
         buildGoogleApiClient();
+
+        //facebook
+        final List<String> permissions = Arrays.asList("user_friends");
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
+            @Override
+            public void done(final ParseUser user, ParseException err) {
+                if (user != null)
+                    GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
+                            try {
+                                ParseInstallation.getCurrentInstallation().put("FacebookId", jsonObject.get("id"));
+                                ParseInstallation.getCurrentInstallation().saveInBackground();
+
+                                user.put("FacebookId", jsonObject.get("id"));
+                                user.saveInBackground();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).executeAsync();
+            }
+
+        });
     }
 
     @Override
@@ -76,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     protected void onStop() {
         super.onStop();
-        if(mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
@@ -91,7 +115,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     }
 
-    public void attachList(RecyclerView recyclerView){
+    public void attachList(RecyclerView recyclerView) {
         fab.attachToRecyclerView(recyclerView);
     }
 
@@ -109,7 +133,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch(id){
+        switch (id) {
             case R.id.addReminder:
                 startAddReminder();
                 break;
@@ -128,23 +152,23 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void startAddReminder() {
         String imageUri = "drawable://";
-        Calendar calendar=Calendar.getInstance();
-        Date date=new Date();
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
         Location location = null;
-        if(mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient.isConnected()) {
             location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
-        MyLocation myLocation=null;
-        if(null!=location){
-            myLocation=new MyLocation(location.getLatitude(),location.getLongitude(), Constants.RADIUS);
+        MyLocation myLocation = null;
+        if (null != location) {
+            myLocation = new MyLocation(location.getLatitude(), location.getLongitude(), Constants.RADIUS);
 
         } else {
-            myLocation=new MyLocation(-1.0,-1.0,-1);
+            myLocation = new MyLocation(-1.0, -1.0, -1);
         }
 
-        Reminder r=new Reminder(true,"",imageUri,false,date,date,Constants.NEW_REMINDER_ID,myLocation,"");
-        Intent intent=new Intent(this,UserDetailsActivity.class);
-        intent.putExtra(Constants.REMINDER_TAG,r);
+        Reminder r = new Reminder(true, "", imageUri, false, date, date, Constants.NEW_REMINDER_ID, myLocation, "");
+        Intent intent = new Intent(this, UserDetailsActivity.class);
+        intent.putExtra(Constants.REMINDER_TAG, r);
         startActivity(intent);
     }
 
@@ -175,6 +199,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
 //    @Override

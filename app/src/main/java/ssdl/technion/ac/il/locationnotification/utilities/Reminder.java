@@ -47,7 +47,7 @@ public class Reminder implements Parcelable {
         this.location=location;
         this.memo=memo;
     }
-
+    
     //parcel part
     public Reminder(Parcel in){
         String[] data= new String[NUM_OF_FIELDS];

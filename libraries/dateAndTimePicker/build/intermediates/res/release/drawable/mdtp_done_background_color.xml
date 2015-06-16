@@ -22,4 +22,4 @@
           android:drawable="@color/mdtp_accent_color" />
 
     <item android:drawable="@color/mdtp_circle_background" />
-</selector><!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/src/main/res/drawable/mdtp_done_background_color.xml -->
+</selector><!-- From: file:/C:/Users/nir/Documents/locationnotification_/libraries/dateAndTimePicker/src/main/res/drawable/mdtp_done_background_color.xml -->

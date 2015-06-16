@@ -1,5 +1,6 @@
 package ssdl.technion.ac.il.locationnotification;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -12,9 +13,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.ListView;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultBus;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultEvent;
+import com.parse.ParseFacebookUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
@@ -74,22 +84,30 @@ public class UserDetailsActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_remove) {
-            SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
-            sqlUtils.deleteData(r.getId());
-            finish();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_remove:
+                SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
+                sqlUtils.deleteData(r.getId());
+                finish();
+                break;
+            case R.id.action_share:
+                final Dialog shareDialog = new Dialog(this);
+                shareDialog.setContentView(R.layout.popup_share);
+                shareDialog.setTitle("Share to:");
+                shareDialog.show();
+                GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
+                    @Override
+                    public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
+                        shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
+                        ((ListView)shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray));
+                    }
+                });
+                request.executeAsync();
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
+        return true;
     }
-
 
     public void setToolBarAlpha(int alpha) {
         cd.setAlpha(alpha);

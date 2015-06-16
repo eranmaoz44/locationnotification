@@ -24,4 +24,4 @@
     android:textColor="@color/mdtp_white"
     android:textSize="@dimen/mdtp_date_picker_header_text_size"
     android:importantForAccessibility="no" />
-<!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/src/main/res/layout/mdtp_date_picker_header_view.xml --><!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/build/intermediates/bundles/debug/res/layout/mdtp_date_picker_header_view.xml -->
+<!-- From: file:/C:/Users/nir/Documents/locationnotification_/libraries/dateAndTimePicker/src/main/res/layout/mdtp_date_picker_header_view.xml --><!-- From: file:/C:/Users/nir/Documents/locationnotification_/libraries/dateAndTimePicker/build/intermediates/bundles/debug/res/layout/mdtp_date_picker_header_view.xml -->

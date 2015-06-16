@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/Eran/Documents/GitHub/locationnotification/libraries/dateAndTimePicker/src/main/res/values-sw600dp-land/dimens.xml -->
+    <!-- From: file:/C:/Users/nir/Documents/locationnotification_/libraries/dateAndTimePicker/src/main/res/values-sw600dp-land/dimens.xml -->
     <eat-comment/>
     <dimen name="mdtp_ampm_label_size">16sp</dimen>
     <dimen name="mdtp_ampm_left_padding">6dip</dimen>

@@ -2,228 +2,256 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-analytics\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="9c9dea9e85aceb09d95df5e6f7bc8a43fc286068">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-2527a14f361371b18cfaf2f58ce0d916486e7cb1.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-ads\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="3988694bf9d8186ff97ad5cdfa4ed88b5010fe08">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-978a558fc3a36bb1cda7ac34c768d8216cfdb984.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-games\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="3b4ff5c39dace8f3b4ab4cab8191785547a0815f">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-7aae4385bc308a8852d9c2bd4bec50bc9edb1702.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.0.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-961f3102e3f86dc7b8062ced55023571ea25b417.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="f2f7ec211ce4d244ee97a57523eeb4526dc3cf8a">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-194d56e6e44eada83915184a4adbfc678a1ee1c8.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-gcm\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="7215ac1f2fca947b9415a6ee2a1bf991364aab24">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-602455a876230bdb76e5e84887623b13bd15d197.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="fe3e0c6de7cceed888b277487238b6af9a1cc299">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-806a654f69122c73e050f345db50ca716588982a.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.melnykov\floatingactionbutton\1.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="8c6ebb7d087d1a30bf84356bd2aecf85309fc024">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-b55cbb791e66f565cc2bcbe45e5fc89f4ff1361f.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-fitness\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="4f4fe3c23776540625f3c2844152a7510fddf9f1">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-56c5315c9eb311ded8b848864eb70def1e5bd86f.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\21.0.3\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="4b8945fc23a7461c6fdde15753456d64b0a9358b">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-23a1e65936f0f2d9afacfa005e209942fa0e8263.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-panorama\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="565a01f90f1529f73362707c4c185d0623a68782">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-47616d19679026cc1e019f350154f16c6ce23233.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-nearby\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="5ea948d825957be6c4358c48422bee60eef2d487">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-a8b09e3c49faf1a437acd5ed191d32c84b3e3461.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appindexing\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="e35fae1b377c23aa5fd2d309a190c2d0f73d54ec">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-a279d7469912b0c398b67884850cd4f6847fe502.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.0.0\libs\internal_impl-22.0.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="b5b92f469d515a13d778900f6d50c03d12f35504">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\internal_impl-22.0.0-34d030f5f91cdb9b382e8794b7c77f941b8f7fda.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-plus\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="59652857a825fff0de62166fca1bc9553cc01abb">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-32cf87262f11d402eab09c58326b8c0115749158.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\library-2.4.0-e63c21bd308dca5505216986200a74dabc45b485.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-safetynet\7.3.0\classes.jar"
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-safetynet\7.3.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="0708ef60917bf94913fe9ef972a655b99462dca7">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-057f83753101d31d6a75d5900f5a5a08323822d0.jar" />
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-f0dcf5ceafe70b1a7105b6a44b8bd3c54c344359.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-drive\7.3.0\classes.jar"
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-ads\7.3.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="a0ce76dfaccbfbd6c551ed2174280aaabe60fe47">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-7ae17b556973227de66055c6b97c4458b31d058d.jar" />
+        sha1="3988694bf9d8186ff97ad5cdfa4ed88b5010fe08">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-6dd99425c1f1443f5b377564475515cca1c0c514.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.0.0\support-annotations-22.0.0.jar"
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.0.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="685d0b2c590447e85284ed84712cb363ba04eff8">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\support-annotations-22.0.0-1714d4657cd83abe56a463a993c8bc30c7975d13.jar" />
+        sha1="0f254ec13d6671680482d2218f01ecf14dfa93e6">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-a0de07cb1e5e138f314bd07841564e1b6e9449e1.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-identity\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="b48d5c51a9a9e329005106b4667f54948de4d4d8">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-be59f1af6e58d940336d2e0346ab061c722ac3e8.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.0.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="4e86306289ace4aa0cfec44a05ed2b410d36989d">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-fc3a84855ec059d9bc5a90a53c640153ff51fa67.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appinvite\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="bb36004beb02b69562cbec9aa7d6a3cf16bf5d1b">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-8c1292dff44bd63a539c95927132b18d33f6de09.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appstate\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="0180d031a7b54dabb93b4af3869468b55dc938bd">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-d13415fe0c447a7b10547e27dccf75cdfe58f661.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\21.0.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="7d2525cba8ed61fff102977caed964fc22061e34">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-d8bc5f312a765d0e355f405e66d9e70a226b4b31.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\7.3.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="b2c07cdb814fe988ad05f7b4d767a841514a5991">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-8781004a430ed84b68faeea089bc5b767888ad7f.jar" />
-    </item>
-    <item
-        jar="C:\Users\Eran\.gradle\caches\modules-2\files-2.1\com.squareup\otto\1.3.6\ee373b6d0d6ea36a0a9b0cbabaf16be7e7fc3e30\otto-1.3.6.jar"
+        jar="C:\Users\nir\.gradle\caches\modules-2\files-2.1\com.squareup\otto\1.3.6\ee373b6d0d6ea36a0a9b0cbabaf16be7e7fc3e30\otto-1.3.6.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="ee373b6d0d6ea36a0a9b0cbabaf16be7e7fc3e30">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\otto-1.3.6-a6f8b25fb70fd31bead84440630acfa206a13c8e.jar" />
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\otto-1.3.6-25611dcc635a6ddd25d35c22f7821e0fc4ff6a61.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-wearable\7.3.0\classes.jar"
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.0.0\libs\internal_impl-22.0.0.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="e5bf453b070c1e39297986144960e45afa0fdfad">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-8300d8209c1953067e31eeaa043dc66254f041e1.jar" />
+        sha1="b5b92f469d515a13d778900f6d50c03d12f35504">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\internal_impl-22.0.0-d615773c12bd047e8c0315b511108563297d6d1f.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.inthecheesefactory.thecheeselibrary\stated-fragment\0.9.3\classes.jar"
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\21.0.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="c59693e7e8c18493923dfd5631b5962ce8e73190">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-dbf5d113dd3f617c7ad5daf3919d3cf426927f8a.jar" />
+        sha1="7d2525cba8ed61fff102977caed964fc22061e34">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-73998f4e2791a57d347c08c9d33b2b81f8ba175a.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\locationnotification.libraries\dateAndTimePicker\unspecified\classes.jar"
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.0.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="91985ff79467147c7af17e22269d0e01e2f117b2">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-0e4e56c95d4cb98ca962619deaa8f994cb67530a.jar" />
+        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-22845372ef88a9705d2580a73b752c15e82e47fb.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-cast\7.3.0\classes.jar"
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\locationnotification_.libraries\dateAndTimePicker\unspecified\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="e5b9f5b0aa8dee788beb63d23832cb29ce771343">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-2b2f35e72a83b1e0d5a54bfb6f9c05ba67d8693a.jar" />
+        sha1="e66501870119d423f516e269da48e50d25fdb959">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-e10dfabc7d70317c7c7c0475873a1c2d3d53b0dc.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\jp.wasabeef\recyclerview-animators\1.2.0\classes.jar"
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b2c07cdb814fe988ad05f7b4d767a841514a5991">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-246e97f29fe66c08a0b2cbe5a479039de200a5d8.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="fe3e0c6de7cceed888b277487238b6af9a1cc299">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-341055f82cce626f00645462322a484d45d54239.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-gcm\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="7215ac1f2fca947b9415a6ee2a1bf991364aab24">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-c2eac23ea67d1aa547b3f675f7ba227a5ba17804.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\jp.wasabeef\recyclerview-animators\1.2.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="55b967d31b15d92052a5ea2e407378b72d4764a7">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-1253b7177b4151d394dcdba1001e135ae88fba7d.jar" />
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-6bf02bf65076d13325586f74f62edc7671cf8d7c.jar" />
     </item>
     <item
-        jar="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-wallet\7.3.0\classes.jar"
+        jar="C:\Users\nir\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\library-2.4.0-981773fbc8805c3f8f6dcaead0567430835a4dc7.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.melnykov\floatingactionbutton\1.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="8c6ebb7d087d1a30bf84356bd2aecf85309fc024">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-cb8f4e0a5514d41124569371e6368682ac6a7783.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-drive\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a0ce76dfaccbfbd6c551ed2174280aaabe60fe47">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-11c973a29cbb803642eeebc9d43db1759d55d655.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-plus\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="59652857a825fff0de62166fca1bc9553cc01abb">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-6444fe1abe47099005e0c016d8c94537d33f64a5.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.0.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4e86306289ace4aa0cfec44a05ed2b410d36989d">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-5a3f4e8f2fe94aae2e1cd4858dc8a866d2383f13.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appstate\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="0180d031a7b54dabb93b4af3869468b55dc938bd">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-eb50f531e5a651c7b9c3aa9cff3748529c2ff937.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.inthecheesefactory.thecheeselibrary\stated-fragment\0.9.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c59693e7e8c18493923dfd5631b5962ce8e73190">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-c229c5eef64b35cee92ee081c41f2b486d7342cd.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appinvite\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="bb36004beb02b69562cbec9aa7d6a3cf16bf5d1b">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-27058d311e29628d954cec2f0736f7ad60b1992a.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-wallet\7.3.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="6046e5cdaf799120b7c56a5a061d80e8854c4d34">
-        <dex dex="C:\Users\Eran\Documents\GitHub\locationnotification\app\build\intermediates\pre-dexed\debug\classes-af1c0a46e6827fd1852ba6aab7ab9d5fb8117686.jar" />
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-092c91f013fc5f3520279fa225930f31da98bcb1.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-nearby\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5ea948d825957be6c4358c48422bee60eef2d487">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-f84e4dc8b2ddc46a7f9e6ac33f7bc2b9cf246ca4.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-panorama\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="565a01f90f1529f73362707c4c185d0623a68782">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-44e6c5b4e8ae468d5de20da491695d47ce119e66.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-cast\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e5b9f5b0aa8dee788beb63d23832cb29ce771343">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-e58e40bf8dcb1884830871540bae42eb8e4ca469.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\libs\ParseFacebookUtilsV4-1.9.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="bab281cc21f6a68152e11ab53b053790ccfd6764">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\ParseFacebookUtilsV4-1.9.2-cdccb687aa73defcb08922276ecac4587028abf8.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-fitness\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4f4fe3c23776540625f3c2844152a7510fddf9f1">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-66bc8ad97d501a75a53cb1dfa98338ee78bab72d.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appindexing\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e35fae1b377c23aa5fd2d309a190c2d0f73d54ec">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-c38f35edf75ee70a549f222d324aecba7a60a51b.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-android\1.2.0\6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd\bolts-android-1.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\bolts-android-1.2.0-8a34dd87812b063e99fe8a7193bd2f3f47efb14a.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b8945fc23a7461c6fdde15753456d64b0a9358b">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-8104a8e45516697146f2c7cb62fd7a9973018b6f.jar" />
+    </item>
+    <item
+        jar="C:\Program Files\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.0.0\support-annotations-22.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="685d0b2c590447e85284ed84712cb363ba04eff8">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\support-annotations-22.0.0-8c820441c10309bd648a271c070f597782dafcb7.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f2f7ec211ce4d244ee97a57523eeb4526dc3cf8a">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-6a68fb7d836f86ad80256cd1e0a61d40da857b4e.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-wearable\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e5bf453b070c1e39297986144960e45afa0fdfad">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-957faa4b1879dd7f2bd23e960164b4e8c9649cc8.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-games\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3b4ff5c39dace8f3b4ab4cab8191785547a0815f">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-2260e97d651febaed436de12bfaa4a22d10f25f0.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-identity\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b48d5c51a9a9e329005106b4667f54948de4d4d8">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-64f45b26c475fa7ef7940ed24b3fdbfa35d57574.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-analytics\7.3.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9c9dea9e85aceb09d95df5e6f7bc8a43fc286068">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\classes-d6d492d3536a5436ab7df45142f57186ce557db2.jar" />
+    </item>
+    <item
+        jar="C:\Users\nir\Documents\locationnotification_\app\libs\Parse-1.9.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="fe739334780fe321141e62720822c2d456061899">
+        <dex dex="C:\Users\nir\Documents\locationnotification_\app\build\intermediates\pre-dexed\debug\Parse-1.9.2-a909a1d0612045431449180f01bc81eae4e112e1.jar" />
     </item>
 
 </items>
