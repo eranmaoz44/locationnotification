@@ -15,4 +15,5 @@ public class Constants {
     static public final float ACCEPTABLE_ACCURAY=30;
     static public final String NEW_REMINDER_ID="-1";
     static public final String ID_KEY="id_key";
+    static public final String SENDER_NAME_STRING = "sender name";
 }

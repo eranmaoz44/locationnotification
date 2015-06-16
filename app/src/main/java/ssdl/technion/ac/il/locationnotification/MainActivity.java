@@ -1,6 +1,8 @@
 package ssdl.technion.ac.il.locationnotification;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -65,10 +67,13 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         startService(intent);
 
         buildGoogleApiClient();
+        connectToFacebook(this);
+    }
 
+    public static void connectToFacebook(Activity c) {
         //facebook
         final List<String> permissions = Arrays.asList("user_friends");
-        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(c, permissions, new LogInCallback() {
             @Override
             public void done(final ParseUser user, ParseException err) {
                 if (user != null)

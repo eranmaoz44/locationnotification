@@ -1,6 +1,8 @@
 package ssdl.technion.ac.il.locationnotification;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultBus;
@@ -99,7 +102,22 @@ public class UserDetailsActivity extends ActionBarActivity {
                     @Override
                     public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
                         shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
-                        ((ListView)shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, getReminder(), shareDialog));
+                        try {
+                            ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, getReminder(), shareDialog));
+                        }catch (FacebookException e){
+                            shareDialog.dismiss();
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(UserDetailsActivity.this);
+                            builder.setMessage("Please connect to facebook first!");
+                            builder.setCancelable(true);
+                            builder.setPositiveButton("connect", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    MainActivity.connectToFacebook(UserDetailsActivity.this);
+                                }
+                            });
+                            builder.create().show();
+                        }
                     }
                 });
                 request.executeAsync();
@@ -118,5 +136,6 @@ public class UserDetailsActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
         ActivityResultBus.getInstance().postQueue(
                 new ActivityResultEvent(requestCode, resultCode, data));
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 }
