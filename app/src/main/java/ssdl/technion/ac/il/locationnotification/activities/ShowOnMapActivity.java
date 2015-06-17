@@ -42,12 +42,11 @@ import static junit.framework.Assert.assertTrue;
 
 
 public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoadedCallback, GoogleMap.OnInfoWindowClickListener {
-    private static final int REMINDER_REQUEST_CODE = 70455;
+    private static final int REMINDER_REQUEST_CODE = 32032;
     GoogleMap map;
     List<Reminder> dataSet;
     Map<Marker, Reminder> markerToReminder;
     Location currLoc;
-    final String CURRENT_LOCATION_MARKER="CurrentLocationMarker";
 
     private List<Reminder> getList() {
         SQLUtils sqlUtils = new SQLUtils(getApplicationContext());

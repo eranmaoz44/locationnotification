@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
+import ssdl.technion.ac.il.locationnotification.activities.SearchActivity;
 import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 
@@ -88,11 +90,15 @@ public class SearchListAdapter extends BaseAdapter implements View.OnClickListen
 
         //location
         if(location != null) {
+            vt.dist.setTextColor(Color.BLACK);
             MyLocation l = vt.r.getLocation();
             int dist = (int) getDistance(l, location);
             vt.dist.setText( dist < 1000 ? (dist + "m") : ((dist/1000)+ "km"));
             if(l.getLatitude() == 0 && l.getLongitude() == 0)
                 vt.dist.setText("Not set");
+        } else {
+            vt.dist.setText(activity.getString(R.string.cannot_determine_distance));
+            vt.dist.setTextColor(Color.RED);
         }
         return $;
     }
@@ -105,8 +111,9 @@ public class SearchListAdapter extends BaseAdapter implements View.OnClickListen
     }
 
 
-    public void sortOnDist() {
+    public void sortOnDist(Location loc) {
         sortOnAbc = false;
+        setLocation(loc);
     }
 
     public void sortOnAbc() {
@@ -117,7 +124,7 @@ public class SearchListAdapter extends BaseAdapter implements View.OnClickListen
     public void onClick(View v) {
         Intent intent = new Intent(activity, UserDetailsActivity.class);
         intent.putExtra(Constants.REMINDER_TAG, ((ViewTag)v.getTag()).r);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, SearchActivity.REMINDER_REQUEST_CODE);
     }
 
     public void setLocation(Location location) {
@@ -164,4 +171,11 @@ public class SearchListAdapter extends BaseAdapter implements View.OnClickListen
         ImageView pic;
         Reminder r;
     }
+
+
+    public void setList(List<Reminder> l){
+        dataSet=l;
+        notifyDataSetChanged();
+    }
+
 }

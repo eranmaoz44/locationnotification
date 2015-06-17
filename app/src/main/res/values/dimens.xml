@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="edit_componets_margin">25dp</dimen>
     <dimen name="datesPadding">7dp</dimen>
+    <dimen name="search_item_margin">12dp</dimen>
+    <dimen name="search_categories_margin">24dp</dimen>
 </resources>

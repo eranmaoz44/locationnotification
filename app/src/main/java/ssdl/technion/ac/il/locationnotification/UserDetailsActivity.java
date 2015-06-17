@@ -31,6 +31,8 @@ public class UserDetailsActivity extends ActionBarActivity {
     private Toolbar toolBar;
     private ImageView iv;
 
+    private MenuItem menuSave;
+
     Reminder r;
 
     ColorDrawable cd;
@@ -76,6 +78,12 @@ public class UserDetailsActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_user_details, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menuSave=menu.findItem(R.id.action_save);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -162,5 +170,9 @@ public class UserDetailsActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
         ActivityResultBus.getInstance().postQueue(
                 new ActivityResultEvent(requestCode, resultCode, data));
+    }
+
+    public void setSaveButtonVisibility(boolean visibility){
+        menuSave.setVisible(visibility);
     }
 }

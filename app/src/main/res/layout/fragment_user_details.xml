@@ -46,6 +46,15 @@
                     android:layout_alignParentTop="true" />
 
                 <TextView
+                    android:id="@+id/tv_active"
+                    style="@style/Title_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@id/s_on_off"
+                    android:text="@string/active" />
+
+                <TextView
                     android:id="@+id/tv_edit_title"
                     style="@style/Title_style"
                     android:layout_width="wrap_content"

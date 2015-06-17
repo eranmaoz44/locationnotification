@@ -37,4 +37,7 @@
     <string name="title_error_message">Title is required!</string>
     <string name="location_error_message">Location is required!</string>
     <string name="current_location">Current location</string>
+    <string name="SORT_BY_DISTANCE_ERROR">Turn on GPS to sort by distance!</string>
+    <string name="cannot_determine_distance">Unavailable</string>
+    <string name="active">Active:</string>
 </resources>

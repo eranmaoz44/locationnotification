@@ -584,4 +584,18 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
     }
 
+    private void transformIntoViewMode(){
+        imageOfReminder.setOnClickListener(null);
+        editTextTitle.setEnabled(false);
+        for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
+            radioGroupRepeate.getChildAt(i).setEnabled(false);
+        }
+        buttonDate1.setEnabled(false);
+        buttonDate2.setEnabled(false);
+        textViewDate1.setOnClickListener(null);
+        textViewDate2.setOnClickListener(null);
+        textViewPlacePicker.setOnClickListener(null);
+        editDescription.setEnabled(false);
+        ((UserDetailsActivity)getActivity()).setSaveButtonVisibility(false);
+    }
 }
