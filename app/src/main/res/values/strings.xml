@@ -40,4 +40,9 @@
     <string name="SORT_BY_DISTANCE_ERROR">Turn on GPS to sort by distance!</string>
     <string name="cannot_determine_distance">Unavailable</string>
     <string name="active">Active:</string>
+    <string name="drawer_search">Search</string>
+    <string name="drawer_location">Location</string>
+    <string name="drawer_add_reminder">Add Reminder</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>

@@ -37,7 +37,7 @@ import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
-import ssdl.technion.ac.il.locationnotification.utils.ScrollViewHelper;
+import ssdl.technion.ac.il.locationnotification.utils_ui.ScrollViewHelper;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;

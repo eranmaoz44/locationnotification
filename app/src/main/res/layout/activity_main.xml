@@ -1,3 +1,11 @@
+
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -5,21 +13,22 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
 
     tools:context="ssdl.technion.ac.il.locationnotification.MainActivity">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/tool_bar"
-        android:transitionName="tran1"></include>
+
+
 
     <fragment
+        android:paddingTop="?attr/actionBarSize"
         android:id="@+id/f_usersList"
         android:name="ssdl.technion.ac.il.locationnotification.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tool_bar" />
-    </RelativeLayout>
+        />
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
+
+
+        android:transitionName="tran1"></include>
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -30,5 +39,14 @@
         fab:fab_colorNormal="@color/accent"
         fab:fab_colorPressed="@color/accent_pressed"
         fab:fab_colorRipple="@color/ripple" />
-
 </FrameLayout>
+    <fragment
+        android:id="@+id/fragment_navigation_drawer"
+        android:name="ssdl.technion.ac.il.locationnotification.DrawerFragment"
+        android:layout_width="@dimen/nav_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:layout="@layout/fragment_drawer"
+        tools:layout="@layout/fragment_drawer" />
+
+</android.support.v4.widget.DrawerLayout>

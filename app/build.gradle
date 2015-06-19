@@ -30,4 +30,5 @@ dependencies {
     compile 'com.inthecheesefactory.thecheeselibrary:stated-fragment:0.9.3'
     compile project(':libraries:dateAndTimePicker')
     compile 'com.google.maps.android:android-maps-utils:0.3+'
+    compile 'com.pkmmte.view:circularimageview:1.1'
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,15 +46,16 @@ import static junit.framework.Assert.assertTrue;
 
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private Toolbar toolBar;
+    private Toolbar toolbar;
     private FloatingActionButton fab;
+    private DrawerFragment drawerFragment;
     private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_main);
-        toolBar= (Toolbar)findViewById(R.id.tool_bar);
+        toolbar= (Toolbar)findViewById(R.id.tool_bar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,8 +64,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             }
         });
 
-        setSupportActionBar(toolBar);
-
+        setSupportActionBar(toolbar);
+        setupDrawer();
         Intent intent = new Intent(this, GeofencingService.class);
         startService(intent);
 
@@ -182,6 +187,36 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     }
 
+    public void hideViews() {
+        Log.v("fuck", "shit show");
+        toolbar.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) fab.getLayoutParams();
+        int fabBottomMargin = lp.bottomMargin;
+        fab.animate().translationY(fab.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
+    }
+
+    public void showViews() {
+        Log.v("fuck", "shit show");
+        toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+        fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+    }
+
+    private void toggleTranslateFAB(float slideOffset) {
+        fab.setTranslationX(slideOffset * 200);
+    }
+
+    public void onDrawerSlide(float slideOffset) {
+        toggleTranslateFAB(slideOffset);
+    }
+
+    private void setupDrawer() {
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //setup the NavigationDrawer
+        drawerFragment = (DrawerFragment)
+                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
+
+    }
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
