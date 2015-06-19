@@ -101,7 +101,7 @@ public class UserDetailsActivity extends ActionBarActivity {
             resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,true);
             resultIntent.putExtra(Constants.REMINDER_TAG,r);
             setResult(Activity.RESULT_OK, resultIntent);
-            finish();
+            onBackPressed();
             return true;
         } else if (id==R.id.action_save){
             saveReminder();
