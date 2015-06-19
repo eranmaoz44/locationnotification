@@ -1,7 +1,10 @@
 package ssdl.technion.ac.il.locationnotification;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
@@ -16,11 +19,21 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultBus;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultEvent;
+import com.parse.ParseFacebookUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
@@ -88,29 +101,53 @@ public class UserDetailsActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_remove) {
-            SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
-            sqlUtils.deleteData(r.getId());
+        switch (item.getItemId()) {
+            case R.id.action_remove:
+                SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
+                sqlUtils.deleteData(r.getId());
             Intent resultIntent = new Intent();
             resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,true);
             resultIntent.putExtra(Constants.REMINDER_TAG,r);
             setResult(Activity.RESULT_OK, resultIntent);
             onBackPressed();
             return true;
-        } else if (id==R.id.action_save){
-            saveReminder();
+            case R.id.action_save:
+                saveReminder();
+
+                return true;
+            case R.id.action_share:
+                final Dialog shareDialog = new Dialog(this);
+                shareDialog.setContentView(R.layout.popup_share);
+                shareDialog.setTitle("Share to:");
+                shareDialog.show();
+                GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
+                    @Override
+                    public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
+                        shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
+                        try {
+                            ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, getReminder(), shareDialog));
+                        }catch (FacebookException e){
+                            shareDialog.dismiss();
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(UserDetailsActivity.this);
+                            builder.setMessage("Please connect to facebook first!");
+                            builder.setCancelable(true);
+                            builder.setPositiveButton("connect", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    MainActivity.connectToFacebook(UserDetailsActivity.this);
+                                }
+                            });
+                            builder.create().show();
+                        }
+                    }
+                });
+                request.executeAsync();
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
-
-    private void saveReminder() {
+private void saveReminder() {
         boolean validated = validateInput();
         if(!validated){
             return;
@@ -125,7 +162,7 @@ public class UserDetailsActivity extends ActionBarActivity {
             r.setId(String.valueOf(rId));
             sqlUtils.insertData(r);
             Log.v("SQL", "insertData");
-            Toast.makeText(this,getString(R.string.added_successfully),Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,getString(R.string.added_successfully), Toast.LENGTH_SHORT).show();
         } else {
             sqlUtils.updateData(r);
             Log.v("SQL", "updateData");
@@ -160,7 +197,6 @@ public class UserDetailsActivity extends ActionBarActivity {
         return validated;
     }
 
-
     public void setToolBarAlpha(int alpha) {
         cd.setAlpha(alpha);
     }
@@ -170,6 +206,7 @@ public class UserDetailsActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
         ActivityResultBus.getInstance().postQueue(
                 new ActivityResultEvent(requestCode, resultCode, data));
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
     public void setSaveButtonVisibility(boolean visibility){

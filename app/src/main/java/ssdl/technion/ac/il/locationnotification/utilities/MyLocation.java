@@ -1,5 +1,8 @@
 package ssdl.technion.ac.il.locationnotification.utilities;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -15,6 +18,18 @@ public class MyLocation implements Serializable {
                 '}';
     }
 
+    public JSONObject toJson() throws JSONException {
+        JSONObject $ = new JSONObject();
+        $.put("latitude", latitude);
+        $.put("longitude", longitude);
+        $.put("radius", radius);
+        return $;
+    }
+
+    public MyLocation(JSONObject jsonObject) throws JSONException{
+        this(jsonObject.getDouble("latitude"), jsonObject.getDouble("longitude"), jsonObject.getInt("radius"));
+    }
+
     public Double getLatitude() {
         return latitude;
     }
@@ -27,7 +42,7 @@ public class MyLocation implements Serializable {
         return radius;
     }
 
-    public MyLocation( Double latitude,Double longitude,int radius ) {
+    public MyLocation(Double latitude, Double longitude, int radius) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;

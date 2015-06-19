@@ -45,4 +45,8 @@
     <string name="drawer_add_reminder">Add Reminder</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="facebook_app_id">1456159818017930</string>
+    <string name="action_share">share</string>
+    <string name="Distance">Distance:</string>
+
 </resources>
