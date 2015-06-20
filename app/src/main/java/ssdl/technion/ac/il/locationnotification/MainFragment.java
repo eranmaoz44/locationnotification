@@ -36,9 +36,10 @@ import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
+import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 
 
-public class MainFragment extends Fragment {
+    public class MainFragment extends Fragment {
     private RecyclerView notificationList;
     private ViewAdapter adapter;
     List<Reminder> list;
@@ -75,7 +76,18 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((MainActivity)getActivity()).attachList(notificationList);
+        notificationList.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                ((MainActivity)getActivity()).hideViews();
+            }
+
+            @Override
+            public void onShow() {
+                ((MainActivity)getActivity()).showViews();
+            }
+        });
+        //((MainActivity)getActivity()).attachList(notificationList);
     }
 
     private void setTransition() {
@@ -106,6 +118,8 @@ public class MainFragment extends Fragment {
     public class ViewAdapter extends RecyclerView.Adapter<InfoViewHolder> {
         private final LayoutInflater inflater;
         private List<Reminder> list = Collections.emptyList();
+        private static final int TYPE_HEADER = 2;
+        private static final int TYPE_ITEM = 1;
 
 
         public ViewAdapter(Context context, List<Reminder> list) {
@@ -114,9 +128,14 @@ public class MainFragment extends Fragment {
         }
 
         @Override
-        public InfoViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = inflater.inflate(R.layout.info, viewGroup, false);
+        public InfoViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
+            View view;
+            if (viewType == TYPE_ITEM) {
+                view = inflater.inflate(R.layout.info, viewGroup, false);
+            }else{
+                view = inflater.inflate(R.layout.info_header, viewGroup, false);
+            }
             InfoViewHolder holder = new InfoViewHolder(view);
             return holder;
         }
@@ -152,6 +171,18 @@ public class MainFragment extends Fragment {
         }
         public void setList(List<Reminder> list){
             this.list=list;
+        }
+        @Override
+        public int getItemViewType(int position) {
+            if (isPositionHeader(position)) {
+                return TYPE_HEADER;
+            }
+            return TYPE_ITEM;
+        }
+
+        //added a method to check if given position is a header
+        private boolean isPositionHeader(int position) {
+            return position == 0 || position==1;
         }
 
 
