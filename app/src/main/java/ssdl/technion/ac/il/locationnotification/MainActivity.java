@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +46,7 @@ import java.util.List;
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.activities.SearchActivity;
 import ssdl.technion.ac.il.locationnotification.activities.ShowOnMapActivity;
+import ssdl.technion.ac.il.locationnotification.fragments.ZeroRemindersFragment;
 import ssdl.technion.ac.il.locationnotification.services.GeofencingService;
 import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
@@ -53,11 +57,17 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private FloatingActionButton fab;
     private DrawerFragment drawerFragment;
     private GoogleApiClient mGoogleApiClient;
+    MainFragment mainFragment;
+    ZeroRemindersFragment zeroRemindersFragment;
+    boolean mainFragmentIsSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_main);
+
+        initialFragmentContainerSet(savedInstanceState);
+
         toolbar= (Toolbar)findViewById(R.id.tool_bar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +84,72 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
         buildGoogleApiClient();
         connectToFacebook(this);
+    }
+
+    private void initialFragmentContainerSet(Bundle savedInstanceState) {
+
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.fragment_container) != null) {
+
+
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+            zeroRemindersFragment=new ZeroRemindersFragment();
+
+            // Create a new Fragment to be placed in the activity layout
+            mainFragment = new MainFragment();
+
+            // In case this activity was started with special instructions from an
+            // Intent, pass the Intent's extras to the fragment as arguments
+            mainFragment.setArguments(getIntent().getExtras());
+
+            int actionBarHeight=0;
+            TypedValue tv = new TypedValue();
+            if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+            {
+                actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+            }
+
+            findViewById(R.id.fragment_container).setPadding(0,actionBarHeight,0,0);
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,mainFragment).commit();
+            mainFragmentIsSet=true;
+        }
+        return;
+    }
+
+    public void changeToZeroRemindersFragment(){
+        if(mainFragmentIsSet) {
+            Log.v("ChangeFragments","Changing to zero fragment");
+            changeFragment(zeroRemindersFragment);
+            mainFragmentIsSet = false;
+        }
+    }
+
+    public void changeToMainFragment(){
+        if(!mainFragmentIsSet) {
+            Log.v("ChangeFragments","Changing to main fragment");
+            changeFragment(mainFragment);
+            mainFragmentIsSet = true;
+        }
+    }
+
+    private void changeFragment(Fragment f) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(R.id.fragment_container, f);
+
+        // Commit the transaction
+        transaction.commit();
     }
 
     public static void connectToFacebook(Activity c) {

@@ -104,7 +104,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         return view;
 
-
     }
 
     @Override
@@ -114,7 +113,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         assertTrue(null != reminder);
 
         editTextTitle.setText(reminder.getTitle());
+        putCursorOnEnd(editTextTitle);
         editDescription.setText(reminder.getMemo());
+        putCursorOnEnd(editDescription);
         editTextTitle.addTextChangedListener(new UpdateListener(R.id.et_edit_title));
         editDescription.addTextChangedListener(new UpdateListener(R.id.et_description));
 
@@ -151,6 +152,11 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
 
         onOffSwitch.setChecked(reminder.getOnOff());
+    }
+
+    private void putCursorOnEnd(EditText et) {
+        et.setSelection(et.getText().length());
+
     }
 
     private void setupUI(View view) {

@@ -172,7 +172,7 @@ private void saveReminder() {
         resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,false);
         resultIntent.putExtra(Constants.REMINDER_TAG,r);
         setResult(Activity.RESULT_OK, resultIntent);
-        finish();
+        onBackPressed();
     }
 
     private boolean validateInput() {

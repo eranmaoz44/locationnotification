@@ -2,8 +2,9 @@
 
 
 import android.app.ActivityOptions;
-import android.app.Fragment;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.ChangeTransform;
@@ -111,6 +113,7 @@ public class MainFragment extends Fragment {
         public ViewAdapter(Context context, List<Reminder> list) {
             inflater = LayoutInflater.from(context);
             this.list = list;
+            changeFragmentIfNeeded(list.size());
         }
 
         @Override
@@ -118,6 +121,7 @@ public class MainFragment extends Fragment {
             View view = inflater.inflate(R.layout.info, viewGroup, false);
 
             InfoViewHolder holder = new InfoViewHolder(view);
+
             return holder;
         }
 
@@ -152,18 +156,30 @@ public class MainFragment extends Fragment {
         }
         public void setList(List<Reminder> list){
             this.list=list;
+            changeFragmentIfNeeded(list.size());
         }
 
 
     }
 
-    public class InfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    void changeFragmentIfNeeded(int listSize){
+        MainActivity mainActivity=(MainActivity)getActivity();
+        Log.v("ChangeFragments","in main fragment changing fragment if needed with size="+listSize);
+        if(listSize>0){
+            mainActivity.changeToMainFragment();
+        } else {
+            mainActivity.changeToZeroRemindersFragment();
+        }
+    }
+
+    public class InfoViewHolder extends RecyclerView.ViewHolder implements RecyclerView.OnClickListener,RecyclerView.OnLongClickListener {
         TextView textView;
         ImageView imageView;
 
         public InfoViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             textView = (TextView) itemView.findViewById(R.id.info_text);
             imageView = (ImageView) itemView.findViewById(R.id.info_image);
         }
@@ -219,20 +235,39 @@ public class MainFragment extends Fragment {
 //                    .addSharedElement(mProductImage, "tran1");
 //            ft.commit();
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            Log.v("onLongClick","long clicked recycler view");
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            int pos = this.getPosition();
+            final Reminder r=list.get(pos);
+            builder.setTitle(r.getTitle()+":");
+            builder.setItems(new CharSequence[]{getActivity().getString(R.string.delete_reminder)},
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    SQLUtils sqlUtils = new SQLUtils(getActivity());
+                                    sqlUtils.deleteData(r.getId());
+                                    updateRecyclerView();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+            builder.show();
+            return true;
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        list=getList();
-        adapter.setList(list);
-        if(lastPosChange==-1) {
-            adapter.notifyDataSetChanged();
-            animateAdater.notifyDataSetChanged();
-        }else{
-            adapter.notifyItemChanged(lastPosChange);
-            animateAdater.notifyItemChanged(lastPosChange);
-        }
+        updateRecyclerView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().postponeEnterTransition();
@@ -245,6 +280,18 @@ public class MainFragment extends Fragment {
                     return true;
                 }
             });
+        }
+    }
+
+    private void updateRecyclerView() {
+        list=getList();
+        adapter.setList(list);
+        if(lastPosChange==-1) {
+            adapter.notifyDataSetChanged();
+            animateAdater.notifyDataSetChanged();
+        }else{
+            adapter.notifyItemChanged(lastPosChange);
+            animateAdater.notifyItemChanged(lastPosChange);
         }
     }
 }

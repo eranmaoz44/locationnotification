@@ -16,13 +16,17 @@
 
 
 
-    <fragment
-        android:paddingTop="?attr/actionBarSize"
-        android:id="@+id/f_usersList"
-        android:name="ssdl.technion.ac.il.locationnotification.MainFragment"
+    <!--<fragment-->
+        <!--android:paddingTop="?attr/actionBarSize"-->
+        <!--android:id="@+id/f_usersList"-->
+        <!--android:name="ssdl.technion.ac.il.locationnotification.MainFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--/>-->
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
     <include
         android:id="@+id/tool_bar"
         layout="@layout/tool_bar"

@@ -48,5 +48,7 @@
     <string name="facebook_app_id">1456159818017930</string>
     <string name="action_share">share</string>
     <string name="Distance">Distance:</string>
+    <string name="zero_reminders">There are no reminders to display. Click the (+) button to start adding reminders.</string>
+    <string name="delete_reminder">Delete</string>
 
 </resources>
