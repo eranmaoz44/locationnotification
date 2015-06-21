@@ -188,31 +188,36 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 
     }
 
-    public class InfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class InfoViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
         ImageView imageView;
 
         public InfoViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
+            //itemView.setOnClickListener(this);
             textView = (TextView) itemView.findViewById(R.id.info_text);
             imageView = (ImageView) itemView.findViewById(R.id.info_image);
+            final InfoViewHolder temp=this;
+            imageView.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), UserDetailsActivity.class);
+                    int pos = temp.getPosition();
+                    Reminder r=list.get(pos);
+                    intent.putExtra(Constants.REMINDER_TAG,r);
+
+                    lastPosChange=pos;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&& getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        startTransition(intent);
+                    }else{
+                        getActivity().startActivity(intent);
+                    }
+                }
+            });
         }
 
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), UserDetailsActivity.class);
-            int pos = this.getPosition();
-            Reminder r=list.get(pos);
-            intent.putExtra(Constants.REMINDER_TAG,r);
 
-	    lastPosChange=pos;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&& getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                startTransition(intent);
-            }else{
-                getActivity().startActivity(intent);
-            }
-        }
 
         private void startTransition(Intent intent) {
             View statusBar = getActivity().findViewById(android.R.id.statusBarBackground);
