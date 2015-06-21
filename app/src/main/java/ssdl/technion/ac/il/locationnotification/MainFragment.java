@@ -11,12 +11,14 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.ChangeTransform;
 import android.transition.Transition;
 import android.util.Log;
-import android.util.Pair;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -214,11 +216,12 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
                     intent.putExtra(Constants.REMINDER_TAG,r);
 
                     lastPosChange=pos;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&& getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         startTransition(intent);
                     }else{
                         getActivity().startActivity(intent);
                     }
+
                 }
             });
             onOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -238,17 +241,21 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
         private void startTransition(Intent intent) {
             View statusBar = getActivity().findViewById(android.R.id.statusBarBackground);
             View navigationBar = getActivity().findViewById(android.R.id.navigationBarBackground);
-            View toolbar = getActivity().findViewById(R.id.tool_bar);
+//            View toolbar = getActivity().findViewById(R.id.tool_bar);
 
             List<Pair<View, String>> pairs = new ArrayList<>();
-            pairs.add(Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME));
-            pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
+            Pair<View, String> p1 = Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME);
+            Pair<View, String> p2 = Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME);
+            Pair<View, String> p3 = Pair.create((View) imageView, "tran2");
+            Pair<View, String> p4 =Pair.create((View) textView, "tran3");
+            pairs.add(p1);
+            pairs.add(p2);
             //  pairs.add(Pair.create(toolbar, "tran1"));
-            pairs.add(Pair.create((View) imageView, "tran2"));
-            pairs.add(Pair.create((View) textView, "tran3"));
+            pairs.add(p3);
+            pairs.add(p4);
             // pairs.add(Pair.create(v.findViewById(R.id.card_info), "tran1"));
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                    pairs.toArray(new Pair[pairs.size()]));
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(getActivity(),p1,p2,p3,p4);
             // Pair.create(v.findViewById(R.id.imageView), "tran2"));
 //            ActivityOptionsCompat options = ActivityOptionsCompat.
 //                    makeSceneTransitionAnimation(getActivity(),
