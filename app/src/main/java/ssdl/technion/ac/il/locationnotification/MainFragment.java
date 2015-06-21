@@ -22,7 +22,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.File;
@@ -145,7 +147,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             Reminder curr = list.get(i);
             viewHolder.textView.setText(curr.getTitle());
             File image = new File(curr.getImgPath());
-
+            viewHolder.setReminder(curr);
             //TODO: delete 'if' after adding support to default image
             if(image.exists()) {
 
@@ -159,6 +161,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             } else {
                 viewHolder.imageView.setImageResource(R.drawable.image_3);
             }
+            viewHolder.onOff.setChecked(curr.getOnOff());
         }
 
         @Override
@@ -191,12 +194,15 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     public class InfoViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
         ImageView imageView;
+        Switch onOff;
+        Reminder reminder;
 
         public InfoViewHolder(View itemView) {
             super(itemView);
             //itemView.setOnClickListener(this);
             textView = (TextView) itemView.findViewById(R.id.info_text);
             imageView = (ImageView) itemView.findViewById(R.id.info_image);
+            onOff =(Switch)itemView.findViewById(R.id.s_on_off);
             final InfoViewHolder temp=this;
             imageView.setOnClickListener(new View.OnClickListener(){
 
@@ -215,9 +221,19 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
                     }
                 }
             });
+            onOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    reminder.setOnOff(isChecked);
+                    SQLUtils sqlUtils=new SQLUtils(getActivity());
+                    sqlUtils.updateData(reminder);
+                }
+            });
         }
 
-
+        public void setReminder(Reminder reminder){
+            this.reminder=reminder;
+        }
 
         private void startTransition(Intent intent) {
             View statusBar = getActivity().findViewById(android.R.id.statusBarBackground);
