@@ -113,7 +113,6 @@ public class MainFragment extends Fragment {
         public ViewAdapter(Context context, List<Reminder> list) {
             inflater = LayoutInflater.from(context);
             this.list = list;
-            changeFragmentIfNeeded(list.size());
         }
 
         @Override
@@ -156,20 +155,9 @@ public class MainFragment extends Fragment {
         }
         public void setList(List<Reminder> list){
             this.list=list;
-            changeFragmentIfNeeded(list.size());
         }
 
 
-    }
-
-    void changeFragmentIfNeeded(int listSize){
-        MainActivity mainActivity=(MainActivity)getActivity();
-        Log.v("ChangeFragments","in main fragment changing fragment if needed with size="+listSize);
-        if(listSize>0){
-            mainActivity.changeToMainFragment();
-        } else {
-            mainActivity.changeToZeroRemindersFragment();
-        }
     }
 
     public class InfoViewHolder extends RecyclerView.ViewHolder implements RecyclerView.OnClickListener,RecyclerView.OnLongClickListener {
@@ -284,6 +272,8 @@ public class MainFragment extends Fragment {
     }
 
     private void updateRecyclerView() {
+       Log.v("ChangeFragments","UpdateRecycler ViEW");
+        ((MainActivity)getActivity()).updateFragment();
         list=getList();
         adapter.setList(list);
         if(lastPosChange==-1) {

@@ -4,8 +4,10 @@ package ssdl.technion.ac.il.locationnotification;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -50,6 +52,7 @@ import ssdl.technion.ac.il.locationnotification.fragments.ZeroRemindersFragment;
 import ssdl.technion.ac.il.locationnotification.services.GeofencingService;
 import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
+import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
 
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -59,14 +62,14 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private GoogleApiClient mGoogleApiClient;
     MainFragment mainFragment;
     ZeroRemindersFragment zeroRemindersFragment;
-    boolean mainFragmentIsSet;
+    Fragment currFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v("ChangeFragments", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_main);
 
-        initialFragmentContainerSet(savedInstanceState);
 
         toolbar= (Toolbar)findViewById(R.id.tool_bar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -79,35 +82,39 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
         setSupportActionBar(toolbar);
         setupDrawer();
-        Intent intent = new Intent(this, GeofencingService.class);
-        startService(intent);
 
         buildGoogleApiClient();
-        connectToFacebook(this);
+        if(null==savedInstanceState) {
+            setInitialFragment(true);
+            Intent intent = new Intent(this, GeofencingService.class);
+            startService(intent);
+            connectToFacebook(this);
+        }
     }
 
-    private void initialFragmentContainerSet(Bundle savedInstanceState) {
-
-        // Check that the activity is using the layout version with
-        // the fragment_container FrameLayout
-        if (findViewById(R.id.fragment_container) != null) {
-
+    private void setInitialFragment(boolean firstTime) {
 
 
             // However, if we're being restored from a previous state,
             // then we don't need to do anything and should return or else
             // we could end up with overlapping fragments.
-            if (savedInstanceState != null) {
-                return;
-            }
+
             zeroRemindersFragment=new ZeroRemindersFragment();
 
             // Create a new Fragment to be placed in the activity layout
             mainFragment = new MainFragment();
 
+        if(getList().size()>0){
+        Log.v("ChangeFragments","setting first fragment to main");
+            currFragment=mainFragment;
+        } else {
+            currFragment=zeroRemindersFragment;
+
+            Log.v("ChangeFragments","setting first fragment to ZERO reminder");
+        }
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
-            mainFragment.setArguments(getIntent().getExtras());
+            currFragment.setArguments(getIntent().getExtras());
 
             int actionBarHeight=0;
             TypedValue tv = new TypedValue();
@@ -119,25 +126,37 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             findViewById(R.id.fragment_container).setPadding(0,actionBarHeight,0,0);
 
             // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,mainFragment).commit();
-            mainFragmentIsSet=true;
+
+
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(firstTime){
+        transaction.add(R.id.fragment_container,currFragment);
+        } else {
+            transaction.replace(R.id.fragment_container,currFragment);
         }
-        return;
+        transaction.commit();
+
+    }
+
+    private List<Reminder> getList(){
+        SQLUtils sqlUtils=new SQLUtils(this);
+        return sqlUtils.getReminderList();
     }
 
     public void changeToZeroRemindersFragment(){
-        if(mainFragmentIsSet) {
+        if(currFragment!=zeroRemindersFragment) {
             Log.v("ChangeFragments","Changing to zero fragment");
             changeFragment(zeroRemindersFragment);
-            mainFragmentIsSet = false;
+            currFragment = zeroRemindersFragment;
         }
     }
 
     public void changeToMainFragment(){
-        if(!mainFragmentIsSet) {
+        if(currFragment!=mainFragment) {
             Log.v("ChangeFragments","Changing to main fragment");
             changeFragment(mainFragment);
-            mainFragmentIsSet = true;
+            currFragment=mainFragment;
         }
     }
 
@@ -328,6 +347,14 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+        updateFragment();
+}
+
+    public void updateFragment() {
+        if(getList().size()>0)
+            changeToMainFragment();
+        else
+            changeToZeroRemindersFragment();
     }
 //    @Override
 //    protected void onResume() {
@@ -343,4 +370,16 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 //            }
 //        });
 //    }
+@Override
+public void onConfigurationChanged(Configuration newConfig) {;
+    super.onConfigurationChanged(newConfig);
+    Log.v("ChangeFragments", "onConfigurationChanged");
+}
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        setInitialFragment(false);
+        Log.v("ChangeFragments", "onResumeFragments");
+    }
 }

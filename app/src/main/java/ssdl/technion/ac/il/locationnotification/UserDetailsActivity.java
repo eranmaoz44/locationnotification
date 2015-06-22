@@ -170,6 +170,7 @@ private void saveReminder() {
         }
         Intent resultIntent = new Intent();
         resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,false);
+        resultIntent.putExtra(Constants.REMINDER_ADDED_TAG,true);
         resultIntent.putExtra(Constants.REMINDER_TAG,r);
         setResult(Activity.RESULT_OK, resultIntent);
         onBackPressed();
