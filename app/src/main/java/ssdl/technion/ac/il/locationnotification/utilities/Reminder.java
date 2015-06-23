@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 
@@ -21,6 +22,8 @@ import static junit.framework.Assert.assertTrue;
  * Created by Eran on 5/18/2015.
  */
 public class Reminder implements Parcelable {
+    private static final SimpleDateFormat DateFormatter =
+            new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
 
     private final int NUM_OF_FIELDS = 11;
 
@@ -35,6 +38,7 @@ public class Reminder implements Parcelable {
     private String id;
     private MyLocation location;
     private String memo;
+    private String senderId = null;
 
     public Reminder(Boolean onOff, String title, String imgPath, Boolean alwaysOn, Date dateFrom, Date dateTo, String id, MyLocation location, String memo) {
         this.onOff = onOff;
@@ -48,23 +52,28 @@ public class Reminder implements Parcelable {
         this.memo = memo;
     }
 
+    public Reminder(Boolean onOff, String title, String imgPath, Boolean alwaysOn, Date dateFrom, Date dateTo, String id, MyLocation location, String memo, String senderId) {
+        this(onOff, title, imgPath, alwaysOn, dateFrom, dateTo, id, location, memo);
+        this.senderId = senderId;
+    }
+
     public JSONObject toJson() throws JSONException {
         JSONObject $ = new JSONObject();
         $.put("onOff", onOff);
         $.put("title", title);
         $.put("imgPath", imgPath);
         $.put("alwaysOn", alwaysOn);
-        $.put("dateFrom", dateFrom.toString());
-        $.put("dateTo", dateTo.toString());
+        $.put("dateFrom", DateFormatter.format(dateFrom));
+        $.put("dateTo", DateFormatter.format(dateTo));
         $.put("id", id);
         $.put("location", location.toJson());
         $.put("memo", memo);
         return $;
     }
 
-    public Reminder(JSONObject jsonObject) throws JSONException {
-        this(jsonObject.getBoolean("onOff"), jsonObject.getString("title"), jsonObject.getString("imgPath"), jsonObject.getBoolean("alwaysOn"), new Date(jsonObject.getString("dateFrom")),
-                new Date(jsonObject.getString("dateTo")), jsonObject.getString("id"), new MyLocation(jsonObject.getJSONObject("location")), jsonObject.getString("memo"));
+    public Reminder(JSONObject jsonObject) throws JSONException, ParseException {
+        this(jsonObject.getBoolean("onOff"), jsonObject.getString("title"), jsonObject.getString("imgPath"), jsonObject.getBoolean("alwaysOn"), DateFormatter.parse(jsonObject.getString("dateFrom")),
+                DateFormatter.parse(jsonObject.getString("dateTo")), jsonObject.getString("id"), new MyLocation(jsonObject.getJSONObject("location")), jsonObject.getString("memo"), jsonObject.getString("sender FbId"));
     }
 
     //parcel part
@@ -133,6 +142,10 @@ public class Reminder implements Parcelable {
 
     public String getMemo() {
         return memo;
+    }
+
+    public String getSenderId() {
+        return senderId;
     }
 
 

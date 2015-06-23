@@ -19,15 +19,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookException;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -49,6 +56,7 @@ public class ShareListAdapter extends BaseAdapter {
     private List images;
     private List names;
     JSONObject reminder;
+    final boolean[] doneImage = {false};
 
     public ShareListAdapter(Context context1, JSONArray jsonarray, Reminder reminder1, Dialog dialog) {
         context = context1;
@@ -57,12 +65,37 @@ public class ShareListAdapter extends BaseAdapter {
         try {
             reminder = reminder1.toJson();
             reminder.put("sender name", ParseUser.getCurrentUser().get("name"));
+            reminder.put("sender FbId", ParseUser.getCurrentUser().get("FacebookId"));
             Log.d("MyApp", reminder.toString());
+            final File image = new File(reminder1.getImgPath());
+            byte[] data = new byte[(int) image.length()];
+            new FileInputStream(image).read(data);
+            final ParseFile file = new ParseFile(data);
+            ParseObject po = new ParseObject("ImageFacebook");
+            po.put("img", file);
+            po.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    try {
+                        reminder.put("file lnk", file.getUrl());
+                        String a[] = image.getName().split("\\.");
+                        reminder.put("file extention", a[a.length - 1]);
+                        doneImage[0] = true;
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
         } catch (JSONException e) {
             Toast.makeText(context, "Could not parse reminder. please report this problem to developers!", Toast.LENGTH_LONG).show();
             dialog.dismiss();
         } catch (NullPointerException e) {
             throw new FacebookException();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            doneImage[0] = true;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         names = new LinkedList();
         ids = new LinkedList();
@@ -119,7 +152,7 @@ public class ShareListAdapter extends BaseAdapter {
             view = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.search_item, null);
             view.findViewById(R.id.tv_si_dist_lbl).setVisibility(View.GONE);
             view.findViewById(R.id.tv_si_dist).setVisibility(View.GONE);
-             tag  = new MyTag();
+            tag = new MyTag();
             tag.imageView = (ImageView) view.findViewById(R.id.iv_si_image);
             tag.textView = (TextView) view.findViewById(R.id.tv_si_title);
             view.setTag(tag);
@@ -138,9 +171,26 @@ public class ShareListAdapter extends BaseAdapter {
                 ParsePush parsepush = new ParsePush();
                 parsepush.setData(reminder);
                 parsepush.setQuery(query);
-                parsepush.sendInBackground();
-                Toast.makeText(context, "Notification sent!", Toast.LENGTH_SHORT).show();
                 container.dismiss();
+                if(!ShareListAdapter.this.doneImage[0]){
+                    Toast.makeText(context, "Uploading photo...", Toast.LENGTH_SHORT).show();
+                }
+                new AsyncTask<ParsePush, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(ParsePush... params) {
+                        while (!ShareListAdapter.this.doneImage[0]){
+
+                        }
+                        params[0].sendInBackground();
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        Toast.makeText(context, "Notification sent!", Toast.LENGTH_SHORT).show();
+                    }
+                }.execute(parsepush);
             }
         });
         return view;
