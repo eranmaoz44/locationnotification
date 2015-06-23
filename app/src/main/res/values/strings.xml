@@ -51,5 +51,6 @@
     <string name="select_remider">Select reminder</string>
     <string name="zero_reminders">There are no reminders to display. Click the (+) button to start adding reminders.</string>
     <string name="delete_reminder">Delete</string>
+    <string name="no_reminder_selected">No reminder selected</string>
 
 </resources>

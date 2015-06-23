@@ -26,10 +26,13 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent">
 
-                <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/main_fragment_container"
+                <fragment
+                    android:paddingTop="?attr/actionBarSize"
+                    android:id="@+id/f_usersList"
+                    android:name="ssdl.technion.ac.il.locationnotification.MainFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -39,7 +42,13 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 >
-
+                <fragment
+                    android:paddingTop="?attr/actionBarSize"
+                    android:id="@+id/f_usersDetails"
+                    android:name="ssdl.technion.ac.il.locationnotification.UserDetailsFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
             </LinearLayout>
         </LinearLayout>
 

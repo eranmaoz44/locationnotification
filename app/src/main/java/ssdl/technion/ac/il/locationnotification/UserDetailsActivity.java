@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -40,15 +42,16 @@ import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
 
 
-public class UserDetailsActivity extends ActionBarActivity {
+public class UserDetailsActivity extends ActionBarActivity implements UserDetailsFragment.OnDataReceive {
     private Toolbar toolBar;
     private ImageView iv;
 
     private MenuItem menuSave;
 
-    Reminder r;
 
     ColorDrawable cd;
+    private Reminder reminder;
+    private boolean startedFromTabletLandTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +59,27 @@ public class UserDetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_user_details);
 
 
+
+        if(null!=savedInstanceState){
+            startedFromTabletLandTag=savedInstanceState.getBoolean(Constants.STARTED_FROM_TABLET_LAND_TAG);
+        } else {
+            startedFromTabletLandTag=getIntent().getBooleanExtra(Constants.STARTED_FROM_TABLET_LAND_TAG,false);
+        }
+
+        Log.v("UserDetailsOnCreate","startedFromTabletLandTag="+startedFromTabletLandTag);
+
+
+
         Reminder reminder = getIntent().getParcelableExtra(Constants.REMINDER_TAG);
-        r = reminder;
+        this.reminder = reminder;
 
 
 
-        UserDetailsFragment userDetailsFragment = new UserDetailsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.REMINDER_TAG, r);
-        userDetailsFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.user_detatils_container, userDetailsFragment).commit();
+//        UserDetailsFragment userDetailsFragment = new UserDetailsFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(Constants.REMINDER_TAG, r);
+//        userDetailsFragment.setArguments(bundle);
+//        getFragmentManager().beginTransaction().replace(R.id.user_detatils_container, userDetailsFragment).commit();
 
 
         toolBar = (Toolbar) findViewById(R.id.details_toolbar);
@@ -91,9 +105,9 @@ public class UserDetailsActivity extends ActionBarActivity {
 
     }
 
-    public Reminder getReminder() {
-        return r;
-    }
+//    public Reminder getReminder() {
+//        return r;
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,10 +127,10 @@ public class UserDetailsActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_remove:
                 SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
-                sqlUtils.deleteData(r.getId());
+                sqlUtils.deleteData(reminder.getId());
             Intent resultIntent = new Intent();
             resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,true);
-            resultIntent.putExtra(Constants.REMINDER_TAG,r);
+            resultIntent.putExtra(Constants.REMINDER_TAG,reminder);
             setResult(Activity.RESULT_OK, resultIntent);
             onBackPressed();
             return true;
@@ -134,7 +148,7 @@ public class UserDetailsActivity extends ActionBarActivity {
                     public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
                         shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
                         try {
-                            ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, getReminder(), shareDialog));
+                            ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, reminder, shareDialog));
                         }catch (FacebookException e){
                             shareDialog.dismiss();
 
@@ -162,25 +176,25 @@ private void saveReminder() {
             return;
         }
         SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
-        if(0==r.getId().compareTo(Constants.NEW_REMINDER_ID)){
+        if(0==reminder.getId().compareTo(Constants.NEW_REMINDER_ID)){
             SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
             int rId = sharedPref.getInt(Constants.ID_KEY, 0);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt(Constants.ID_KEY, rId + 1);
             editor.commit();
-            r.setId(String.valueOf(rId));
-            sqlUtils.insertData(r);
+            reminder.setId(String.valueOf(rId));
+            sqlUtils.insertData(reminder);
             Log.v("SQL", "insertData");
             Toast.makeText(this,getString(R.string.added_successfully), Toast.LENGTH_SHORT).show();
         } else {
-            sqlUtils.updateData(r);
+            sqlUtils.updateData(reminder);
             Log.v("SQL", "updateData");
             Toast.makeText(this,getString(R.string.updated_successfully),Toast.LENGTH_SHORT).show();
         }
         Intent resultIntent = new Intent();
         resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,false);
         resultIntent.putExtra(Constants.REMINDER_ADDED_TAG,true);
-        resultIntent.putExtra(Constants.REMINDER_TAG,r);
+        resultIntent.putExtra(Constants.REMINDER_TAG,reminder);
         setResult(Activity.RESULT_OK, resultIntent);
         onBackPressed();
     }
@@ -221,5 +235,24 @@ private void saveReminder() {
 
     public void setSaveButtonVisibility(boolean visibility){
         menuSave.setVisible(visibility);
+    }
+
+    @Override
+    public Reminder onReminderReceive() {
+        return reminder;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(Constants.STARTED_FROM_TABLET_LAND_TAG,startedFromTabletLandTag);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(getResources().getBoolean(R.bool.is_tablet_landscape) && startedFromTabletLandTag ){
+            onBackPressed();
+        }
     }
 }

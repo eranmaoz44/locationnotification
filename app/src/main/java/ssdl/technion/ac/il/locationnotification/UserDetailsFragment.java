@@ -33,6 +33,7 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
@@ -92,12 +93,15 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     private final int PLACE_PICKER_REQUEST = 20000;
 
     Bundle bundle;
+    private OnDataReceive dataPasser;
+    private ViewSwitcher viewSwitcher;
+    private View lrCard;
+    private View lrNoReminderSelected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         bundle = this.getArguments();
         horizantalTablet=getResources().getBoolean(R.bool.is_tablet_landscape);
-        reminder= bundle.getParcelable(Constants.REMINDER_TAG);
 
         Log.v("fuck","create da mudda fucka userDetails");
         super.onCreate(savedInstanceState);
@@ -108,11 +112,13 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user_details, container, false);
+        View view =  inflater.inflate(R.layout.fragment_user_details, container, false);
         setupUI(view);
 
         // setupFadingToolbar(view);
-
+        viewSwitcher= (ViewSwitcher) view.findViewById(R.id.view_switcher);
+        lrCard=view.findViewById(R.id.lr_card);
+        lrNoReminderSelected=view.findViewById(R.id.lr_no_reminder_selected);
         return view;
 
     }
@@ -120,65 +126,28 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        reminder= dataPasser.onReminderReceive();
+        Log.v("UserDetailsReminder","reminder = "+(reminder==null? "null" : reminder));
         //reminder = getReminder();
-        assertTrue(null != reminder);
+        if(null!=reminder)
+            setReminder(reminder);
 
-        editTextTitle.setText(reminder.getTitle());
-        putCursorOnEnd(editTextTitle);
-        editDescription.setText(reminder.getMemo());
-        putCursorOnEnd(editDescription);
-        editTextTitle.addTextChangedListener(new UpdateListener(R.id.et_edit_title));
-        editDescription.addTextChangedListener(new UpdateListener(R.id.et_description));
-
-        File image = new File(reminder.getImgPath());
-
-        //TODO: add support to default picture, when creating new reminder.
-        if (image.exists()) {
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-
-            Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
-
-            bitmap = Bitmap.createScaledBitmap(bitmap, 256, 256, true);
-
-            imageOfReminder.setImageBitmap(bitmap);
-        } else {
-            imageOfReminder.setImageResource(R.drawable.image_3);
-        }
-
-        setTextViewDates();
-
-        MyLocation loc = reminder.getLocation();
-        if (-1 != loc.getRadius()) {
-            (new NameFetcher()).execute(loc);
-        } else {
-            textViewPlacePicker.setText(getString(R.string.edit_user_pick_location));
-        }
-        if (!reminder.getAlwaysOn()) {
-            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
-            radioCheckChanged(R.id.radio_dates);
-
-        } else {
-            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_always)).setChecked(true);
-            radioCheckChanged(R.id.radio_always);
-        }
-
-        onOffSwitch.setChecked(reminder.getOnOff());
     }
 
-    private Reminder getReminder() {
-        Reminder reminder;
-        if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
-            Log.v("fuck", "mudda fucka is in user detail fragment");
-            if (bundle == null) {
-                Log.v("fuck", "mudda fucka is null");
-            }
-            reminder = bundle.getParcelable(Constants.REMINDER_TAG);
-//            reminder=((MainActivity)getActivity()).createBlankReminder();
-        } else {
-            reminder = ((UserDetailsActivity) getActivity()).getReminder();
-        }
-        return reminder;
-    }
+//    private Reminder getReminder() {
+//        Reminder reminder;
+//        if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
+//            Log.v("fuck", "mudda fucka is in user detail fragment");
+//            if (bundle == null) {
+//                Log.v("fuck", "mudda fucka is null");
+//            }
+//            reminder = bundle.getParcelable(Constants.REMINDER_TAG);
+////            reminder=((MainActivity)getActivity()).createBlankReminder();
+//        } else {
+////            reminder = ((UserDetailsActivity) getActivity()).getReminder();
+//        }
+////        return reminder;
+//    }
   private void putCursorOnEnd(EditText et) {
         et.setSelection(et.getText().length());
 
@@ -187,6 +156,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     private void setupUI(View view) {
         editTextTitle = (EditText) view.findViewById(R.id.et_edit_title);
         editDescription = (EditText) view.findViewById(R.id.et_description);
+        editTextTitle.addTextChangedListener(new UpdateListener(R.id.et_edit_title));
+        editDescription.addTextChangedListener(new UpdateListener(R.id.et_description));
         imageOfReminder = (ImageView) view.findViewById(R.id.img_edit_image);
         setImageUpload();
         textViewDate1 = (TextView) view.findViewById(R.id.date1);
@@ -195,6 +166,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         //textViewDate2.setOnClickListener(dateDialogHelper2);
         textViewPlacePicker = (TextView) view.findViewById(R.id.tv_location);
         textViewPlacePicker.setOnClickListener(new PlacePickerListener());
+
 
         setDateButtons(view);
 
@@ -228,6 +200,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
                                         break;
                                     case 1:
+                                        if(null==reminder){
+                                            return;
+                                        }
                                         reminder.setImgPath("Drawable/");
                                         imageOfReminder.setImageResource(R.drawable.image_3);
                                     default:
@@ -256,6 +231,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     }
 
     private void setTextViewDates() {
+        if(null==reminder){
+            return;
+        }
         SimpleDateFormat sdf = Constants.dateFormat;
         String date1 = sdf.format(reminder.getDateFrom());
         String date2 = sdf.format(reminder.getDateTo());
@@ -271,6 +249,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     }
 
     private void radioCheckChanged(int checkedId) {
+        if(null==reminder){
+            return;
+        }
         if (checkedId == R.id.radio_dates) {
             reminder.setAlwaysOn(false);
             buttonDate1.setEnabled(true);
@@ -336,7 +317,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        reminder.setOnOff(isChecked);
+        if(null!=reminder)
+            reminder.setOnOff(isChecked);
     }
 
     private class DateDialogHelper implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
@@ -376,6 +358,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+            if(null==reminder){
+                return;
+            }
             Calendar c = Calendar.getInstance();
             c.set(year, monthOfYear, dayOfMonth);
             if (!isLegalDate(textView, c)) {
@@ -432,6 +417,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         @Override
         public void afterTextChanged(Editable s) {
+            if(null==reminder){
+                return;
+            }
             String txt = s.toString();
             switch (id) {
                 case R.id.et_edit_title:
@@ -459,6 +447,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                     break;
 
                 case PLACE_PICKER_REQUEST:
+                    if(null==reminder){
+                        return;
+                    }
                     Place place = PlacePicker.getPlace(data, getActivity());
                     MyLocation myLocation = new MyLocation(place.getLatLng().latitude, place.getLatLng().longitude, Constants.RADIUS);
                     reminder.setLocation(myLocation);
@@ -484,7 +475,10 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             List<Address> addresses;
             if(null==UserDetailsFragment.this.getActivity()){
                 (new NameFetcher()).execute(loc);
-                return getString(R.string.edit_user_pick_location);
+                if(!isAdded()) {
+                    return "";
+                }
+                return getResources().getString(R.string.edit_user_pick_location);
             }
             geocoder = new Geocoder(UserDetailsFragment.this.getActivity().getApplicationContext(), Locale.getDefault());
 
@@ -541,6 +535,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
 
         private void focusOnPrevLoc(PlacePicker.IntentBuilder builder) {
+            if(null==reminder){
+                return;
+            }
             if (-1 != reminder.getLocation().getRadius()) {
                 MyLocation loc = reminder.getLocation();
                 LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
@@ -614,6 +611,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
+            if(null==reminder){
+                return;
+            }
             imageOfReminder.setImageBitmap(bitmap);
             reminder.setImgPath(iconPath);
             Toast.makeText(getActivity(), getActivity().getString(R.string.image_uploaded_successfuly), Toast.LENGTH_SHORT).show();
@@ -622,6 +622,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     }
 
     private void transformIntoViewMode() {
+        if(null==reminder){
+            return;
+        }
         imageOfReminder.setOnClickListener(null);
         editTextTitle.setEnabled(false);
         for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
@@ -637,5 +640,64 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     }
 
 
+    public interface OnDataReceive {
+        public Reminder onReminderReceive();
+    }
+
+    @Override
+    public void onAttach(Activity a) {
+        super.onAttach(a);
+        dataPasser = (OnDataReceive) a;
+    }
+
+    public void setReminder(Reminder r){
+        reminder =r;
+
+        if(reminder ==null){
+            viewSwitcher.setDisplayedChild(0);
+            return;
+        } else {
+            viewSwitcher.setDisplayedChild(1);
+
+        }
+
+        editTextTitle.setText(reminder.getTitle());
+        putCursorOnEnd(editTextTitle);
+        editDescription.setText(reminder.getMemo());
+        putCursorOnEnd(editDescription);
+        File image = new File(reminder.getImgPath());
+
+        //TODO: add support to default picture, when creating new reminder.
+        if (image.exists()) {
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+
+            Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+
+            bitmap = Bitmap.createScaledBitmap(bitmap, 256, 256, true);
+
+            imageOfReminder.setImageBitmap(bitmap);
+        } else {
+            imageOfReminder.setImageResource(R.drawable.image_3);
+        }
+
+        setTextViewDates();
+
+        MyLocation loc = reminder.getLocation();
+        if (-1 != loc.getRadius()) {
+            (new NameFetcher()).execute(loc);
+        } else {
+            textViewPlacePicker.setText(getString(R.string.edit_user_pick_location));
+        }
+        if (!reminder.getAlwaysOn()) {
+            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
+            radioCheckChanged(R.id.radio_dates);
+
+        } else {
+            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_always)).setChecked(true);
+            radioCheckChanged(R.id.radio_always);
+        }
+
+        onOffSwitch.setChecked(reminder.getOnOff());
+    }
 
 }

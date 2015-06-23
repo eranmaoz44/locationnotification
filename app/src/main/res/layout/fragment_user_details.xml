@@ -7,6 +7,30 @@
     android:fillViewport="false"
     tools:context="ssdl.technion.ac.il.locationnotification.UserDetailsFragment">
 
+    <ViewSwitcher
+        android:id="@+id/view_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/lr_no_reminder_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+        <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+            android:id="@+id/no_reminder_selected"
+            android:text="@string/no_reminder_selected"
+            android:gravity="center_vertical"
+            android:textSize="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lr_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
     <android.support.v7.widget.CardView
         android:id="@+id/card"
 
@@ -236,6 +260,8 @@
             </RelativeLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ViewSwitcher>
 
 
 </ssdl.technion.ac.il.locationnotification.utils_ui.ScrollViewHelper>

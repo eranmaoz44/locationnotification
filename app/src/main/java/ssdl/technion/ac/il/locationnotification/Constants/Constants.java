@@ -19,4 +19,5 @@ public class Constants {
     public static final  String LOCATION_TAG="ssdl.technion.ac.il.locationnotification.location_tag";
     public static final String REMINDER_DELETED_TAG ="ssdl.technion.ac.il.locationnotification.reminder_deleted_tag" ;
     public static final String REMINDER_ADDED_TAG ="ssdl.technion.ac.il.locationnotification.reminder_added_tag" ;
+    public static final String STARTED_FROM_TABLET_LAND_TAG = "ssdl.technion.ac.il.locationnotification.started_from_tablet_land_tag";
 }

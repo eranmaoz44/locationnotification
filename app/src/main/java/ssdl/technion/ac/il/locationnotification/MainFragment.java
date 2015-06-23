@@ -1,6 +1,7 @@
     package ssdl.technion.ac.il.locationnotification;
 
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 
@@ -55,17 +56,24 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     int lastPosChange;
         View view;
     ScaleInAnimationAdapter animateAdater;
-
+        OnDataPass dataPasser;
+//        private UserDetailsFragment userDetailsFragment;
+//        private SelectReminderFragment selectReminderFragment;
+        private Reminder currReminder;
+        private Fragment userDetailsFragment;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        userDetailsFragment = new UserDetailsFragment();
+//        selectReminderFragment= new SelectReminderFragment();
+        currReminder=null;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Toast.makeText(getActivity(),"is tablet horizantal "+getResources().getBoolean(R.bool.is_tablet_landscape),Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(),"is tablet horizantal "+getResources().getBoolean(R.bool.is_tablet_landscape),Toast.LENGTH_SHORT).show();
         View layout = inflater.inflate(R.layout.fragment_main, container, false);
         notificationList = (RecyclerView) layout.findViewById(R.id.notification_list);
         list = getList();
@@ -202,6 +210,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     }
 
     public class InfoViewHolder extends RecyclerView.ViewHolder implements RecyclerView.OnLongClickListener {
+
         TextView textView;
         ImageView imageView;
         Switch onOff;
@@ -226,23 +235,26 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 
 
 
-
                     lastPosChange=pos;
                     if(getResources().getBoolean(R.bool.is_tablet_landscape)){
-                        UserDetailsFragment userDetailsFragment = new UserDetailsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(Constants.REMINDER_TAG, r);
-                        userDetailsFragment.setArguments(bundle);
-                        Log.v("fuck", "mudda fucka is in user main activity");
-                        ((MainActivity)getActivity()).setReminder(r);
-                        getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
+                        Log.v("MainFragmentReminder","onclick tablet landscape prevId="+ (null!=currReminder ? currReminder.getId() : "null") +" new id = "+r.getId() );
+//                        if(null==currReminder||!(currReminder.getId().equals(r.getId()))) {
+//                            Bundle bundle = new Bundle();
+//                            bundle.putParcelable(Constants.REMINDER_TAG, r);
+//                            userDetailsFragment= new UserDetailsFragment();
+//                            userDetailsFragment.setArguments(bundle);
+//                        )
+                            Log.v("fuck", "mudda fucka is in user main activity");
+                                dataPasser.onReminderPass(r);
+//                            getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
+//                        }
                     }
                     else if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         startTransition(intent,r);
                     }else{
                         getActivity().startActivity(intent);
                     }
-
+                    currReminder=r;
                 }
             });
 
@@ -316,6 +328,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             int pos = this.getPosition();
             final Reminder r=list.get(pos);
+
             builder.setTitle(r.getTitle()+":");
             builder.setItems(new CharSequence[]{getActivity().getString(R.string.delete_reminder)},
                     new DialogInterface.OnClickListener() {
@@ -326,6 +339,11 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
                                 case 0:
                                     SQLUtils sqlUtils = new SQLUtils(getActivity());
                                     sqlUtils.deleteData(r.getId());
+//                                    if(null!=currReminder&&currReminder.getId().equals(r.getId())){
+                                        currReminder=null;
+                                        dataPasser.onReminderPass(null);
+//                                        getFragmentManager().beginTransaction().replace(R.id.details_container, selectReminderFragment).commit();
+//                                    }
                                     updateRecyclerView();
                                     break;
                                 default:
@@ -341,7 +359,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     @Override
     public void onStart() {
         super.onStart();
-((MainActivity)getActivity()).updateFragment();
+//        ((MainActivity)getActivity()).updateFragment();
         list=getList();
         adapter.setList(list);
         if(lastPosChange==-1) {
@@ -368,7 +386,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 
     private void updateRecyclerView() {
        Log.v("ChangeFragments","UpdateRecycler ViEW");
-        ((MainActivity)getActivity()).updateFragment();
+//        ((MainActivity)getActivity()).updateFragment();
         list=getList();
         adapter.setList(list);
         if(lastPosChange==-1) {
@@ -379,5 +397,16 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             animateAdater.notifyItemChanged(lastPosChange);
         }
     }
+
+        public interface OnDataPass {
+            public void onReminderPass(Reminder r);
+        }
+
+
+        @Override
+        public void onAttach(Activity a) {
+            super.onAttach(a);
+            dataPasser = (OnDataPass) a;
+        }
 
 }

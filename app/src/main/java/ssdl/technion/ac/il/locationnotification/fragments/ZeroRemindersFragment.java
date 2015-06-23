@@ -34,6 +34,6 @@ public class ZeroRemindersFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity)getActivity()).updateFragment();
+//        ((MainActivity)getActivity()).updateFragment();
     }
 }
