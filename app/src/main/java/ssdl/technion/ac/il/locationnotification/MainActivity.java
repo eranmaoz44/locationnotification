@@ -116,7 +116,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             setInitialFragment(true);
             Intent intent = new Intent(this, GeofencingService.class);
             startService(intent);
-            connectToFacebook(this);
+            if(ParseUser.getCurrentUser() == null)
+                connectToFacebook(this);
         }
     }
 
