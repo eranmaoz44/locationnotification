@@ -17,20 +17,17 @@
         android:minHeight="?attr/actionBarSize"
         app:theme="@style/Toolbar_Transparent" />
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/details_toolbar"
+
+        android:id="@+id/user_detatils_container"
 
         >
 
-        <fragment
 
-            android:id="@+id/f_usersList"
-            android:name="ssdl.technion.ac.il.locationnotification.UserDetailsFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </RelativeLayout>
 
 </RelativeLayout>

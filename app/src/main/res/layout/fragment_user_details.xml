@@ -3,7 +3,7 @@
     android:id="@+id/scrollViewHelper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:layout_marginTop="?attr/actionBarSize"
     android:fillViewport="false"
     tools:context="ssdl.technion.ac.il.locationnotification.UserDetailsFragment">
 

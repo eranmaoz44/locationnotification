@@ -3,6 +3,7 @@
 
 import android.app.ActivityOptions;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -28,6 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,6 +50,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     private ViewAdapter adapter;
     List<Reminder> list;
     int lastPosChange;
+        View view;
     ScaleInAnimationAdapter animateAdater;
 
     @Override
@@ -59,6 +62,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Toast.makeText(getActivity(),"is tablet horizantal "+getResources().getBoolean(R.bool.is_tablet_landscape),Toast.LENGTH_SHORT).show();
         View layout = inflater.inflate(R.layout.fragment_main, container, false);
         notificationList = (RecyclerView) layout.findViewById(R.id.notification_list);
         list = getList();
@@ -73,7 +77,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setTransition();
         }
-
+        view=layout;
         return layout;
     }
 
@@ -213,11 +217,23 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
                     Intent intent = new Intent(getActivity(), UserDetailsActivity.class);
                     int pos = temp.getPosition();
                     Reminder r=list.get(pos);
-                    intent.putExtra(Constants.REMINDER_TAG,r);
+                    intent.putExtra(Constants.REMINDER_TAG, r);
+
+
+
+
 
                     lastPosChange=pos;
-                    if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        startTransition(intent);
+                    if(getResources().getBoolean(R.bool.is_tablet_landscape)){
+                        UserDetailsFragment userDetailsFragment = new UserDetailsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(Constants.REMINDER_TAG, r);
+                        userDetailsFragment.setArguments(bundle);
+                        Log.v("fuck", "mudda fucka is in user main activity");
+                        getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
+                    }
+                    else if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        startTransition(intent,r);
                     }else{
                         getActivity().startActivity(intent);
                     }
@@ -238,7 +254,30 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             this.reminder=reminder;
         }
 
-        private void startTransition(Intent intent) {
+        private void startTransition(Intent intent,Reminder r) {
+            transitionFromActivityToActivity(intent);
+
+            // Create new fragment to add (Fragment B)
+//            Fragment fragment = new UserDetailsFragment();
+//            fragment.setSharedElementEnterTransition(new ChangeTransform());
+//            fragment.setEnterTransition(new ChangeTransform());
+//
+//            // Our shared element (in Fragment A)
+//            View mProductImage   = imageView;
+//
+//            // Add Fragment B
+//            final Bundle bundle = new Bundle();
+//
+//            bundle.putParcelable(Constants.REMINDER_TAG,r);
+//            fragment.setArguments(bundle);
+//            FragmentTransaction ft = getFragmentManager().beginTransaction()
+//                    .replace(R.id.container, fragment)
+////                    .addToBackStack("transaction")
+////                    .addSharedElement(mProductImage, "tran1")
+//            ft.commit();
+        }
+
+        private void transitionFromActivityToActivity(Intent intent) {
             View statusBar = getActivity().findViewById(android.R.id.statusBarBackground);
             View navigationBar = getActivity().findViewById(android.R.id.navigationBarBackground);
 //            View toolbar = getActivity().findViewById(R.id.tool_bar);
@@ -262,21 +301,6 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 //                            Pair.create(v.findViewById(R.id.card_info), "tran1"),
 //                            Pair.create(v.findViewById(R.id.imageView), "tran2"));
             getActivity().startActivity(intent, options.toBundle());
-
-//            // Create new fragment to add (Fragment B)
-//            Fragment fragment = new UserDetailsFragment();
-//            fragment.setSharedElementEnterTransition(new ChangeTransform());
-//            fragment.setEnterTransition(new ChangeTransform());
-//
-//            // Our shared element (in Fragment A)
-//            View mProductImage   = v.findViewById(R.id.card_info);
-//
-//            // Add Fragment B
-//            FragmentTransaction ft = getFragmentManager().beginTransaction()
-//                    .replace(R.id.rl_user_details, fragment)
-//                    .addToBackStack("transaction")
-//                    .addSharedElement(mProductImage, "tran1");
-//            ft.commit();
         }
     }
 

@@ -48,5 +48,6 @@
     <string name="facebook_app_id">1456159818017930</string>
     <string name="action_share">share</string>
     <string name="Distance">Distance:</string>
+    <string name="select_remider">Select reminder</string>
 
 </resources>

@@ -2,8 +2,10 @@ package ssdl.technion.ac.il.locationnotification;
 
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +20,9 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
+
+import android.support.v4.app.Fragment;
+
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -52,13 +57,16 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private Toolbar toolbar;
     private FloatingActionButton fab;
     private DrawerFragment drawerFragment;
+    private SelectReminderFragment selectReminderFragment;
+    private UserDetailsFragment userDetailsFragment;
     private GoogleApiClient mGoogleApiClient;
+    private boolean isEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView( R.layout.activity_main);
-        toolbar= (Toolbar)findViewById(R.id.tool_bar);
+        setContentView(R.layout.activity_main);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +82,20 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
         buildGoogleApiClient();
         connectToFacebook(this);
+
+        if (getResources().getBoolean(R.bool.is_tablet_landscape)  ) {
+//            userDetailsFragment = new UserDetailsFragment();
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable(Constants.REMINDER_TAG, createBlankReminder());
+//            userDetailsFragment.setArguments(bundle);
+//            Log.v("fuck", "mudda fucka is in user main activity");
+//            getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
+            selectReminderFragment = new SelectReminderFragment();
+            getFragmentManager().beginTransaction().replace(R.id.details_container, selectReminderFragment).commit();
+
+
+        }
+
     }
 
     public static void connectToFacebook(Activity c) {
@@ -154,11 +176,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 break;
             case R.id.action_show_on_map:
                 Location location = null;
-                if(mGoogleApiClient.isConnected()) {
+                if (mGoogleApiClient.isConnected()) {
                     location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 }
-                Intent intent=new Intent(this,ShowOnMapActivity.class);
-                intent.putExtra(Constants.LOCATION_TAG,location);
+                Intent intent = new Intent(this, ShowOnMapActivity.class);
+                intent.putExtra(Constants.LOCATION_TAG, location);
                 startActivity(intent);
                 break;
             default:
@@ -169,8 +191,15 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void startAddReminder() {
+        Reminder r = createBlankReminder();
+        Intent intent = new Intent(this, UserDetailsActivity.class);
+        intent.putExtra(Constants.REMINDER_TAG, r);
+        startActivity(intent);
+    }
+
+    public Reminder createBlankReminder() {
         String imageUri = "drawable://";
-        Date date=new Date();
+        Date date = new Date();
         Location location = null;
         if (mGoogleApiClient.isConnected()) {
             location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -183,10 +212,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             myLocation = new MyLocation(-1.0, -1.0, -1);
         }
 
-        Reminder r = new Reminder(true, "", imageUri, false, date, date, Constants.NEW_REMINDER_ID, myLocation, "");
-        Intent intent = new Intent(this, UserDetailsActivity.class);
-        intent.putExtra(Constants.REMINDER_TAG, r);
-        startActivity(intent);
+        return new Reminder(true, "", imageUri, false, date, date, Constants.NEW_REMINDER_ID, myLocation, "");
     }
 
     @Override
@@ -248,12 +274,14 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
     }
-@Override
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
-//    @Override
+
+    //    @Override
 //    protected void onResume() {
 //        super.onResume();
 //        postponeEnterTransition();
@@ -267,4 +295,18 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 //            }
 //        });
 //    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+//        if(getResources().getBoolean(R.bool.is_tablet_landscape)){
+//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//            selectReminderFragment=new SelectReminderFragment();
+//            transaction.replace(R.id.details_container, selectReminderFragment);
+//            transaction.addToBackStack(null);
+//
+//// Commit the transaction
+//            transaction.commit();
+//        }
+        super.onConfigurationChanged(newConfig);
+
+    }
 }
