@@ -2815,3 +2815,4 @@ app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/u
 app/build/intermediates/res/debug/layout-sw600dp-land-v13/activity_main.xml
 app/build/intermediates/res/debug/layout-sw600dp-port-v13/activity_main.xml
 app/src/main/res/layout-sw600dp-port/activity_main.xml
+app/build/intermediates/res/debug/values-sw600dp-port-v13/values.xml

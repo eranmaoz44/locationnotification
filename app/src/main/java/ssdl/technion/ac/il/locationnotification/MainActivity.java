@@ -67,6 +67,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     Fragment currFragment;
     private boolean isEmpty;
     Bundle savedInstanceState;
+    private Reminder currReminder;
+    private boolean prevOrientIsLand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         });
 
         setSupportActionBar(toolbar);
-        setupDrawer();
+
 
         if (getResources().getBoolean(R.bool.is_tablet_landscape)  ) {
 //            userDetailsFragment = new UserDetailsFragment();
@@ -96,9 +98,20 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             selectReminderFragment = new SelectReminderFragment();
             getFragmentManager().beginTransaction().replace(R.id.details_container, selectReminderFragment).commit();
 
-
+            prevOrientIsLand=true;
         }
+
+        if(getResources().getBoolean(R.bool.is_tablet_potrait)){
+            Intent intent = new Intent(this, UserDetailsActivity.class);
+            intent.putExtra(Constants.REMINDER_TAG, "sad");
+            if(prevOrientIsLand){
+
+            }
+            prevOrientIsLand=false;
+        }
+
         buildGoogleApiClient();
+            setupDrawer();
         if(null==savedInstanceState) {
             setInitialFragment(true);
             Intent intent = new Intent(this, GeofencingService.class);
@@ -413,5 +426,9 @@ public void onConfigurationChanged(Configuration newConfig) {;
         if(null!=savedInstanceState)
             setInitialFragment(false);
         Log.v("ChangeFragments", "onResumeFragments");
+    }
+
+    public void setReminder(Reminder r) {
+        currReminder=r;
     }
 }

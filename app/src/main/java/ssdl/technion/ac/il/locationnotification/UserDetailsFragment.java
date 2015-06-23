@@ -482,6 +482,10 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             final String latLngStr = "(" + loc.getLatitude() + ", " + loc.getLongitude() + ")";
             Geocoder geocoder;
             List<Address> addresses;
+            if(null==UserDetailsFragment.this.getActivity()){
+                (new NameFetcher()).execute(loc);
+                return getString(R.string.edit_user_pick_location);
+            }
             geocoder = new Geocoder(UserDetailsFragment.this.getActivity().getApplicationContext(), Locale.getDefault());
 
             try {

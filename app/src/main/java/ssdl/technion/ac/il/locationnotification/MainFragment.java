@@ -227,7 +227,6 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 
 
 
-
                     lastPosChange=pos;
                     if(getResources().getBoolean(R.bool.is_tablet_landscape)){
                         UserDetailsFragment userDetailsFragment = new UserDetailsFragment();
@@ -235,6 +234,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
                         bundle.putParcelable(Constants.REMINDER_TAG, r);
                         userDetailsFragment.setArguments(bundle);
                         Log.v("fuck", "mudda fucka is in user main activity");
+                        ((MainActivity)getActivity()).setReminder(r);
                         getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
                     }
                     else if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -379,4 +379,5 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             animateAdater.notifyItemChanged(lastPosChange);
         }
     }
+
 }
