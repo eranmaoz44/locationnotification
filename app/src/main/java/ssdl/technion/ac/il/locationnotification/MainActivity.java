@@ -2,14 +2,14 @@ package ssdl.technion.ac.il.locationnotification;
 
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
@@ -59,18 +59,21 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private Toolbar toolbar;
     private FloatingActionButton fab;
     private DrawerFragment drawerFragment;
+    private SelectReminderFragment selectReminderFragment;
+    private UserDetailsFragment userDetailsFragment;
     private GoogleApiClient mGoogleApiClient;
     MainFragment mainFragment;
     ZeroRemindersFragment zeroRemindersFragment;
     Fragment currFragment;
+    private boolean isEmpty;
+    Bundle savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.savedInstanceState=savedInstanceState;
         Log.v("ChangeFragments", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_main);
-
-
         toolbar= (Toolbar)findViewById(R.id.tool_bar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +86,18 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         setSupportActionBar(toolbar);
         setupDrawer();
 
+        if (getResources().getBoolean(R.bool.is_tablet_landscape)  ) {
+//            userDetailsFragment = new UserDetailsFragment();
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable(Constants.REMINDER_TAG, createBlankReminder());
+//            userDetailsFragment.setArguments(bundle);
+//            Log.v("fuck", "mudda fucka is in user main activity");
+//            getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
+            selectReminderFragment = new SelectReminderFragment();
+            getFragmentManager().beginTransaction().replace(R.id.details_container, selectReminderFragment).commit();
+
+
+        }
         buildGoogleApiClient();
         if(null==savedInstanceState) {
             setInitialFragment(true);
@@ -116,24 +131,24 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             // Intent, pass the Intent's extras to the fragment as arguments
             currFragment.setArguments(getIntent().getExtras());
 
-            int actionBarHeight=0;
-            TypedValue tv = new TypedValue();
-            if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-            {
-                actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
-            }
-
-            findViewById(R.id.fragment_container).setPadding(0,actionBarHeight,0,0);
+//            int actionBarHeight=0;
+//            TypedValue tv = new TypedValue();
+//            if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+//            {
+//                actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+//            }
+//
+//            findViewById(R.id.fragment_container).setPadding(0,actionBarHeight,0,0);
 
             // Add the fragment to the 'fragment_container' FrameLayout
 
 
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         if(firstTime){
-        transaction.add(R.id.fragment_container,currFragment);
+        transaction.add(R.id.main_fragment_container,currFragment);
         } else {
-            transaction.replace(R.id.fragment_container,currFragment);
+            transaction.replace(R.id.main_fragment_container,currFragment);
         }
         transaction.commit();
 
@@ -161,11 +176,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void changeFragment(Fragment f) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.fragment_container, f);
+        transaction.replace(R.id.main_fragment_container, f);
 
         // Commit the transaction
         transaction.commit();
@@ -249,11 +264,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 break;
             case R.id.action_show_on_map:
                 Location location = null;
-                if(mGoogleApiClient.isConnected()) {
+                if (mGoogleApiClient.isConnected()) {
                     location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 }
-                Intent intent=new Intent(this,ShowOnMapActivity.class);
-                intent.putExtra(Constants.LOCATION_TAG,location);
+                Intent intent = new Intent(this, ShowOnMapActivity.class);
+                intent.putExtra(Constants.LOCATION_TAG, location);
                 startActivity(intent);
                 break;
             default:
@@ -264,8 +279,15 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void startAddReminder() {
+        Reminder r = createBlankReminder();
+        Intent intent = new Intent(this, UserDetailsActivity.class);
+        intent.putExtra(Constants.REMINDER_TAG, r);
+        startActivity(intent);
+    }
+
+    public Reminder createBlankReminder() {
         String imageUri = "drawable://";
-        Date date=new Date();
+        Date date = new Date();
         Location location = null;
         if (mGoogleApiClient.isConnected()) {
             location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -278,10 +300,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             myLocation = new MyLocation(-1.0, -1.0, -1);
         }
 
-        Reminder r = new Reminder(true, "", imageUri, false, date, date, Constants.NEW_REMINDER_ID, myLocation, "");
-        Intent intent = new Intent(this, UserDetailsActivity.class);
-        intent.putExtra(Constants.REMINDER_TAG, r);
-        startActivity(intent);
+        return new Reminder(true, "", imageUri, false, date, date, Constants.NEW_REMINDER_ID, myLocation, "");
     }
 
     @Override
@@ -343,7 +362,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
     }
-@Override
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
@@ -356,7 +376,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         else
             changeToZeroRemindersFragment();
     }
-//    @Override
+
+    //    @Override
 //    protected void onResume() {
 //        super.onResume();
 //        postponeEnterTransition();
@@ -372,14 +393,25 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 //    }
 @Override
 public void onConfigurationChanged(Configuration newConfig) {;
-    super.onConfigurationChanged(newConfig);
+//        if(getResources().getBoolean(R.bool.is_tablet_landscape)){
+//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//            selectReminderFragment=new SelectReminderFragment();
+//            transaction.replace(R.id.details_container, selectReminderFragment);
+//            transaction.addToBackStack(null);
+//
+//// Commit the transaction
+//            transaction.commit();
+//        }    super.onConfigurationChanged(newConfig);
+
     Log.v("ChangeFragments", "onConfigurationChanged");
+    super.onConfigurationChanged(newConfig);
 }
 
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
-        setInitialFragment(false);
+        if(null!=savedInstanceState)
+            setInitialFragment(false);
         Log.v("ChangeFragments", "onResumeFragments");
     }
 }

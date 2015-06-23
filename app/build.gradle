@@ -31,8 +31,9 @@ dependencies {
     compile project(':libraries:dateAndTimePicker')
     compile 'com.google.maps.android:android-maps-utils:0.3+'
     compile 'com.pkmmte.view:circularimageview:1.1'
-	   repositories { mavenCentral() }
+
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.parse.bolts:bolts-android:1.+'
     compile fileTree(dir: 'libs', include: 'Parse-*.jar')
+
 }

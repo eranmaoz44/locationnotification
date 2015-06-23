@@ -55,8 +55,17 @@ public class UserDetailsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
 
+
         Reminder reminder = getIntent().getParcelableExtra(Constants.REMINDER_TAG);
         r = reminder;
+
+
+
+        UserDetailsFragment userDetailsFragment = new UserDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.REMINDER_TAG, r);
+        userDetailsFragment.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.user_detatils_container, userDetailsFragment).commit();
 
 
         toolBar = (Toolbar) findViewById(R.id.details_toolbar);

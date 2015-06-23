@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -82,13 +83,23 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     TextView tvDateEnd;
     TextView textViewPlacePicker;
     Switch onOffSwitch;
-    final int ACTION_REQUEST_GALLERY = 21235;    Reminder reminder;
+    final int ACTION_REQUEST_GALLERY = 21235;
+    Reminder reminder;
     String iconPath;
 
-    private final int PLACE_PICKER_REQUEST=20000;
+    boolean horizantalTablet;
+
+    private final int PLACE_PICKER_REQUEST = 20000;
+
+    Bundle bundle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        bundle = this.getArguments();
+        horizantalTablet=getResources().getBoolean(R.bool.is_tablet_landscape);
+        reminder= bundle.getParcelable(Constants.REMINDER_TAG);
+
+        Log.v("fuck","create da mudda fucka userDetails");
         super.onCreate(savedInstanceState);
 
     }
@@ -100,7 +111,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         View view = inflater.inflate(R.layout.fragment_user_details, container, false);
         setupUI(view);
 
-       // setupFadingToolbar(view);
+        // setupFadingToolbar(view);
 
         return view;
 
@@ -109,7 +120,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        reminder=((UserDetailsActivity)getActivity()).getReminder();
+        //reminder = getReminder();
         assertTrue(null != reminder);
 
         editTextTitle.setText(reminder.getTitle());
@@ -122,12 +133,12 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         File image = new File(reminder.getImgPath());
 
         //TODO: add support to default picture, when creating new reminder.
-        if(image.exists()){
+        if (image.exists()) {
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
 
-            Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+            Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
 
-            bitmap = Bitmap.createScaledBitmap(bitmap,256,256,true);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 256, 256, true);
 
             imageOfReminder.setImageBitmap(bitmap);
         } else {
@@ -136,25 +147,39 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         setTextViewDates();
 
-        MyLocation loc=reminder.getLocation();
-        if(-1!=loc.getRadius()){
+        MyLocation loc = reminder.getLocation();
+        if (-1 != loc.getRadius()) {
             (new NameFetcher()).execute(loc);
         } else {
-             textViewPlacePicker.setText(getString(R.string.edit_user_pick_location));
+            textViewPlacePicker.setText(getString(R.string.edit_user_pick_location));
         }
-        if(!reminder.getAlwaysOn()) {
-            ((RadioButton)radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
+        if (!reminder.getAlwaysOn()) {
+            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
             radioCheckChanged(R.id.radio_dates);
 
-        }else{
-            ((RadioButton)radioGroupRepeate.findViewById(R.id.radio_always)).setChecked(true);
+        } else {
+            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_always)).setChecked(true);
             radioCheckChanged(R.id.radio_always);
         }
 
         onOffSwitch.setChecked(reminder.getOnOff());
     }
 
-    private void putCursorOnEnd(EditText et) {
+    private Reminder getReminder() {
+        Reminder reminder;
+        if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
+            Log.v("fuck", "mudda fucka is in user detail fragment");
+            if (bundle == null) {
+                Log.v("fuck", "mudda fucka is null");
+            }
+            reminder = bundle.getParcelable(Constants.REMINDER_TAG);
+//            reminder=((MainActivity)getActivity()).createBlankReminder();
+        } else {
+            reminder = ((UserDetailsActivity) getActivity()).getReminder();
+        }
+        return reminder;
+    }
+  private void putCursorOnEnd(EditText et) {
         et.setSelection(et.getText().length());
 
     }
@@ -176,7 +201,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         setupRadioGroup(view);
 
 
-        onOffSwitch = (Switch)view.findViewById(R.id.s_on_off);
+        onOffSwitch = (Switch) view.findViewById(R.id.s_on_off);
         onOffSwitch.setOnCheckedChangeListener(this);
     }
 
@@ -225,15 +250,15 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         dateDialogHelper2 = new DateDialogHelper(textViewDate2);
         buttonDate2.setEnabled(false);
         buttonDate2.setOnClickListener(dateDialogHelper2);
-        tvDateStart=(TextView)view.findViewById(R.id.start);
-        tvDateEnd=(TextView)view.findViewById(R.id.end);
-        tvDash=(TextView)view.findViewById(R.id.dash);
+        tvDateStart = (TextView) view.findViewById(R.id.start);
+        tvDateEnd = (TextView) view.findViewById(R.id.end);
+        tvDash = (TextView) view.findViewById(R.id.dash);
     }
 
     private void setTextViewDates() {
-        SimpleDateFormat sdf=Constants.dateFormat;
-        String date1=sdf.format(reminder.getDateFrom());
-        String date2=sdf.format(reminder.getDateTo());
+        SimpleDateFormat sdf = Constants.dateFormat;
+        String date1 = sdf.format(reminder.getDateFrom());
+        String date2 = sdf.format(reminder.getDateTo());
         textViewDate1.setText(date1);
         dateDialogHelper1.setDate(reminder.getDateFrom());
         textViewDate2.setText(date2);
@@ -245,7 +270,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         return date;
     }
 
-    private void radioCheckChanged(int checkedId){
+    private void radioCheckChanged(int checkedId) {
         if (checkedId == R.id.radio_dates) {
             reminder.setAlwaysOn(false);
             buttonDate1.setEnabled(true);
@@ -259,8 +284,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
     }
 
-    private void setDatesVisibility(int visibility){
-        ViewGroup v=(ViewGroup)getView();
+    private void setDatesVisibility(int visibility) {
+        ViewGroup v = (ViewGroup) getView();
         buttonDate1.setVisibility(visibility);
         buttonDate2.setVisibility(visibility);
         textViewDate1.setVisibility(visibility);
@@ -336,11 +361,11 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             dpd.show(getFragmentManager(), "Datepickerdialog");
         }
 
-        public Calendar getDate(){
+        public Calendar getDate() {
             return calendar;
         }
 
-        public void setDate(Date date){
+        public void setDate(Date date) {
             calendar.setTime(date);
 
             int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -351,19 +376,18 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-            Calendar c=Calendar.getInstance();
-            c.set(year,monthOfYear,dayOfMonth);
-            if(!isLegalDate(textView,c)){
+            Calendar c = Calendar.getInstance();
+            c.set(year, monthOfYear, dayOfMonth);
+            if (!isLegalDate(textView, c)) {
                 Toast.makeText(getActivity(), getActivity().getString(R.string.illegal_date), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            calendar=c;
+            calendar = c;
             SimpleDateFormat sdf = Constants.dateFormat;
             String dateString = sdf.format(c.getTime());
 
             textView.setText(dateString);
-
 
 
             dpd = DatePickerDialog.newInstance(this, year, monthOfYear, dayOfMonth);
@@ -375,24 +399,27 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             }
         }
     }
-    private boolean isLegalDate(TextView textView,Calendar calendar){
+
+    private boolean isLegalDate(TextView textView, Calendar calendar) {
         int res;
-        if(textView.getId()==R.id.date1){
-           res=dateDialogHelper2.getDate().compareTo(calendar);
-            return  dateDialogHelper2.getDate().after(calendar) ;
-        }else{
-            res=dateDialogHelper1.getDate().compareTo(calendar);
-            return  dateDialogHelper1.getDate().before(calendar);
+        if (textView.getId() == R.id.date1) {
+            res = dateDialogHelper2.getDate().compareTo(calendar);
+            return dateDialogHelper2.getDate().after(calendar);
+        } else {
+            res = dateDialogHelper1.getDate().compareTo(calendar);
+            return dateDialogHelper1.getDate().before(calendar);
         }
 
     }
 
-    class UpdateListener implements TextWatcher{
+    class UpdateListener implements TextWatcher {
 
         private int id;
-        public UpdateListener(int id){
-            this.id=id;
+
+        public UpdateListener(int id) {
+            this.id = id;
         }
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -405,8 +432,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         @Override
         public void afterTextChanged(Editable s) {
-            String txt=s.toString();
-            switch(id){
+            String txt = s.toString();
+            switch (id) {
                 case R.id.et_edit_title:
                     reminder.setTitle(txt);
                     break;
@@ -414,7 +441,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                     reminder.setMemo(txt);
                     break;
                 default:
-                    assertTrue(0==1);
+                    assertTrue(0 == 1);
             }
 
         }
@@ -433,7 +460,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
                 case PLACE_PICKER_REQUEST:
                     Place place = PlacePicker.getPlace(data, getActivity());
-                    MyLocation myLocation=new MyLocation(place.getLatLng().latitude,place.getLatLng().longitude,Constants.RADIUS);
+                    MyLocation myLocation = new MyLocation(place.getLatLng().latitude, place.getLatLng().longitude, Constants.RADIUS);
                     reminder.setLocation(myLocation);
                     (new NameFetcher()).execute(myLocation);
 
@@ -445,13 +472,14 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
     }
 
-    private class NameFetcher extends AsyncTask<MyLocation,Void,String>{
+    private class NameFetcher extends AsyncTask<MyLocation, Void, String> {
 
         private MyLocation loc;
+
         @Override
         protected String doInBackground(MyLocation... params) {
-            loc=params[0];
-            final String latLngStr="("+loc.getLatitude()+", "+loc.getLongitude()+")";
+            loc = params[0];
+            final String latLngStr = "(" + loc.getLatitude() + ", " + loc.getLongitude() + ")";
             Geocoder geocoder;
             List<Address> addresses;
             geocoder = new Geocoder(UserDetailsFragment.this.getActivity().getApplicationContext(), Locale.getDefault());
@@ -460,23 +488,23 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                 addresses = geocoder.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.v("NameFetcher","IOException");
+                Log.v("NameFetcher", "IOException");
                 return latLngStr;
             }
 
-            if(addresses.size()<1){
-                Log.v("NameFetcher","addresses.size()<1)");
+            if (addresses.size() < 1) {
+                Log.v("NameFetcher", "addresses.size()<1)");
                 return latLngStr;
             }
-            Address addr=addresses.get(0);
+            Address addr = addresses.get(0);
             //TODO: get location name some how, like "Nola pub" instead of "Hankin 32" etc..
-            String name=null;
-            String address=addr.getAddressLine(0);
-            if(null!=name){
+            String name = null;
+            String address = addr.getAddressLine(0);
+            if (null != name) {
                 return name;
-            } else if(null!=address){
-                String city=addr.getAddressLine(1);
-                return address+(null != city ? ", "+city : "");
+            } else if (null != address) {
+                String city = addr.getAddressLine(1);
+                return address + (null != city ? ", " + city : "");
             } else {
                 return latLngStr;
             }
@@ -484,12 +512,11 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         @Override
         protected void onPostExecute(String s) {
-            Log.v("NameFetcher","onPostExecutre "+s);
+            Log.v("NameFetcher", "onPostExecutre " + s);
             super.onPostExecute(s);
             textViewPlacePicker.setText(s);
         }
     }
-
 
 
     private class PlacePickerListener implements View.OnClickListener {
@@ -499,7 +526,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             focusOnPrevLoc(builder);
 
-            Context context =getActivity();
+            Context context = getActivity();
             try {
                 startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
             } catch (GooglePlayServicesRepairableException e) {
@@ -510,14 +537,14 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
 
         private void focusOnPrevLoc(PlacePicker.IntentBuilder builder) {
-            if(-1!=reminder.getLocation().getRadius()){
-                MyLocation loc=reminder.getLocation();
-                LatLng latLng=new LatLng(loc.getLatitude(),loc.getLongitude());
+            if (-1 != reminder.getLocation().getRadius()) {
+                MyLocation loc = reminder.getLocation();
+                LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
                 final double HEADING_NORTH_EAST = 45;
                 final double HEADING_SOUTH_WEST = 215;
                 LatLng northEast = SphericalUtil.computeOffset(latLng, 709, HEADING_NORTH_EAST);
-                LatLng southWest = SphericalUtil.computeOffset(latLng, 709,HEADING_SOUTH_WEST );
-                builder.setLatLngBounds(new LatLngBounds(southWest,northEast));
+                LatLng southWest = SphericalUtil.computeOffset(latLng, 709, HEADING_SOUTH_WEST);
+                builder.setLatLngBounds(new LatLngBounds(southWest, northEast));
             }
         }
 
@@ -590,7 +617,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
     }
 
-    private void transformIntoViewMode(){
+    private void transformIntoViewMode() {
         imageOfReminder.setOnClickListener(null);
         editTextTitle.setEnabled(false);
         for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
@@ -602,6 +629,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         textViewDate2.setOnClickListener(null);
         textViewPlacePicker.setOnClickListener(null);
         editDescription.setEnabled(false);
-        ((UserDetailsActivity)getActivity()).setSaveButtonVisibility(false);
+        ((UserDetailsActivity) getActivity()).setSaveButtonVisibility(false);
     }
+
+
+
 }
