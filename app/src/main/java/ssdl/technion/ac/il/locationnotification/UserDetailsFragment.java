@@ -178,61 +178,25 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         if(null!=reminder)
             setReminder(reminder);
 
-        editTextTitle.setText(reminder.getTitle());
-        editDescription.setText(reminder.getMemo());
-      
-
-        File image = new File(reminder.getImgPath());
-
-        //TODO: add support to default picture, when creating new reminder.
-        if (image.exists()) {
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-
-            Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
-
-            bitmap = Bitmap.createScaledBitmap(bitmap, 256, 256, true);
-
-            imageOfReminder.setImageBitmap(bitmap);
-        } else {
-            imageOfReminder.setImageResource(R.drawable.image_3);
-        }
-
-        setTextViewDates();
-
-        MyLocation loc = reminder.getLocation();
-        if (-1 != loc.getRadius()) {
-            (new NameFetcher()).execute(loc);
-        } else {
-            mAutocompleteView.setText(getString(R.string.edit_user_pick_location));
-        }
-        if (!reminder.getAlwaysOn()) {
-            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
-            radioCheckChanged(R.id.radio_dates);
-
-        } else {
-            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_always)).setChecked(true);
-            radioCheckChanged(R.id.radio_always);
-        }
-
-        onOffSwitch.setChecked(reminder.getOnOff());
     }
 
-    private Reminder getReminder() {
-        Reminder reminder;
-        if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
-            Log.v("fuck", "mudda fucka is in user detail fragment");
-            if (bundle == null) {
-                Log.v("fuck", "mudda fucka is null");
-            }
-            reminder = bundle.getParcelable(Constants.REMINDER_TAG);
-//            reminder=((MainActivity)getActivity()).createBlankReminder();
-        } else {
-            reminder = ((UserDetailsActivity) getActivity()).getReminder();
-        }
-        return reminder;
-    }
+//    private Reminder getReminder() {
+//        Reminder reminder;
+//        if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
+//            Log.v("fuck", "mudda fucka is in user detail fragment");
+//            if (bundle == null) {
+//                Log.v("fuck", "mudda fucka is null");
+//            }
+//            reminder = bundle.getParcelable(Constants.REMINDER_TAG);
+////            reminder=((MainActivity)getActivity()).createBlankReminder();
+//        } else {
+////            reminder = ((UserDetailsActivity) getActivity()).getReminder();
+//        }
+//        return reminder;
+//    }
  private void putCursorOnEnd(EditText et) {
-        et.setSelection(et.getText().length());
+     et.setSelection(et.getText().length());
+ }
 
     private void setupUI(View view) {
         editTextTitle = (EditText) view.findViewById(R.id.et_edit_title);
@@ -851,10 +815,13 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         }
 
+
         editTextTitle.setText(reminder.getTitle());
-        putCursorOnEnd(editTextTitle);
         editDescription.setText(reminder.getMemo());
+        putCursorOnEnd(editTextTitle);
         putCursorOnEnd(editDescription);
+
+
         File image = new File(reminder.getImgPath());
 
         //TODO: add support to default picture, when creating new reminder.
@@ -876,7 +843,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         if (-1 != loc.getRadius()) {
             (new NameFetcher()).execute(loc);
         } else {
-            textViewPlacePicker.setText(getString(R.string.edit_user_pick_location));
+            mAutocompleteView.setText(getString(R.string.edit_user_pick_location));
         }
         if (!reminder.getAlwaysOn()) {
             ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
@@ -888,5 +855,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
 
         onOffSwitch.setChecked(reminder.getOnOff());
+
     }
 }
