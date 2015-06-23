@@ -221,22 +221,37 @@
                     android:layout_below="@+id/btn_date1"
                     android:layout_marginTop="@dimen/edit_componets_margin"
                     android:text="@string/edit_user_pick_location_title" />
-
-                <TextView
-
-                    android:id="@+id/tv_location"
+                <RelativeLayout
+                    android:id="@+id/location_layout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_location_title"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                <AutoCompleteTextView
+                    android:id="@+id/autocomplete_places"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
                     android:layout_marginBottom="@dimen/edit_componets_margin"
-                    android:drawableLeft="@drawable/location_ic"
-                    android:drawableStart="@drawable/location_ic"
-                    android:text="@string/edit_user_pick_location"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/iv_location_ic"
                     android:hint="@string/edit_user_pick_location"
                     android:focusable="true"
                     android:clickable="true"
                     android:focusableInTouchMode="true"
                     />
+                <ImageView
+                    android:id="@+id/iv_location_ic"
+
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/location_ic"
+
+                    android:layout_marginBottom="@dimen/edit_componets_margin"/>
+                </RelativeLayout>
 
                 <TextView
 
@@ -244,7 +259,7 @@
                     style="@style/Title_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_location"
+                    android:layout_below="@+id/location_layout"
 
                     android:text="@string/edit_user_description_title" />
 
@@ -255,6 +270,16 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_decription_title"
                     android:layout_marginBottom="@dimen/edit_componets_margin" />
+
+             <!--   <AutoCompleteTextView
+                    android:id="@+id/autocomplete_places"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:hint="@string/autocomplete_hint"
+                    android:layout_below="@+id/et_description"
+                    android:textColor="@android:color/primary_text_light" />-->
+
 
 
             </RelativeLayout>

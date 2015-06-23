@@ -10,19 +10,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -39,11 +45,18 @@ import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
+import ssdl.technion.ac.il.locationnotification.utils_ui.PlaceAutocompleteAdapter;
 import ssdl.technion.ac.il.locationnotification.utils_ui.ScrollViewHelper;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -67,7 +80,7 @@ import java.util.Locale;
 import static junit.framework.Assert.assertTrue;
 
 
-public class UserDetailsFragment extends StatedFragment implements CompoundButton.OnCheckedChangeListener {
+public class UserDetailsFragment extends StatedFragment implements CompoundButton.OnCheckedChangeListener ,GoogleApiClient.OnConnectionFailedListener{
 
     ImageView imageOfReminder;
     EditText editTextTitle;
@@ -82,7 +95,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     TextView tvDash;
     TextView tvDateStart;
     TextView tvDateEnd;
-    TextView textViewPlacePicker;
+    ImageView ivPlacePicker;
     Switch onOffSwitch;
     final int ACTION_REQUEST_GALLERY = 21235;
     Reminder reminder;
@@ -98,14 +111,47 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     private View lrCard;
     private View lrNoReminderSelected;
 
+
+
+
+
+    protected GoogleApiClient mGoogleApiClient;
+
+    private PlaceAutocompleteAdapter mAdapter;
+
+    private AutoCompleteTextView mAutocompleteView;
+
+
+
+    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
+            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         bundle = this.getArguments();
         horizantalTablet=getResources().getBoolean(R.bool.is_tablet_landscape);
 
         Log.v("fuck","create da mudda fucka userDetails");
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
         super.onCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -132,26 +178,61 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         if(null!=reminder)
             setReminder(reminder);
 
+        editTextTitle.setText(reminder.getTitle());
+        editDescription.setText(reminder.getMemo());
+      
+
+        File image = new File(reminder.getImgPath());
+
+        //TODO: add support to default picture, when creating new reminder.
+        if (image.exists()) {
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+
+            Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+
+            bitmap = Bitmap.createScaledBitmap(bitmap, 256, 256, true);
+
+            imageOfReminder.setImageBitmap(bitmap);
+        } else {
+            imageOfReminder.setImageResource(R.drawable.image_3);
+        }
+
+        setTextViewDates();
+
+        MyLocation loc = reminder.getLocation();
+        if (-1 != loc.getRadius()) {
+            (new NameFetcher()).execute(loc);
+        } else {
+            mAutocompleteView.setText(getString(R.string.edit_user_pick_location));
+        }
+        if (!reminder.getAlwaysOn()) {
+            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
+            radioCheckChanged(R.id.radio_dates);
+
+        } else {
+            ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_always)).setChecked(true);
+            radioCheckChanged(R.id.radio_always);
+        }
+
+        onOffSwitch.setChecked(reminder.getOnOff());
     }
 
-//    private Reminder getReminder() {
-//        Reminder reminder;
-//        if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
-//            Log.v("fuck", "mudda fucka is in user detail fragment");
-//            if (bundle == null) {
-//                Log.v("fuck", "mudda fucka is null");
-//            }
-//            reminder = bundle.getParcelable(Constants.REMINDER_TAG);
-////            reminder=((MainActivity)getActivity()).createBlankReminder();
-//        } else {
-////            reminder = ((UserDetailsActivity) getActivity()).getReminder();
-//        }
-////        return reminder;
-//    }
-  private void putCursorOnEnd(EditText et) {
+    private Reminder getReminder() {
+        Reminder reminder;
+        if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
+            Log.v("fuck", "mudda fucka is in user detail fragment");
+            if (bundle == null) {
+                Log.v("fuck", "mudda fucka is null");
+            }
+            reminder = bundle.getParcelable(Constants.REMINDER_TAG);
+//            reminder=((MainActivity)getActivity()).createBlankReminder();
+        } else {
+            reminder = ((UserDetailsActivity) getActivity()).getReminder();
+        }
+        return reminder;
+    }
+ private void putCursorOnEnd(EditText et) {
         et.setSelection(et.getText().length());
-
-    }
 
     private void setupUI(View view) {
         editTextTitle = (EditText) view.findViewById(R.id.et_edit_title);
@@ -159,13 +240,16 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         editTextTitle.addTextChangedListener(new UpdateListener(R.id.et_edit_title));
         editDescription.addTextChangedListener(new UpdateListener(R.id.et_description));
         imageOfReminder = (ImageView) view.findViewById(R.id.img_edit_image);
+
         setImageUpload();
+        setAutoCompletePlacePicker(view);
         textViewDate1 = (TextView) view.findViewById(R.id.date1);
         //textViewDate1.setOnClickListener(dateDialogHelper1);
         textViewDate2 = (TextView) view.findViewById(R.id.date2);
         //textViewDate2.setOnClickListener(dateDialogHelper2);
-        textViewPlacePicker = (TextView) view.findViewById(R.id.tv_location);
-        textViewPlacePicker.setOnClickListener(new PlacePickerListener());
+
+        ivPlacePicker=(ImageView) view.findViewById(R.id.iv_location_ic);
+        ivPlacePicker.setOnClickListener(new PlacePickerListener());
 
 
         setDateButtons(view);
@@ -175,6 +259,28 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         onOffSwitch = (Switch) view.findViewById(R.id.s_on_off);
         onOffSwitch.setOnCheckedChangeListener(this);
+
+
+
+    }
+
+    private void setAutoCompletePlacePicker(View view) {
+        // Retrieve the AutoCompleteTextView that will display Place suggestions.
+        mAutocompleteView = (AutoCompleteTextView)
+                view.findViewById(R.id.autocomplete_places);
+
+        // Register a listener that receives callbacks when a suggestion has been selected
+        mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
+
+        // Retrieve the TextViews that will display details and attributions of the selected place.
+//        mPlaceDetailsText = (TextView) view.findViewById(R.id.place_details);
+//        mPlaceDetailsAttribution = (TextView) view.findViewById(R.id.place_attribution);
+
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
+        // the entire world.
+        mAdapter = new PlaceAutocompleteAdapter(getActivity(), android.R.layout.simple_list_item_1,
+                mGoogleApiClient, BOUNDS_GREATER_SYDNEY, null);
+        mAutocompleteView.setAdapter(mAdapter);
     }
 
     private void setImageUpload() {
@@ -319,6 +425,16 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if(null!=reminder)
             reminder.setOnOff(isChecked);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+
+        // TODO(Developer): Check error code and notify the user of error state and resolution.
+        Toast.makeText(getActivity(),
+                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+                Toast.LENGTH_SHORT).show();
     }
 
     private class DateDialogHelper implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
@@ -512,7 +628,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         protected void onPostExecute(String s) {
             Log.v("NameFetcher", "onPostExecutre " + s);
             super.onPostExecute(s);
-            textViewPlacePicker.setText(s);
+            mAutocompleteView.setText(s);
         }
     }
 
@@ -634,7 +750,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         buttonDate2.setEnabled(false);
         textViewDate1.setOnClickListener(null);
         textViewDate2.setOnClickListener(null);
-        textViewPlacePicker.setOnClickListener(null);
+        ivPlacePicker.setOnClickListener(null);
         editDescription.setEnabled(false);
         ((UserDetailsActivity) getActivity()).setSaveButtonVisibility(false);
     }
@@ -648,6 +764,80 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     public void onAttach(Activity a) {
         super.onAttach(a);
         dataPasser = (OnDataReceive) a;
+    }
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /*
+             Retrieve the place ID of the selected item from the Adapter.
+             The adapter stores each Place suggestion in a PlaceAutocomplete object from which we
+             read the place ID.
+              */
+            final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
+            final String placeId = String.valueOf(item.placeId);
+            ;
+
+            /*
+             Issue a request to the Places Geo Data API to retrieve a Place object with additional
+              details about the place.
+              */
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                    .getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+
+//            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.clicked_user_details) + item.description,
+//                    Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+
+                places.release();
+                return;
+            }
+            // Get the Place object from the buffer.
+            final Place place = places.get(0);
+            LatLng queried_location = place.getLatLng();
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.clicked_user_details) + queried_location.toString(),
+                    Toast.LENGTH_SHORT).show();
+            MyLocation myLocation = new MyLocation(place.getLatLng().latitude, place.getLatLng().longitude, Constants.RADIUS);
+            reminder.setLocation(myLocation);
+
+
+
+            // Format details of the place for display and show it in a TextView.
+//            mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
+//                    place.getId(), place.getAddress(), place.getPhoneNumber(),
+//                    place.getWebsiteUri()));
+//
+//            // Display the third party attributions if set.
+//            final CharSequence thirdPartyAttribution = places.getAttributions();
+//            if (thirdPartyAttribution == null) {
+//                mPlaceDetailsAttribution.setVisibility(View.GONE);
+//            } else {
+//                mPlaceDetailsAttribution.setVisibility(View.VISIBLE);
+//                mPlaceDetailsAttribution.setText(Html.fromHtml(thirdPartyAttribution.toString()));
+//            }
+
+
+
+            places.release();
+        }
+    };
+
+
+    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
+                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
+
+        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
+                websiteUri));
+
     }
 
     public void setReminder(Reminder r){
@@ -699,5 +889,4 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         onOffSwitch.setChecked(reminder.getOnOff());
     }
-
 }
