@@ -57,6 +57,7 @@ public class ShareListAdapter extends BaseAdapter {
         try {
             reminder = reminder1.toJson();
             reminder.put("sender name", ParseUser.getCurrentUser().get("name"));
+            reminder.put("sender FbId", ParseUser.getCurrentUser().get("FacebookId"));
             Log.d("MyApp", reminder.toString());
         } catch (JSONException e) {
             Toast.makeText(context, "Could not parse reminder. please report this problem to developers!", Toast.LENGTH_LONG).show();
