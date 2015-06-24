@@ -16,9 +16,13 @@
 
 
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <fragment
         android:paddingTop="?attr/actionBarSize"
         android:id="@+id/f_usersList"
+        android:layout_below="@+id/tool_bar"
         android:name="ssdl.technion.ac.il.locationnotification.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,9 +36,11 @@
     <include
         android:id="@+id/tool_bar"
         layout="@layout/tool_bar"
-
-
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:transitionName="tran1"></include>
+    </RelativeLayout>
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

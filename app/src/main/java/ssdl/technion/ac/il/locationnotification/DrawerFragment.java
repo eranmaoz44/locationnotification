@@ -1,7 +1,10 @@
 package ssdl.technion.ac.il.locationnotification;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -17,9 +20,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import ssdl.technion.ac.il.locationnotification.Constants.Constants;
+import ssdl.technion.ac.il.locationnotification.activities.SearchActivity;
+import ssdl.technion.ac.il.locationnotification.activities.ShowOnMapActivity;
 import ssdl.technion.ac.il.locationnotification.utils_ui.AdapterDrawer;
 import ssdl.technion.ac.il.locationnotification.utils_ui.Information;
 
@@ -32,6 +40,12 @@ public class DrawerFragment extends Fragment {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
    private AdapterDrawer mAdapter;
+
+    final int searchNumber=1;
+    final int locationNumber=2;
+
+
+
 
     public DrawerFragment() {
         // Required empty public constructor
@@ -54,7 +68,22 @@ public class DrawerFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                //  ((MainActivity) getActivity()).onDrawerItemClicked(position - 1);
+                switch ( position){
+                    case searchNumber:
+                        startActivity(new Intent(getActivity(), SearchActivity.class));
+                        break;
+                    case locationNumber :
+                        Location location = null;
+                        if (MainActivity.mGoogleApiClient.isConnected()) {
+                            location = LocationServices.FusedLocationApi.getLastLocation(MainActivity.mGoogleApiClient);
+                        }
+                        Intent intent = new Intent(getActivity(), ShowOnMapActivity.class);
+                        intent.putExtra(Constants.LOCATION_TAG, location);
+                        startActivity(intent);
+                        break;
+                    default:
+                       break;
+                }
             }
 
             @Override
@@ -156,8 +185,8 @@ public class DrawerFragment extends Fragment {
     public List<Information> getData() {
         //load only static data inside a drawer
         List<Information> data = new ArrayList<>();
-        int[] icons = {R.drawable.abc_ic_search_api_mtrl_alpha, R.drawable.location_ic, R.drawable.ic_add_white_24dp};
-        String[] titles = {getString(R.string.drawer_search),getString(R.string.drawer_location),getString(R.string.drawer_add_reminder)};
+        int[] icons = {R.drawable.search_icon, R.drawable.location_ic};
+        String[] titles = {getString(R.string.drawer_search),getString(R.string.drawer_location)};
         for (int i = 0; i < titles.length; i++) {
             Information information = new Information();
             information.title = titles[i];
