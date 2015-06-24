@@ -39,7 +39,7 @@ public class DrawerFragment extends Fragment {
     private RecyclerView mRecyclerDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-   private AdapterDrawer mAdapter;
+    private AdapterDrawer mAdapter;
 
     final int searchNumber=1;
     final int locationNumber=2;
@@ -56,10 +56,9 @@ public class DrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.v("fuck","shit");
-
-        Log.v("fuck","shit");
-        View view =inflater.inflate(R.layout.fragment_drawer, container, false);
+        Log.v("fuck", "shit");
+        Log.v("fuck", "shit");
+        View view = inflater.inflate(R.layout.fragment_drawer, container, false);
         mRecyclerDrawer = (RecyclerView) view.findViewById(R.id.drawerList);
         mAdapter = new AdapterDrawer(getActivity(), getData());
         mRecyclerDrawer.setAdapter(mAdapter);
@@ -91,7 +90,6 @@ public class DrawerFragment extends Fragment {
 
             }
         }));
-
         return view;
     }
 
@@ -124,17 +122,16 @@ public class DrawerFragment extends Fragment {
                 toolbar.setAlpha(1 - slideOffset / 2);
             }
         };
-        
+
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerLayout.post(new Runnable() {
             @Override
             public void run() {
                 mDrawerToggle.syncState();
-            //    mDrawerLayout.openDrawer(mContainer);
+                mDrawerLayout.openDrawer(mContainer);
 
             }
         });
-
     }
 
 
@@ -185,8 +182,8 @@ public class DrawerFragment extends Fragment {
     public List<Information> getData() {
         //load only static data inside a drawer
         List<Information> data = new ArrayList<>();
-        int[] icons = {R.drawable.search_icon, R.drawable.location_ic};
-        String[] titles = {getString(R.string.drawer_search),getString(R.string.drawer_location)};
+        int[] icons = {R.drawable.abc_ic_search_api_mtrl_alpha, R.drawable.location_ic, R.drawable.ic_add_white_24dp};
+        String[] titles = {getString(R.string.drawer_search),getString(R.string.drawer_location),getString(R.string.drawer_add_reminder)};
         for (int i = 0; i < titles.length; i++) {
             Information information = new Information();
             information.title = titles[i];

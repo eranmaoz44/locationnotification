@@ -39,6 +39,7 @@ public class Reminder implements Parcelable {
     private MyLocation location;
     private String memo;
     private String senderId = null;
+    private String senderName = null;
 
     public Reminder(Boolean onOff, String title, String imgPath, Boolean alwaysOn, Date dateFrom, Date dateTo, String id, MyLocation location, String memo) {
         this.onOff = onOff;
@@ -76,6 +77,7 @@ public class Reminder implements Parcelable {
     public Reminder(JSONObject jsonObject) throws JSONException, ParseException {
         this(jsonObject.getBoolean("onOff"), jsonObject.getString("title"), jsonObject.getString("imgPath"), jsonObject.getBoolean("alwaysOn"), DateFormatter.parse(jsonObject.getString("dateFrom")),
                 DateFormatter.parse(jsonObject.getString("dateTo")), jsonObject.getString("id"), new MyLocation(jsonObject.getJSONObject("location")), jsonObject.getString("memo"), jsonObject.getString("sender FbId"));
+        this.senderName = jsonObject.getString(Constants.SENDER_NAME_STRING);
     }
 
     //parcel part
@@ -151,6 +153,8 @@ public class Reminder implements Parcelable {
     public String getSenderId() {
         return senderId;
     }
+
+    public String getSenderName() { return senderName; }
 
 
     public void setOnOff(Boolean onOff) {
