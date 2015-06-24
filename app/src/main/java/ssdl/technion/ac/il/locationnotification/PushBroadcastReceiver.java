@@ -60,7 +60,7 @@ public class PushBroadcastReceiver extends ParsePushBroadcastReceiver {
                         builder.setSmallIcon(R.mipmap.ic_launcher)
                                 .setColor(Color.RED)
                                 .setContentTitle(j.get(Constants.SENDER_NAME_STRING) + " wants to remind you!")
-                                .setContentText("Click to view!")
+                                .setContentText(r.getTitle())
                                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setAutoCancel(true);
                         b = builder;
 
