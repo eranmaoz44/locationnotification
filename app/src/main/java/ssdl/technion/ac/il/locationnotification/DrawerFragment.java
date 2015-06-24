@@ -81,7 +81,7 @@ public class DrawerFragment extends Fragment {
                         startActivity(intent);
                         break;
                     default:
-                       break;
+                        break;
                 }
             }
 
@@ -128,7 +128,7 @@ public class DrawerFragment extends Fragment {
             @Override
             public void run() {
                 mDrawerToggle.syncState();
-                mDrawerLayout.openDrawer(mContainer);
+                // mDrawerLayout.openDrawer(mContainer);
 
             }
         });
@@ -182,8 +182,8 @@ public class DrawerFragment extends Fragment {
     public List<Information> getData() {
         //load only static data inside a drawer
         List<Information> data = new ArrayList<>();
-        int[] icons = {R.drawable.abc_ic_search_api_mtrl_alpha, R.drawable.location_ic, R.drawable.ic_add_white_24dp};
-        String[] titles = {getString(R.string.drawer_search),getString(R.string.drawer_location),getString(R.string.drawer_add_reminder)};
+        int[] icons = {R.drawable.search_icon, R.drawable.location_ic};
+        String[] titles = {getString(R.string.drawer_search),getString(R.string.drawer_location)};
         for (int i = 0; i < titles.length; i++) {
             Information information = new Information();
             information.title = titles[i];

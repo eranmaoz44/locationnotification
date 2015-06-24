@@ -881,7 +881,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.connect();
                     bitmap = BitmapFactory.decodeStream(con.getInputStream());
-                } catch (IOException e) {
+                } catch (IOException|NullPointerException e) {
                     e.printStackTrace();
                 }
                 return null;
