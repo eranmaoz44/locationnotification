@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -192,13 +193,13 @@ private void saveReminder() {
             validated=false;
             etTitle.setError(getString(R.string.title_error_message),getResources().getDrawable(R.drawable.ic_error_white_24dp));
         }
-        TextView tvLocation=(TextView)findViewById(R.id.tv_location);
-        String location=tvLocation.getText().toString();
+        AutoCompleteTextView locationView=(AutoCompleteTextView)findViewById(R.id.autocomplete_places);
+        String location=locationView.getText().toString();
         if(0==location.compareTo(getString(R.string.edit_user_pick_location))){
             if(validated)
-                tvLocation.requestFocus();
+                locationView.requestFocus();
             validated=false;
-            tvLocation.setError(getString(R.string.location_error_message),getResources().getDrawable(R.drawable.ic_error_white_24dp));
+            locationView.setError(getString(R.string.location_error_message),getResources().getDrawable(R.drawable.ic_error_white_24dp));
         }
         if(!validated){
             Toast.makeText(this, getString(R.string.invalid_input), Toast.LENGTH_SHORT).show();

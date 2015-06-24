@@ -30,6 +30,7 @@ import com.facebook.GraphResponse;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -59,7 +60,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private DrawerFragment drawerFragment;
     private SelectReminderFragment selectReminderFragment;
     private UserDetailsFragment userDetailsFragment;
-    private GoogleApiClient mGoogleApiClient;
+    public static GoogleApiClient mGoogleApiClient;
     private boolean isEmpty;
 
     @Override
@@ -145,6 +146,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
                     .build();
 
     }

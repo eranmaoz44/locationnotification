@@ -101,7 +101,7 @@ public class DrawerFragment extends Fragment {
             @Override
             public void run() {
                 mDrawerToggle.syncState();
-                mDrawerLayout.openDrawer(mContainer);
+            //    mDrawerLayout.openDrawer(mContainer);
 
             }
         });
