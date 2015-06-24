@@ -8,10 +8,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -38,6 +40,7 @@ import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
 public class PushBroadcastReceiver extends ParsePushBroadcastReceiver {
 
     Reminder r;
+    private Context context;
 
     protected void onPushReceive(final Context context, Intent intent) {
         ParseAnalytics.trackAppOpenedInBackground(intent);
@@ -114,6 +117,12 @@ public class PushBroadcastReceiver extends ParsePushBroadcastReceiver {
                 protected void onPostExecute(Void aVoid) {
                     super.onPostExecute(aVoid);
                     Intent notificationIntent = new Intent(context, UserDetailsActivity.class);
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+                    int rId = sharedPref.getInt(Constants.ID_KEY, 0);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(Constants.ID_KEY, rId + 1);
+                    editor.commit();
+                    r.setId(String.valueOf(rId));
                     notificationIntent.putExtra(Constants.REMINDER_TAG, r);
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                     stackBuilder.addParentStack(MainActivity.class);
@@ -129,5 +138,11 @@ public class PushBroadcastReceiver extends ParsePushBroadcastReceiver {
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        this.context=context;
     }
 }
