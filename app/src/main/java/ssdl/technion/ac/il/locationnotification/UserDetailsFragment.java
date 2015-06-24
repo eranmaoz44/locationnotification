@@ -823,9 +823,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
 
             editTextTitle.setText(reminder.getTitle());
-        editTextTitle.setEnabled(editable);
+//        editTextTitle.setEnabled(editable);
         editDescription.setText(reminder.getMemo());
-        editDescription.setEnabled(editable);
+//        editDescription.setEnabled(editable);
         editTextTitle.setError(null);
         putCursorOnEnd(editTextTitle);
         putCursorOnEnd(editDescription);
@@ -853,7 +853,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             (new NameFetcher()).execute(loc);
         } else {
             mAutocompleteView.setText(getString(R.string.edit_user_pick_location));
-            mAutocompleteView.setEnabled(editable);
+//            mAutocompleteView.setEnabled(editable);
             mAutocompleteView.setError(null);
 
         }
@@ -864,7 +864,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_always)).setChecked(true);
             radioCheckChanged(R.id.radio_always);
         }
-        radioGroupRepeate.setEnabled(editable);
+//        radioGroupRepeate.setEnabled(editable);
 
         onOffSwitch.setChecked(reminder.getOnOff());
 
@@ -893,7 +893,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                     senderImage.setImageBitmap(bitmap);
             }
         }).execute(r);
-        dataPasser.turnEditingOn();
+//        dataPasser.turnEditingOn();
     }
 
     public Reminder saveReminder() {
