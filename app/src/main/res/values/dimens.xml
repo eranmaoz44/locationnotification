@@ -7,4 +7,5 @@
     <dimen name="search_item_margin">12dp</dimen>
     <dimen name="search_categories_margin">24dp</dimen>
     <dimen name="nav_drawer_width">280dp</dimen>
+    <dimen name="profile_image_dim">100dp </dimen>
 </resources>
