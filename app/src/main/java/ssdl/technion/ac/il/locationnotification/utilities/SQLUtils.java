@@ -40,7 +40,7 @@ public class SQLUtils extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.d("DB", "onCreate");
 		
-		String sql = "create table " + TABLE + "(onOff INTEGER, title VARCHAR( 64 ), imgPath VARCHAR( 128 ), alwaysOn INTEGER, dateFrom VARCHAR( 64 ), dateTo VARCHAR( 64 ), id VARCHAR ( 64 ), latitude DOUBLE, longitude DOUBLE, radius INTEGER, memo VARCHAR( 128 ));";
+		String sql = "create table " + TABLE + "(onOff INTEGER, title VARCHAR( 64 ), imgPath VARCHAR( 128 ), alwaysOn INTEGER, dateFrom VARCHAR( 64 ), dateTo VARCHAR( 64 ), id VARCHAR ( 64 ), latitude DOUBLE, longitude DOUBLE, radius INTEGER, memo VARCHAR( 128 ), senderId VARCHAR( 128 ));";
 		
 		db.execSQL(sql);
 	}
@@ -104,7 +104,7 @@ public class SQLUtils extends SQLiteOpenHelper {
 
 
 		String sql = "INSERT into " + TABLE +
-			" (onOff, title, imgPath, alwaysOn, dateFrom, dateTo, id, latitude, longitude, radius, memo) VALUES ('" + boolToInt(r.getOnOff()) + "','" +escapeString(r.getTitle()) +"','"+r.getImgPath()+"','"+boolToInt(r.getAlwaysOn())+"','"+dateToString(r.getDateFrom())+"','"+dateToString(r.getDateTo())+"','"+r.getId()+"','"+latitude+"','"+longitude+"','"+radius+"','"+escapeString(r.getMemo())+ "')";
+			" (onOff, title, imgPath, alwaysOn, dateFrom, dateTo, id, latitude, longitude, radius, memo, senderId) VALUES ('" + boolToInt(r.getOnOff()) + "','" +escapeString(r.getTitle()) +"','"+r.getImgPath()+"','"+boolToInt(r.getAlwaysOn())+"','"+dateToString(r.getDateFrom())+"','"+dateToString(r.getDateTo())+"','"+r.getId()+"','"+latitude+"','"+longitude+"','"+radius+"','"+escapeString(r.getMemo())+"','"+r.getSenderId()+ "')";
 
 		db.execSQL(sql);
 		
@@ -154,7 +154,7 @@ public class SQLUtils extends SQLiteOpenHelper {
             Date dateTo=stringToDate(cursor.getString(5));
             MyLocation location= new MyLocation(cursor.getDouble(7),cursor.getDouble(8),cursor.getInt(9));
             reminderList.add(new Reminder(onOff,
-                    cursor.getString(1),cursor.getString(2),alwaysOn,dateFrom,dateTo,cursor.getString(6),location,cursor.getString(10)));
+                    cursor.getString(1),cursor.getString(2),alwaysOn,dateFrom,dateTo,cursor.getString(6),location,cursor.getString(10),cursor.getString(11)));
 		     
 		    cursor.moveToNext();
 		}
@@ -202,7 +202,7 @@ public class SQLUtils extends SQLiteOpenHelper {
         String sql = "UPDATE " + TABLE  +" SET "+
                 "onOff='"+boolToInt(r.getOnOff())+"', title='"+escapeString(r.getTitle())+"', imgPath='"+r.getImgPath()+
         "', alwaysOn='"+boolToInt(r.getAlwaysOn())+"', dateFrom='"+dateToString(r.getDateFrom())+"', dateTo='"+dateToString(r.getDateTo())+
-        "', latitude='"+latitude+"', longitude='"+longitude+"', radius='"+radius+"', memo='"+escapeString(r.getMemo())+"' WHERE id='"+r.getId()+"'";
+        "', latitude='"+latitude+"', longitude='"+longitude+"', radius='"+radius+"', memo='"+escapeString(r.getMemo())+"', senderId='"+r.getSenderId()+"' WHERE id='"+r.getId()+"'";
 
         db.execSQL(sql);
 

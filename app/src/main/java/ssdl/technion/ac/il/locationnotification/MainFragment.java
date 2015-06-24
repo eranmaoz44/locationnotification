@@ -283,7 +283,7 @@ public class MainFragment extends Fragment {
                     Reminder r = list.get(pos);
                     intent.putExtra(Constants.REMINDER_TAG, r);
 
-
+                    dataPasser.onReminderPass(r);
                     lastPosChange = pos;
                     if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
                         Log.v("MainFragmentReminder", "onclick tablet landscape prevId=" + (null != currReminder ? currReminder.getId() : "null") + " new id = " + r.getId());
@@ -294,7 +294,7 @@ public class MainFragment extends Fragment {
 //                            userDetailsFragment.setArguments(bundle);
 //                        )
                         Log.v("fuck", "mudda fucka is in user main activity");
-                        dataPasser.onReminderPass(r);
+//                        dataPasser.onReminderPass(r);
 //                            getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
 //                        }
                     } else if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {

@@ -25,7 +25,7 @@ public class Reminder implements Parcelable {
     private static final SimpleDateFormat DateFormatter =
             new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
 
-    private final int NUM_OF_FIELDS = 11;
+    private final int NUM_OF_FIELDS = 12;
 
     private Boolean onOff;
     private String title;
@@ -50,6 +50,7 @@ public class Reminder implements Parcelable {
         this.id = id;
         this.location = location;
         this.memo = memo;
+        this.senderId=senderId;
     }
 
     public Reminder(Boolean onOff, String title, String imgPath, Boolean alwaysOn, Date dateFrom, Date dateTo, String id, MyLocation location, String memo, String senderId) {
@@ -68,6 +69,7 @@ public class Reminder implements Parcelable {
         $.put("id", id);
         $.put("location", location.toJson());
         $.put("memo", memo);
+        $.put("senderId", senderId);
         return $;
     }
 
@@ -90,12 +92,14 @@ public class Reminder implements Parcelable {
         this.id = data[6];
         this.location = new MyLocation(Double.parseDouble(data[7]), Double.parseDouble(data[8]), Integer.parseInt(data[9]));
         this.memo = data[10];
+        this.senderId=data[11];
     }
 
     @Override
     public String toString() {
         return "Reminder{" +
-                "onOff=" + onOff +
+                "NUM_OF_FIELDS=" + NUM_OF_FIELDS +
+                ", onOff=" + onOff +
                 ", title='" + title + '\'' +
                 ", imgPath='" + imgPath + '\'' +
                 ", alwaysOn=" + alwaysOn +
@@ -104,9 +108,9 @@ public class Reminder implements Parcelable {
                 ", id='" + id + '\'' +
                 ", location=" + location +
                 ", memo='" + memo + '\'' +
+                ", senderId='" + senderId + '\'' +
                 '}';
     }
-
 
     public Boolean getOnOff() {
         return onOff;
@@ -185,6 +189,8 @@ public class Reminder implements Parcelable {
         this.memo = memo;
     }
 
+    public  void setSenderId(String senderId) { this.senderId=senderId;}
+
     public boolean isActive() {
         Date today = new Date();
         Boolean result = onOff && (alwaysOn || (isBeforeDate(dateFrom, today) && isBeforeDate(today, dateTo)));
@@ -212,7 +218,7 @@ public class Reminder implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[]{onOff.toString(), title, imgPath, alwaysOn.toString(), dateToString(dateFrom), dateToString(dateTo),
-                id, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), String.valueOf(location.getRadius()), memo});
+                id, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), String.valueOf(location.getRadius()), memo,senderId});
     }
 
     public static final Creator<Reminder> CREATOR = new Creator<Reminder>() {
