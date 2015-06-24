@@ -17,7 +17,7 @@
         <item name="android:windowActionBarOverlay">true</item>
 
         <!-- Support Library compability -->
-        <item name="windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">false</item>
     </style>
     <style name="Title_style" >
 

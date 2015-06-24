@@ -352,10 +352,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     public void hideViews() {
-        Log.v("fuck", "shit show");
+        if(isFabEnabled()) {
+
+            Log.v("fuck", "shit show");
         toolbar.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) fab.getLayoutParams();
-        if(isFabEnabled()) {
             hideFab(lp);
         }
     }
@@ -366,15 +367,16 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     public void showViews() {
+        if(isFabEnabled()) {
         Log.v("fuck", "shit show");
         toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
-        if(isFabEnabled()) {
+
             showFab();
         }
     }
 
     private boolean isFabEnabled() {
-        return !getResources().getBoolean(R.bool.is_tablet_landscape) ||currReminder==null;
+        return !getResources().getBoolean(R.bool.is_tablet_landscape);
     }
 
     private void showFab() {

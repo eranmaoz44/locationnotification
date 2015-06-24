@@ -6,52 +6,44 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-
-    tools:context="ssdl.technion.ac.il.locationnotification.MainActivity">
-
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <fragment
-        android:paddingTop="?attr/actionBarSize"
-        android:id="@+id/f_usersList"
-        android:layout_below="@+id/tool_bar"
-        android:name="ssdl.technion.ac.il.locationnotification.MainFragment"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
 
-    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        tools:context="ssdl.technion.ac.il.locationnotification.MainActivity">
+
+
+
+        <fragment
+            android:paddingTop="?attr/actionBarSize"
+            android:id="@+id/f_usersList"
+            android:name="ssdl.technion.ac.il.locationnotification.MainFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+        <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
         <!--android:id="@+id/main_fragment_container"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent" />-->
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"
 
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/tool_bar"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:transitionName="tran1"></include>
-    </RelativeLayout>
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add_white_24dp"
-        fab:fab_colorNormal="@color/accent"
-        fab:fab_colorPressed="@color/accent_pressed"
-        fab:fab_colorRipple="@color/ripple" />
-</FrameLayout>
+
+            android:transitionName="tran1"></include>
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_add_white_24dp"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_colorPressed="@color/accent_pressed"
+            fab:fab_colorRipple="@color/ripple" />
+    </FrameLayout>
     <fragment
         android:id="@+id/fragment_navigation_drawer"
         android:name="ssdl.technion.ac.il.locationnotification.DrawerFragment"
