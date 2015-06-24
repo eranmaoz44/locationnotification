@@ -1,6 +1,9 @@
 package ssdl.technion.ac.il.locationnotification.utils_ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.parse.ParseUser;
+import com.pkmmte.view.CircularImageView;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,8 +45,33 @@ public class AdapterDrawer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType==TYPE_HEADER){
-            View view=inflater.inflate(R.layout.drawer_header, parent,false);
+            final View view=inflater.inflate(R.layout.drawer_header, parent,false);
             HeaderHolder holder=new HeaderHolder(view);
+            if(ParseUser.getCurrentUser() == null)
+                return holder;
+            String name = ParseUser.getCurrentUser().getString("name");
+            if(name == null) name = "";
+            ((TextView) view.findViewById(R.id.tv_line_name)).setText(name);
+            (new AsyncTask<Void, Void, Bitmap>() {
+
+                protected Bitmap doInBackground(Void ainteger[]) {
+                    try {
+                        URL url = new URL("https://graph.facebook.com/" + ParseUser.getCurrentUser().get("FacebookId") + "/picture?type=small");
+                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                        con.connect();
+                        return BitmapFactory.decodeStream(con.getInputStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                protected void onPostExecute(Bitmap bitmap) {
+                    if(bitmap != null)
+                        ((CircularImageView) view.findViewById(R.id.image_profile)).setImageBitmap(bitmap);
+                }
+
+            }).execute();
             return holder;
         }
         else{

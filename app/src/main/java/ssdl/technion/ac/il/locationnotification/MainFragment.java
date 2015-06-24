@@ -258,7 +258,7 @@ public class MainFragment extends Fragment {
                             shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
                             try {
                                 ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getActivity().getApplicationContext(), jsonArray, reminder, shareDialog));
-                            } catch (FacebookException e) {
+                            } catch (FacebookException|NullPointerException e) {
                                 shareDialog.dismiss();
 
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

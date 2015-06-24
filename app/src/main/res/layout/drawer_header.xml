@@ -33,30 +33,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Suprise"
+            android:id="@+id/tv_line_name"
             android:gravity="left"
             android:textColor="@android:color/white"
             style="@style/TextAppearance.AppCompat.Large" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mudda fucka"
-            android:textColor="@android:color/white"
-            android:gravity="left"
-            style="@style/TextAppearance.AppCompat.Medium" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/accent" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="new account"
-            android:textColor="@android:color/white"
-            android:gravity="left"
-            style="@style/TextAppearance.AppCompat.Small" />
+
     </LinearLayout>
 
 </RelativeLayout>

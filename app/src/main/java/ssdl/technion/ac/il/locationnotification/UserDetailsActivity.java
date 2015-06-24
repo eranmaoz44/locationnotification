@@ -155,7 +155,7 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                             String facebookId= (String) ParseUser.getCurrentUser().get(Constants.FACEBOOK_ID);
                             Log.v(Constants.FACEBOOK_ID,"facebookId"+facebookId);
                             ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, reminder, shareDialog));
-                        }catch (FacebookException e){
+                        }catch (FacebookException|NullPointerException e){
                             shareDialog.dismiss();
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(UserDetailsActivity.this);
