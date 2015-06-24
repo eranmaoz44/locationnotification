@@ -40,6 +40,7 @@
 
             <LinearLayout
                 android:layout_weight="1"
+                android:paddingTop="?attr/actionBarSize"
                 android:orientation="horizontal"
                 android:id="@+id/details_container"
                 android:layout_width="0dp"
@@ -47,6 +48,7 @@
                 >
                 <fragment
                     android:paddingTop="?attr/actionBarSize"
+
                     android:id="@+id/f_usersDetails"
                     android:name="ssdl.technion.ac.il.locationnotification.UserDetailsFragment"
                     android:layout_width="match_parent"

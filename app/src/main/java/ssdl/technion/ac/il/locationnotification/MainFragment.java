@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -179,6 +180,7 @@ public class MainFragment extends Fragment {
             viewHolder.textView.setText(curr.getTitle());
             File image = new File(curr.getImgPath());
             viewHolder.setReminder(curr);
+
             //TODO: delete 'if' after adding support to default image
             if (image.exists()) {
 
@@ -231,11 +233,13 @@ public class MainFragment extends Fragment {
         Switch onOff;
         ImageView ivShare;
         Reminder reminder;
+        View view;
 
         public InfoViewHolder(View itemView) {
             super(itemView);
 //            itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
+            view =itemView;
             textView = (TextView) itemView.findViewById(R.id.info_text);
             imageView = (ImageView) itemView.findViewById(R.id.info_image);
             onOff = (Switch) itemView.findViewById(R.id.s_on_off);
@@ -293,11 +297,13 @@ public class MainFragment extends Fragment {
 //                            userDetailsFragment= new UserDetailsFragment();
 //                            userDetailsFragment.setArguments(bundle);
 //                        )
+                       // view.setSelected(true);
+
                         Log.v("fuck", "mudda fucka is in user main activity");
                         dataPasser.onReminderPass(r);
 //                            getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
 //                        }
-                    } else if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    } else if (isPortrate()) {
                         startTransition(intent, r);
                     } else {
                         getActivity().startActivity(intent);
@@ -315,6 +321,10 @@ public class MainFragment extends Fragment {
                 }
             });
             imageView.setOnLongClickListener(this);
+        }
+
+        private boolean isPortrate(){
+            return getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
         }
 
         public void setReminder(Reminder reminder) {
