@@ -13,12 +13,10 @@
         android:layout_height="match_parent"
 
         tools:context="ssdl.technion.ac.il.locationnotification.MainActivity">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+
         <LinearLayout
             android:id="@+id/fragments_layout"
-            android:layout_below="@+id/tool_bar"
+
             android:weightSum="2"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -42,6 +40,7 @@
 
             <LinearLayout
                 android:layout_weight="1"
+                android:paddingTop="?attr/actionBarSize"
                 android:orientation="horizontal"
                 android:id="@+id/details_container"
                 android:layout_width="0dp"
@@ -49,6 +48,7 @@
                 >
                 <fragment
                     android:paddingTop="?attr/actionBarSize"
+
                     android:id="@+id/f_usersDetails"
                     android:name="ssdl.technion.ac.il.locationnotification.UserDetailsFragment"
                     android:layout_width="match_parent"
@@ -60,12 +60,10 @@
         <include
             android:id="@+id/tool_bar"
             layout="@layout/tool_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+
 
             android:transitionName="tran1"></include>
-        </RelativeLayout>
+
 
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fab"
