@@ -193,8 +193,6 @@ public class Reminder implements Parcelable {
         this.memo = memo;
     }
 
-    public  void setSenderId(String senderId) { this.senderId=senderId;}
-
     public boolean isActive() {
         Date today = new Date();
         Boolean result = onOff && (alwaysOn || (isBeforeDate(dateFrom, today) && isBeforeDate(today, dateTo)));

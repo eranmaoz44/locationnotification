@@ -479,4 +479,14 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         return currReminder;
     }
 
+    @Override
+    public void turnEditingOff() {
+        fab.setEnabled(false);
+    }
+
+    @Override
+    public void turnEditingOn() {
+        fab.setEnabled(true);
+    }
+
 }

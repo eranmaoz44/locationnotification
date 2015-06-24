@@ -153,7 +153,8 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                         shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
                         try {
                             String facebookId= (String) ParseUser.getCurrentUser().get(Constants.FACEBOOK_ID);
-                            Log.v(Constants.FACEBOOK_ID,"facebookId"+facebookId);
+
+                            Log.v("facebook", "facebookId" + facebookId);
                             ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, reminder, shareDialog));
                         }catch (FacebookException e){
                             shareDialog.dismiss();
@@ -207,6 +208,18 @@ private void saveReminder() {
     @Override
     public Reminder onReminderReceive() {
         return reminder;
+    }
+
+    @Override
+    public void turnEditingOff() {
+        menuSave.setVisible(false);
+
+    }
+
+    @Override
+    public void turnEditingOn() {
+        if(null!=menuSave)
+            menuSave.setVisible(true);
     }
 
     @Override
