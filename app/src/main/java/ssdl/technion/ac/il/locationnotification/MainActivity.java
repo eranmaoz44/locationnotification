@@ -58,9 +58,11 @@ import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
 
 
+
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,MainFragment.OnDataPass,UserDetailsFragment.OnDataReceive {
     private static final String PREV_ORIENT_TAG ="prev.orient.tag" ;
     private static final String STARTED_ACTIVITIY_ON_CREATE_TAG = "started_activity_on_create_tag";
+    private static final java.lang.String IN_EDIT_MODE = "in_edit_mode" ;
     private Toolbar toolbar;
     private FloatingActionButton fab;
     private DrawerFragment drawerFragment;
@@ -72,8 +74,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private Reminder currReminder;
     private Boolean prevOrientIsLand;
     private Boolean startedActivityOnCreateFlag;
+    private boolean inEditMode;
 //    private Fragment reminderFragment;
 //    private Fragment currReminderFragment;
+    UserDetailsFragment fUserDetails;
+    MainFragment fMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +91,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startAddReminder();
+                if(!inEditMode) {
+                    startAddReminder();
+                } else {
+                    fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
+                    saveReminder();
+                }
             }
         });
 
@@ -96,10 +106,14 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             startedActivityOnCreateFlag=savedInstanceState.getBoolean(STARTED_ACTIVITIY_ON_CREATE_TAG);
             prevOrientIsLand=savedInstanceState.getBoolean(PREV_ORIENT_TAG);
             currReminder=savedInstanceState.getParcelable(Constants.REMINDER_TAG);
+            inEditMode=savedInstanceState.getBoolean(IN_EDIT_MODE);
+
         } else {
             prevOrientIsLand=false;
             startedActivityOnCreateFlag=false;
             currReminder=null;
+            inEditMode=false;
+
         }
 
         Log.v("MainActivity","initial valus: "+"prevOrientIsLand="+prevOrientIsLand+" startedActivityOnCreateFlag="+startedActivityOnCreateFlag+" currReminder="+(currReminder!=null ? currReminder.getTitle() : "null"));
@@ -128,6 +142,24 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             if(ParseUser.getCurrentUser() == null)
                 connectToFacebook(this);
         }
+        fUserDetails = (UserDetailsFragment) getFragmentManager().findFragmentById(R.id.f_usersDetails);
+        fMain=(MainFragment)getFragmentManager().findFragmentById(R.id.f_usersList);
+        if(inEditMode){
+            fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
+        } else {
+            fab.setImageResource(R.drawable.ic_add_white_24dp);
+        }
+    }
+
+    private void saveReminder() {
+        Reminder r=fUserDetails.saveReminder();
+        if(null==r)
+            return;
+        inEditMode=false;
+        currReminder=null;
+        fMain.updateRecyclerView();
+        fUserDetails.setReminder(null);
+        fab.setImageResource(R.drawable.ic_add_white_24dp);
     }
 
     private List<Reminder> getList(){
@@ -257,11 +289,19 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void startAddReminder() {
         Reminder r = createBlankReminder();
-        startedActivityOnCreateFlag=false;
-        Intent intent = new Intent(this, UserDetailsActivity.class);
-        intent.putExtra(Constants.REMINDER_TAG, r);
-        intent.putExtra(Constants.STARTED_FROM_TABLET_LAND_TAG,false);
-        startActivity(intent);
+        if(getResources().getBoolean(R.bool.is_tablet_landscape)){
+            currReminder=r;
+            fUserDetails.setReminder(currReminder);
+            fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
+            inEditMode=true;
+        } else {
+            startedActivityOnCreateFlag = false;
+            Intent intent = new Intent(this, UserDetailsActivity.class);
+            intent.putExtra(Constants.REMINDER_TAG, r);
+            intent.putExtra(Constants.STARTED_FROM_TABLET_LAND_TAG, false);
+            startActivity(intent);
+        }
+
     }
 
     public Reminder createBlankReminder() {
@@ -315,6 +355,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         Log.v("fuck", "shit show");
         toolbar.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) fab.getLayoutParams();
+        if(isFabEnabled()) {
+            hideFab(lp);
+        }
+    }
+
+    private void hideFab(FrameLayout.LayoutParams lp) {
         int fabBottomMargin = lp.bottomMargin;
         fab.animate().translationY(fab.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
     }
@@ -322,6 +368,16 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     public void showViews() {
         Log.v("fuck", "shit show");
         toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+        if(isFabEnabled()) {
+            showFab();
+        }
+    }
+
+    private boolean isFabEnabled() {
+        return !getResources().getBoolean(R.bool.is_tablet_landscape) ||currReminder==null;
+    }
+
+    private void showFab() {
         fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
 
@@ -375,8 +431,15 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     public void onReminderPass(Reminder r) {
             currReminder = r;
         if(getResources().getBoolean(R.bool.is_tablet_landscape)) {
-            UserDetailsFragment fUserDetails = (UserDetailsFragment) getFragmentManager().findFragmentById(R.id.f_usersDetails);
             fUserDetails.setReminder(currReminder);
+            showFab();
+            if(null!=currReminder) {
+                fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
+                inEditMode = true;
+            } else {
+                fab.setImageResource(R.drawable.ic_add_white_24dp);
+                inEditMode = false;
+            }
         }
     }
 
@@ -386,6 +449,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         outState.putParcelable(Constants.REMINDER_TAG,currReminder);
         outState.putBoolean(PREV_ORIENT_TAG,prevOrientIsLand);
         outState.putBoolean(STARTED_ACTIVITIY_ON_CREATE_TAG,startedActivityOnCreateFlag);
+        outState.putBoolean(IN_EDIT_MODE,inEditMode);
     }
 
     @Override

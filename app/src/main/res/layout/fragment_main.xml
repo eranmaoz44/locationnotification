@@ -4,6 +4,31 @@
     android:layout_height="match_parent"
     tools:context="ssdl.technion.ac.il.locationnotification.MainFragment">
 
+    <ViewSwitcher
+        android:id="@+id/view_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/lr_zero_reminders"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+            <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+                android:id="@+id/tv_zero_reminders"
+                android:text="@string/zero_reminders"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_gravity="center"/>
+            </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lr_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
     <android.support.v7.widget.RecyclerView
 
         android:id="@+id/notification_list"
@@ -11,5 +36,7 @@
         android:layout_height="wrap_content">
 
     </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </ViewSwitcher>
 
 </LinearLayout>

@@ -857,4 +857,48 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         onOffSwitch.setChecked(reminder.getOnOff());
 
     }
+
+    public Reminder saveReminder() {
+        boolean validated = validateInput();
+        if(!validated){
+            return null;
+        }
+        SQLUtils sqlUtils = new SQLUtils(getActivity());
+        if(0==reminder.getId().compareTo(Constants.NEW_REMINDER_ID)){
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            int rId = sharedPref.getInt(Constants.ID_KEY, 0);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(Constants.ID_KEY, rId + 1);
+            editor.commit();
+            reminder.setId(String.valueOf(rId));
+            sqlUtils.insertData(reminder);
+            Log.v("SQL", "insertData");
+            Toast.makeText(getActivity(),getString(R.string.added_successfully), Toast.LENGTH_SHORT).show();
+        } else {
+            sqlUtils.updateData(reminder);
+            Log.v("SQL", "updateData");
+            Toast.makeText(getActivity(),getString(R.string.updated_successfully),Toast.LENGTH_SHORT).show();
+        }
+        return reminder;
+    }
+
+    private boolean validateInput() {
+        boolean validated=true;
+        String title=editTextTitle.getText().toString();
+        if(0==title.compareTo("")){
+            validated=false;
+            editTextTitle.setError(getString(R.string.title_error_message),getResources().getDrawable(R.drawable.ic_error_white_24dp));
+        }
+        String location=mAutocompleteView.getText().toString();
+        if(0==location.compareTo(getString(R.string.edit_user_pick_location))){
+            if(validated)
+                mAutocompleteView.requestFocus();
+            validated=false;
+            mAutocompleteView.setError(getString(R.string.location_error_message),getResources().getDrawable(R.drawable.ic_error_white_24dp));
+        }
+        if(!validated){
+            Toast.makeText(getActivity(), getString(R.string.invalid_input), Toast.LENGTH_SHORT).show();
+        }
+        return validated;
+    }
 }

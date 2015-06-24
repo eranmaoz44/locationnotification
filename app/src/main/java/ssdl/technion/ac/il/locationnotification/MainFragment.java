@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,7 +62,9 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 //        private SelectReminderFragment selectReminderFragment;
         private Reminder currReminder;
         private Fragment userDetailsFragment;
-    @Override
+        private ViewSwitcher viewSwitcher;
+
+        @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        userDetailsFragment = new UserDetailsFragment();
@@ -89,6 +92,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             setTransition();
         }
         view=layout;
+        viewSwitcher=(ViewSwitcher)view.findViewById(R.id.view_switcher);
         return layout;
     }
 
@@ -360,15 +364,16 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     public void onStart() {
         super.onStart();
 //        ((MainActivity)getActivity()).updateFragment();
-        list=getList();
-        adapter.setList(list);
-        if(lastPosChange==-1) {
-            adapter.notifyDataSetChanged();
-            animateAdater.notifyDataSetChanged();
-        }else{
-            adapter.notifyItemChanged(lastPosChange);
-            animateAdater.notifyItemChanged(lastPosChange);
-        }
+//        list=getList();
+//        adapter.setList(list);
+//        if(lastPosChange==-1) {
+//            adapter.notifyDataSetChanged();
+//            animateAdater.notifyDataSetChanged();
+//        }else{
+//            adapter.notifyItemChanged(lastPosChange);
+//            animateAdater.notifyItemChanged(lastPosChange);
+//        }
+        updateRecyclerView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().postponeEnterTransition();
@@ -384,10 +389,15 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
         }
     }
 
-    private void updateRecyclerView() {
+    public void updateRecyclerView() {
        Log.v("ChangeFragments","UpdateRecycler ViEW");
 //        ((MainActivity)getActivity()).updateFragment();
         list=getList();
+        if(list.size()==0){
+            viewSwitcher.setDisplayedChild(0);
+        } else {
+            viewSwitcher.setDisplayedChild(1);
+        }
         adapter.setList(list);
         if(lastPosChange==-1) {
             adapter.notifyDataSetChanged();

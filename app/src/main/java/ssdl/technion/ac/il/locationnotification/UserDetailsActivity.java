@@ -53,6 +53,7 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
     ColorDrawable cd;
     private Reminder reminder;
     private boolean startedFromTabletLandTag;
+    private UserDetailsFragment fUserDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +104,7 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                 }
             });
         }
+        fUserDetails= (UserDetailsFragment) getFragmentManager().findFragmentById(R.id.f_usersDetails);
 
     }
 
@@ -172,54 +174,15 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
         }
     }
 private void saveReminder() {
-        boolean validated = validateInput();
-        if(!validated){
+        Reminder r=fUserDetails.saveReminder();
+        if(null==r)
             return;
-        }
-        SQLUtils sqlUtils = new SQLUtils(getApplicationContext());
-        if(0==reminder.getId().compareTo(Constants.NEW_REMINDER_ID)){
-            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-            int rId = sharedPref.getInt(Constants.ID_KEY, 0);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(Constants.ID_KEY, rId + 1);
-            editor.commit();
-            reminder.setId(String.valueOf(rId));
-            sqlUtils.insertData(reminder);
-            Log.v("SQL", "insertData");
-            Toast.makeText(this,getString(R.string.added_successfully), Toast.LENGTH_SHORT).show();
-        } else {
-            sqlUtils.updateData(reminder);
-            Log.v("SQL", "updateData");
-            Toast.makeText(this,getString(R.string.updated_successfully),Toast.LENGTH_SHORT).show();
-        }
         Intent resultIntent = new Intent();
         resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,false);
         resultIntent.putExtra(Constants.REMINDER_ADDED_TAG,true);
         resultIntent.putExtra(Constants.REMINDER_TAG,reminder);
         setResult(Activity.RESULT_OK, resultIntent);
         onBackPressed();
-    }
-
-    private boolean validateInput() {
-        boolean validated=true;
-        EditText etTitle=(EditText)findViewById(R.id.et_edit_title);
-        String title=etTitle.getText().toString();
-        if(0==title.compareTo("")){
-            validated=false;
-            etTitle.setError(getString(R.string.title_error_message),getResources().getDrawable(R.drawable.ic_error_white_24dp));
-        }
-        AutoCompleteTextView locationView=(AutoCompleteTextView)findViewById(R.id.autocomplete_places);
-        String location=locationView.getText().toString();
-        if(0==location.compareTo(getString(R.string.edit_user_pick_location))){
-            if(validated)
-                locationView.requestFocus();
-            validated=false;
-            locationView.setError(getString(R.string.location_error_message),getResources().getDrawable(R.drawable.ic_error_white_24dp));
-        }
-        if(!validated){
-            Toast.makeText(this, getString(R.string.invalid_input), Toast.LENGTH_SHORT).show();
-        }
-        return validated;
     }
 
     public void setToolBarAlpha(int alpha) {

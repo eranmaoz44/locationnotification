@@ -2814,5 +2814,16 @@ app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/u
 app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/utils_ui/ScrollViewHelper.class
 app/build/intermediates/res/debug/layout-sw600dp-land-v13/activity_main.xml
 app/build/intermediates/res/debug/layout-sw600dp-port-v13/activity_main.xml
-app/src/main/res/layout-sw600dp-port/activity_main.xml
 app/build/intermediates/res/debug/values-sw600dp-port-v13/values.xml
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/MainFragment$OnDataPass.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/PushBroadcastReceiver$1.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/ShareListAdapter$3$1.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/ShareListAdapter$3.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/UserDetailsFragment$4.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/UserDetailsFragment$5.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/UserDetailsFragment$OnDataReceive.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/utils_ui/PlaceAutocompleteAdapter$1.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/utils_ui/PlaceAutocompleteAdapter$PlaceAutocomplete.class
+app/build/intermediates/classes/debug/ssdl/technion/ac/il/locationnotification/utils_ui/PlaceAutocompleteAdapter.class
+app/build/intermediates/res/debug/drawable/ic_launcher.gif
+libraries/dateAndTimePicker/build/intermediates/manifests/tmp/manifestMerger7165476775009421486.xml
