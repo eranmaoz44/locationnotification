@@ -33,6 +33,7 @@ import com.facebook.GraphResponse;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultBus;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultEvent;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -151,6 +152,8 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                     public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
                         shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
                         try {
+                            String facebookId= (String) ParseUser.getCurrentUser().get(Constants.FACEBOOK_ID);
+                            Log.v(Constants.FACEBOOK_ID,"facebookId"+facebookId);
                             ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, reminder, shareDialog));
                         }catch (FacebookException e){
                             shareDialog.dismiss();
@@ -192,8 +195,8 @@ private void saveReminder() {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ActivityResultBus.getInstance().postQueue(
-                new ActivityResultEvent(requestCode, resultCode, data));
+//        ActivityResultBus.getInstance().postQueue(
+//                new ActivityResultEvent(requestCode, resultCode, data));
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -215,7 +218,7 @@ private void saveReminder() {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if(getResources().getBoolean(R.bool.is_tablet_landscape) && startedFromTabletLandTag ){
+        if(getResources().getBoolean(R.bool.is_tablet_landscape) ){
             onBackPressed();
         }
     }

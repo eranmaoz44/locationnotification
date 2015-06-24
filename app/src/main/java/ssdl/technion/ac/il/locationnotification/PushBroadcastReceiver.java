@@ -9,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -60,13 +61,20 @@ public class PushBroadcastReceiver extends ParsePushBroadcastReceiver {
                         builder.setSmallIcon(R.mipmap.ic_launcher)
                                 .setColor(Color.RED)
                                 .setContentTitle(j.get(Constants.SENDER_NAME_STRING) + " wants to remind you!")
-                                .setContentText("Click to view!")
+                                .setContentText(r.getTitle())
                                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setAutoCancel(true);
                         b = builder;
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
+                    try {
+                        Log.v("Facebook","j.get(Constants.SENDER_NAME_STRING)="+j.get(Constants.SENDER_NAME_STRING));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Log.v("Facebook","jSender="+jSender);
 
                     try {
                         URL url = new URL("https://graph.facebook.com/" + jSender + "/picture?type=small");
@@ -145,4 +153,24 @@ public class PushBroadcastReceiver extends ParsePushBroadcastReceiver {
         super.onReceive(context, intent);
         this.context=context;
     }
+
+//    (new AsyncTask<Void, Void, Bitmap>() {
+//        protected Bitmap doInBackground(Void... params) {
+//            try {
+//                URL url = new URL("https://graph.facebook.com/" + FacebookId + "/picture?type=small");
+//                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//                con.connect();
+//                return BitmapFactory.decodeStream(con.getInputStream());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//
+//    protected void onPostExecute(Bitmap bitmap) {
+//        bitmap.doSomething
+//    }
+//}).execute();
+
+
 }

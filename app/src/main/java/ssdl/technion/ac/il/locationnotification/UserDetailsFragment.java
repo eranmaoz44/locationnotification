@@ -266,7 +266,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                                         intent.setType("image/*");
 
                                         Intent chooser = Intent.createChooser(intent, "Choose a Picture");
-                                        getActivity().startActivityForResult(chooser, ACTION_REQUEST_GALLERY);
+                                        startActivityForResult(chooser, ACTION_REQUEST_GALLERY);
 
                                         break;
                                     case 1:
@@ -818,6 +818,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         editTextTitle.setText(reminder.getTitle());
         editDescription.setText(reminder.getMemo());
+        editTextTitle.setError(null);
         putCursorOnEnd(editTextTitle);
         putCursorOnEnd(editDescription);
 
@@ -844,6 +845,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             (new NameFetcher()).execute(loc);
         } else {
             mAutocompleteView.setText(getString(R.string.edit_user_pick_location));
+            mAutocompleteView.setError(null);
+
         }
         if (!reminder.getAlwaysOn()) {
             ((RadioButton) radioGroupRepeate.findViewById(R.id.radio_dates)).setChecked(true);
