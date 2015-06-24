@@ -66,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private DrawerFragment drawerFragment;
 //    private SelectReminderFragment selectReminderFragment;
     private UserDetailsFragment userDetailsFragment;
-    private GoogleApiClient mGoogleApiClient;
+    static GoogleApiClient mGoogleApiClient;
     private boolean isEmpty;
     Bundle savedInstanceState;
     private Reminder currReminder;
