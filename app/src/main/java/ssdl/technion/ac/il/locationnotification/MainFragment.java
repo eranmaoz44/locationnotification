@@ -1,10 +1,11 @@
-    package ssdl.technion.ac.il.locationnotification;
+package ssdl.technion.ac.il.locationnotification;
 
 
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,9 +32,17 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.facebook.AccessToken;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,24 +58,25 @@ import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
 import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 
 
-    public class MainFragment extends Fragment {
+public class MainFragment extends Fragment {
     private RecyclerView notificationList;
     private ViewAdapter adapter;
     List<Reminder> list;
     int lastPosChange;
-        View view;
+    View view;
     ScaleInAnimationAdapter animateAdater;
-        OnDataPass dataPasser;
-//        private UserDetailsFragment userDetailsFragment;
+    OnDataPass dataPasser;
+    //        private UserDetailsFragment userDetailsFragment;
 //        private SelectReminderFragment selectReminderFragment;
-        private Reminder currReminder;
-        private Fragment userDetailsFragment;
+    private Reminder currReminder;
+    private Fragment userDetailsFragment;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        userDetailsFragment = new UserDetailsFragment();
 //        selectReminderFragment= new SelectReminderFragment();
-        currReminder=null;
+        currReminder = null;
     }
 
     @Override
@@ -77,10 +87,10 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
         View layout = inflater.inflate(R.layout.fragment_main, container, false);
         notificationList = (RecyclerView) layout.findViewById(R.id.notification_list);
         list = getList();
-        lastPosChange=-1;
+        lastPosChange = -1;
         adapter = new ViewAdapter(getActivity(), list);
-        AlphaInAnimationAdapter alphaAdapter=new AlphaInAnimationAdapter(adapter);
-        animateAdater=new ScaleInAnimationAdapter(alphaAdapter);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
+        animateAdater = new ScaleInAnimationAdapter(alphaAdapter);
         alphaAdapter.setDuration(500);
         notificationList.setAdapter(animateAdater);
         //notificationList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -88,7 +98,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setTransition();
         }
-        view=layout;
+        view = layout;
         return layout;
     }
 
@@ -98,12 +108,12 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
         notificationList.setOnScrollListener(new HidingScrollListener() {
             @Override
             public void onHide() {
-                ((MainActivity)getActivity()).hideViews();
+                ((MainActivity) getActivity()).hideViews();
             }
 
             @Override
             public void onShow() {
-                ((MainActivity)getActivity()).showViews();
+                ((MainActivity) getActivity()).showViews();
             }
         });
         //((MainActivity)getActivity()).attachList(notificationList);
@@ -129,7 +139,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     }
 
     private List<Reminder> getList() {
-        SQLUtils sqlUtils=new SQLUtils(getActivity().getApplicationContext());
+        SQLUtils sqlUtils = new SQLUtils(getActivity().getApplicationContext());
         return sqlUtils.getReminderList();
     }
 
@@ -152,7 +162,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             View view;
             if (viewType == TYPE_ITEM) {
                 view = inflater.inflate(R.layout.info, viewGroup, false);
-            }else{
+            } else {
                 view = inflater.inflate(R.layout.info_header, viewGroup, false);
             }
             InfoViewHolder holder = new InfoViewHolder(view);
@@ -167,7 +177,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             File image = new File(curr.getImgPath());
             viewHolder.setReminder(curr);
             //TODO: delete 'if' after adding support to default image
-            if(image.exists()) {
+            if (image.exists()) {
 
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
 
@@ -187,12 +197,14 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             return list.size();
         }
 
-        public void updateItem(int i,Reminder reminder){
-            list.set(i,reminder);
+        public void updateItem(int i, Reminder reminder) {
+            list.set(i, reminder);
         }
-        public void setList(List<Reminder> list){
-            this.list=list;
+
+        public void setList(List<Reminder> list) {
+            this.list = list;
         }
+
         @Override
         public int getItemViewType(int position) {
             if (isPositionHeader(position)) {
@@ -203,7 +215,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 
         //added a method to check if given position is a header
         private boolean isPositionHeader(int position) {
-            return position == 0 || position==1;
+            return position == 0 || position == 1;
         }
 
 
@@ -214,6 +226,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
         TextView textView;
         ImageView imageView;
         Switch onOff;
+        ImageView ivShare;
         Reminder reminder;
 
         public InfoViewHolder(View itemView) {
@@ -222,39 +235,71 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             itemView.setOnLongClickListener(this);
             textView = (TextView) itemView.findViewById(R.id.info_text);
             imageView = (ImageView) itemView.findViewById(R.id.info_image);
-            onOff =(Switch)itemView.findViewById(R.id.s_on_off);
-            final InfoViewHolder temp=this;
-            imageView.setOnClickListener(new View.OnClickListener(){
+            onOff = (Switch) itemView.findViewById(R.id.s_on_off);
+            ivShare = (ImageView) itemView.findViewById(R.id.iv_share_icon);
+
+            ivShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog shareDialog = new Dialog(getActivity());
+                    shareDialog.setContentView(R.layout.popup_share);
+                    shareDialog.setTitle("Share to:");
+                    shareDialog.show();
+                    GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
+                        @Override
+                        public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
+                            shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
+                            try {
+                                ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getActivity().getApplicationContext(), jsonArray, reminder, shareDialog));
+                            } catch (FacebookException e) {
+                                shareDialog.dismiss();
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setMessage("Please connect to facebook first!");
+                                builder.setCancelable(true);
+                                builder.setPositiveButton("connect", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        MainActivity.connectToFacebook(getActivity());
+                                    }
+                                });
+                                builder.create().show();
+                            }
+                        }
+                    });
+                    request.executeAsync();
+                }
+            });
+            final InfoViewHolder temp = this;
+            imageView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), UserDetailsActivity.class);
                     int pos = temp.getPosition();
-                    Reminder r=list.get(pos);
+                    Reminder r = list.get(pos);
                     intent.putExtra(Constants.REMINDER_TAG, r);
 
 
-
-                    lastPosChange=pos;
-                    if(getResources().getBoolean(R.bool.is_tablet_landscape)){
-                        Log.v("MainFragmentReminder","onclick tablet landscape prevId="+ (null!=currReminder ? currReminder.getId() : "null") +" new id = "+r.getId() );
+                    lastPosChange = pos;
+                    if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
+                        Log.v("MainFragmentReminder", "onclick tablet landscape prevId=" + (null != currReminder ? currReminder.getId() : "null") + " new id = " + r.getId());
 //                        if(null==currReminder||!(currReminder.getId().equals(r.getId()))) {
 //                            Bundle bundle = new Bundle();
 //                            bundle.putParcelable(Constants.REMINDER_TAG, r);
 //                            userDetailsFragment= new UserDetailsFragment();
 //                            userDetailsFragment.setArguments(bundle);
 //                        )
-                            Log.v("fuck", "mudda fucka is in user main activity");
-                                dataPasser.onReminderPass(r);
+                        Log.v("fuck", "mudda fucka is in user main activity");
+                        dataPasser.onReminderPass(r);
 //                            getFragmentManager().beginTransaction().replace(R.id.details_container, userDetailsFragment).commit();
 //                        }
-                    }
-                    else if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        startTransition(intent,r);
-                    }else{
+                    } else if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        startTransition(intent, r);
+                    } else {
                         getActivity().startActivity(intent);
                     }
-                    currReminder=r;
+                    currReminder = r;
                 }
             });
 
@@ -262,18 +307,18 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     reminder.setOnOff(isChecked);
-                    SQLUtils sqlUtils=new SQLUtils(getActivity());
+                    SQLUtils sqlUtils = new SQLUtils(getActivity());
                     sqlUtils.updateData(reminder);
                 }
             });
             imageView.setOnLongClickListener(this);
         }
 
-        public void setReminder(Reminder reminder){
-            this.reminder=reminder;
+        public void setReminder(Reminder reminder) {
+            this.reminder = reminder;
         }
 
-        private void startTransition(Intent intent,Reminder r) {
+        private void startTransition(Intent intent, Reminder r) {
             transitionFromActivityToActivity(intent);
 
             // Create new fragment to add (Fragment B)
@@ -305,7 +350,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             Pair<View, String> p1 = Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME);
             Pair<View, String> p2 = Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME);
             Pair<View, String> p3 = Pair.create((View) imageView, "tran2");
-            Pair<View, String> p4 =Pair.create((View) textView, "tran3");
+            Pair<View, String> p4 = Pair.create((View) textView, "tran3");
             pairs.add(p1);
             pairs.add(p2);
             //  pairs.add(Pair.create(toolbar, "tran1"));
@@ -313,7 +358,7 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
             pairs.add(p4);
             // pairs.add(Pair.create(v.findViewById(R.id.card_info), "tran1"));
             ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(getActivity(),p1,p2,p3,p4);
+                    makeSceneTransitionAnimation(getActivity(), p1, p2, p3, p4);
             // Pair.create(v.findViewById(R.id.imageView), "tran2"));
 //            ActivityOptionsCompat options = ActivityOptionsCompat.
 //                    makeSceneTransitionAnimation(getActivity(),
@@ -324,12 +369,12 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
 
         @Override
         public boolean onLongClick(View v) {
-            Log.v("onLongClick","long clicked recycler view");
+            Log.v("onLongClick", "long clicked recycler view");
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             int pos = this.getPosition();
-            final Reminder r=list.get(pos);
+            final Reminder r = list.get(pos);
 
-            builder.setTitle(r.getTitle()+":");
+            builder.setTitle(r.getTitle() + ":");
             builder.setItems(new CharSequence[]{getActivity().getString(R.string.delete_reminder)},
                     new DialogInterface.OnClickListener() {
 
@@ -340,8 +385,8 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
                                     SQLUtils sqlUtils = new SQLUtils(getActivity());
                                     sqlUtils.deleteData(r.getId());
 //                                    if(null!=currReminder&&currReminder.getId().equals(r.getId())){
-                                        currReminder=null;
-                                        dataPasser.onReminderPass(null);
+                                    currReminder = null;
+                                    dataPasser.onReminderPass(null);
 //                                        getFragmentManager().beginTransaction().replace(R.id.details_container, selectReminderFragment).commit();
 //                                    }
                                     updateRecyclerView();
@@ -360,12 +405,12 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     public void onStart() {
         super.onStart();
 //        ((MainActivity)getActivity()).updateFragment();
-        list=getList();
+        list = getList();
         adapter.setList(list);
-        if(lastPosChange==-1) {
+        if (lastPosChange == -1) {
             adapter.notifyDataSetChanged();
             animateAdater.notifyDataSetChanged();
-        }else{
+        } else {
             adapter.notifyItemChanged(lastPosChange);
             animateAdater.notifyItemChanged(lastPosChange);
         }
@@ -385,28 +430,28 @@ import ssdl.technion.ac.il.locationnotification.utils_ui.HidingScrollListener;
     }
 
     private void updateRecyclerView() {
-       Log.v("ChangeFragments","UpdateRecycler ViEW");
+        Log.v("ChangeFragments", "UpdateRecycler ViEW");
 //        ((MainActivity)getActivity()).updateFragment();
-        list=getList();
+        list = getList();
         adapter.setList(list);
-        if(lastPosChange==-1) {
+        if (lastPosChange == -1) {
             adapter.notifyDataSetChanged();
             animateAdater.notifyDataSetChanged();
-        }else{
+        } else {
             adapter.notifyItemChanged(lastPosChange);
             animateAdater.notifyItemChanged(lastPosChange);
         }
     }
 
-        public interface OnDataPass {
-            public void onReminderPass(Reminder r);
-        }
+    public interface OnDataPass {
+        public void onReminderPass(Reminder r);
+    }
 
 
-        @Override
-        public void onAttach(Activity a) {
-            super.onAttach(a);
-            dataPasser = (OnDataPass) a;
-        }
+    @Override
+    public void onAttach(Activity a) {
+        super.onAttach(a);
+        dataPasser = (OnDataPass) a;
+    }
 
 }
