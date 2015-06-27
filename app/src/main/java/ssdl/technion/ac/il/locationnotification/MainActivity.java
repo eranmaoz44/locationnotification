@@ -2,6 +2,7 @@ package ssdl.technion.ac.il.locationnotification;
 
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -60,13 +61,14 @@ import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
 import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
 
+import static junit.framework.Assert.assertTrue;
 
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,MainFragment.OnDataPass,UserDetailsFragment.OnDataReceive {
     private static final String PREV_ORIENT_TAG ="prev.orient.tag" ;
     private static final String STARTED_ACTIVITIY_ON_CREATE_TAG = "started_activity_on_create_tag";
     private static final java.lang.String IN_EDIT_MODE = "in_edit_mode" ;
-    private static final int CREATE_REMINDER_TAG = 32013 ;
+    public static final int CREATE_REMINDER_TAG = 32013 ;
     private Toolbar toolbar;
     private FloatingActionButton fab;
     private DrawerFragment drawerFragment;
@@ -98,7 +100,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 if(!inEditMode ||!getResources().getBoolean(R.bool.is_tablet_landscape)) {
                     startAddReminder();
                 } else {
-                    fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
                     saveReminder();
                 }
             }
@@ -127,7 +128,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 startedActivityOnCreateFlag=true;
                 Intent intent = new Intent(this, UserDetailsActivity.class);
                 intent.putExtra(Constants.REMINDER_TAG, currReminder);
-                intent.putExtra(Constants.STARTED_FROM_TABLET_LAND_TAG,true);
+                intent.putExtra(Constants.STARTED_FROM_MAIN_ACTIVITY,true);
                 startActivityForResult(intent,CREATE_REMINDER_TAG);
             }
             prevOrientIsLand=false;
@@ -140,30 +141,46 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
         buildGoogleApiClient();
             setupDrawer();
-        if(null==savedInstanceState) {
-            Intent intent = new Intent(this, GeofencingService.class);
-            startService(intent);
-            if(ParseUser.getCurrentUser() == null)
-                connectToFacebook(this);
-        }
         fUserDetails = (UserDetailsFragment) getFragmentManager().findFragmentById(R.id.f_usersDetails);
         fMain=(MainFragment)getFragmentManager().findFragmentById(R.id.f_usersList);
-        if(inEditMode && getResources().getBoolean(R.bool.is_tablet_landscape)){
-            fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
+        if(null==savedInstanceState) {
+
+            if(ParseUser.getCurrentUser() == null)
+                connectToFacebook(this);
+
+
+            Log.v("MyTest","Checking whether service is running or not");
+            if(!isMyServiceRunning(GeofencingService.class)){
+                Log.v("MyTest","Geofencing service not running, starting it");
+                Intent intent = new Intent(this, GeofencingService.class);
+                startService(intent);
+            }
         } else {
-            fab.setImageResource(R.drawable.ic_add_white_24dp);
+            if(inEditMode && getResources().getBoolean(R.bool.is_tablet_landscape)){
+                editOn(currReminder);
+            } else {
+                editOff();
+            }
         }
+
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void saveReminder() {
         Reminder r=fUserDetails.saveReminder();
         if(null==r)
             return;
-        inEditMode=false;
-        currReminder=null;
         fMain.updateRecyclerView();
-        fUserDetails.setReminder(null);
-        fab.setImageResource(R.drawable.ic_add_white_24dp);
+        editOff();
         EditText etTitle = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
         InputMethodManager imm = (InputMethodManager)getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -299,18 +316,15 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private void startAddReminder() {
         Reminder r = createBlankReminder();
         if(getResources().getBoolean(R.bool.is_tablet_landscape)){
-            currReminder=r;
-            fUserDetails.setReminder(currReminder);
-            fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
-            inEditMode=true;
+            editOn(r);
         } else {
             startedActivityOnCreateFlag = false;
             Intent intent = new Intent(this, UserDetailsActivity.class);
             intent.putExtra(Constants.REMINDER_TAG, r);
-            intent.putExtra(Constants.STARTED_FROM_TABLET_LAND_TAG, false);
+            intent.putExtra(Constants.STARTED_FROM_MAIN_ACTIVITY, true);
             startActivityForResult(intent,CREATE_REMINDER_TAG);
-            inEditMode=false;
         }
+
 
     }
 
@@ -417,10 +431,27 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         switch(requestCode) {
             case CREATE_REMINDER_TAG:
 
-                if (getResources().getBoolean(R.bool.is_tablet_landscape)) {
-                    fUserDetails.setReminder(currReminder);
+                if (resultCode==RESULT_OK&&getResources().getBoolean(R.bool.is_tablet_landscape)) {
+                    boolean backPressed=data.getBooleanExtra(Constants.BACK_PRESSED_TAG,false);
+                    if(backPressed){
+                        editOff();
+                        break;
+                    }
+                    boolean saved=data.getBooleanExtra(Constants.REMINDER_SAVED_TAG,false);
+                    if(saved){
+                        editOff();
+                        break;
+                    }
+                    Reminder r=data.getParcelableExtra(Constants.REMINDER_TAG);
+                    if(null!=r) {
+                        fMain.setCurrReminder(r);
+                        editOn(r);
+                    }
                     return;
                 }
+                break;
+            default:
+
                 break;
         }
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
@@ -451,16 +482,13 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onReminderPass(Reminder r) {
-            currReminder = r;
         if(getResources().getBoolean(R.bool.is_tablet_landscape)) {
-            fUserDetails.setReminder(currReminder);
+
             showFab();
-            if(null!=currReminder) {
-                fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
-                inEditMode = true;
+            if(null!=r) {
+                editOn(r);
             } else {
-                fab.setImageResource(R.drawable.ic_add_white_24dp);
-                inEditMode = false;
+                editOff();
             }
         }
     }
@@ -479,14 +507,35 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         return currReminder;
     }
 
+    private void editOn(Reminder r){
+        assertTrue(null!=r);
+        currReminder=r;
+        if(getResources().getBoolean(R.bool.is_tablet_landscape)) {
+            fUserDetails.setReminder(currReminder);
+        }
+        fab.setImageResource(R.drawable.ic_check_circle_white_24dp);
+        inEditMode = true;
+    }
+
+    private void editOff(){
+        currReminder=null;
+        Log.v("ReminderEdit","fUserDetails==null ? "+ fUserDetails==null ? "yes"  : "no");
+        if(getResources().getBoolean(R.bool.is_tablet_landscape)) {
+            fUserDetails.setReminder(currReminder);
+        }
+
+        fab.setImageResource(R.drawable.ic_add_white_24dp);
+        inEditMode = false;
+    }
+
     @Override
     public void turnEditingOff() {
-        fab.setEnabled(false);
+
     }
 
     @Override
     public void turnEditingOn() {
-        fab.setEnabled(true);
+
     }
 
 }

@@ -135,8 +135,8 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
             markerToReminder.put(m, r);
             map.addCircle(new CircleOptions().center(loc)
                     .radius(r.getLocation().getRadius())//meters
-                    .strokeColor(Color.argb(255, 0, 153, 255))
-                    .fillColor(Color.argb(30, 0, 153, 255)).strokeWidth(2));
+                    .strokeColor(Color.argb(255, 0, 0, 255))
+                    .fillColor(Color.argb(30, 0, 0, 255)).strokeWidth(2));
             bounds.include(loc);
         }
         try {
@@ -170,8 +170,8 @@ public class ShowOnMapActivity extends Activity implements GoogleMap.OnMapLoaded
             int radius= Constants.RADIUS;
             map.addCircle(new CircleOptions().center(latLng)
                     .radius(radius)//meters
-                    .strokeColor(Color.GREEN)
-                    .fillColor(Color.GREEN).strokeWidth(2));
+                    .strokeColor(Color.argb(255,0,255,0))
+                    .fillColor(Color.argb(30,0,255,0)).strokeWidth(2));
             bounds.include(latLng);
         }
     }

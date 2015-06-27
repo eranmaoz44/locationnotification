@@ -147,6 +147,10 @@ public class MainFragment extends Fragment {
         return sqlUtils.getReminderList();
     }
 
+    public void setCurrReminder(Reminder r){
+        currReminder=r;
+
+    }
 
     public class ViewAdapter extends RecyclerView.Adapter<InfoViewHolder> {
         private final LayoutInflater inflater;
@@ -286,6 +290,7 @@ public class MainFragment extends Fragment {
                     int pos = temp.getPosition();
                     Reminder r = list.get(pos);
                     intent.putExtra(Constants.REMINDER_TAG, r);
+                    intent.putExtra(Constants.STARTED_FROM_MAIN_ACTIVITY, true);
 
                     dataPasser.onReminderPass(r);
                     lastPosChange = pos;
@@ -306,7 +311,7 @@ public class MainFragment extends Fragment {
                     } else if (isPortrate()) {
                         startTransition(intent, r);
                     } else {
-                        getActivity().startActivity(intent);
+                        getActivity().startActivityForResult(intent, MainActivity.CREATE_REMINDER_TAG);
                     }
                     currReminder = r;
                 }
@@ -318,6 +323,10 @@ public class MainFragment extends Fragment {
                     reminder.setOnOff(isChecked);
                     SQLUtils sqlUtils = new SQLUtils(getActivity());
                     sqlUtils.updateData(reminder);
+                    if(null!=currReminder&&reminder.getId().equals(currReminder.getId())){
+                        currReminder.setOnOff(isChecked);
+                        dataPasser.onReminderPass(currReminder);
+                    }
                 }
             });
             imageView.setOnLongClickListener(this);
@@ -377,8 +386,11 @@ public class MainFragment extends Fragment {
 //                    makeSceneTransitionAnimation(getActivity(),
 //                            Pair.create(v.findViewById(R.id.card_info), "tran1"),
 //                            Pair.create(v.findViewById(R.id.imageView), "tran2"));
-            getActivity().startActivity(intent, options.toBundle());
+
+            getActivity().startActivityForResult(intent, MainActivity.CREATE_REMINDER_TAG, options.toBundle());
         }
+
+
 
         @Override
         public boolean onLongClick(View v) {
@@ -445,6 +457,16 @@ public class MainFragment extends Fragment {
 
     public void updateRecyclerView() {
        Log.v("ChangeFragments","UpdateRecycler ViEW");
+        if(currReminder!=null&&currReminder.getId()!=Constants.NEW_REMINDER_ID){
+            List<Reminder> reminders=getList();
+            for(Reminder r : reminders){
+                if(r.getId().equals(currReminder.getId())){
+                    currReminder=r;
+                    dataPasser.onReminderPass(currReminder);
+                    break;
+                }
+            }
+        }
 //        ((MainActivity)getActivity()).updateFragment();
         list=getList();
         if(list.size()==0){

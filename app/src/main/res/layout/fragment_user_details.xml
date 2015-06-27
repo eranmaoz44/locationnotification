@@ -1,37 +1,41 @@
+<ViewSwitcher
+    android:id="@+id/view_switcher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:id="@+id/lr_no_reminder_selected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+            android:id="@+id/no_reminder_selected"
+            android:text="@string/no_reminder_selected"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/lr_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 <ssdl.technion.ac.il.locationnotification.utils_ui.ScrollViewHelper xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollViewHelper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="?attr/actionBarSize"
     android:fillViewport="false"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="ssdl.technion.ac.il.locationnotification.UserDetailsFragment">
 
-    <ViewSwitcher
-        android:id="@+id/view_switcher"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/lr_no_reminder_selected"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center">
 
-        <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-            android:id="@+id/no_reminder_selected"
-            android:text="@string/no_reminder_selected"
-            android:layout_gravity="center"
-            android:textSize="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
-        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/lr_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+
 
     <android.support.v7.widget.CardView
         android:id="@+id/card"
@@ -167,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radio_repeat"
                     android:text="@string/edit_user_start"
-                    android:paddingRight="@dimen/datesPadding"/>
+                    android:layout_marginRight="@dimen/dates_margin"/>
 
                 <TextView
                     android:id="@+id/date1"
@@ -175,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radio_repeat"
                     android:layout_toEndOf="@+id/start"
-                    android:paddingRight="@dimen/datesPadding"
+                    android:layout_marginRight="@dimen/dates_margin"
                     android:layout_toRightOf="@+id/start" />
 
                 <ImageButton
@@ -188,19 +192,19 @@
                     android:background="#00000000"
                     android:enabled="false"
                     android:src="@drawable/calender_icon"
-                    android:paddingRight="@dimen/datesPadding"/>
+                    android:layout_marginRight="@dimen/dates_margin"/>
+
 
                 <TextView
                     android:id="@+id/dash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radio_repeat"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
+
                     android:layout_toEndOf="@+id/btn_date1"
                     android:layout_toRightOf="@+id/btn_date1"
                     android:text="@string/edit_dash"
-                    android:paddingRight="@dimen/datesPadding"/>
+                    android:layout_marginRight="@dimen/dates_margin"/>
 
                 <TextView
                     android:id="@+id/end"
@@ -210,7 +214,7 @@
                     android:layout_toEndOf="@+id/dash"
                     android:layout_toRightOf="@+id/dash"
                     android:text="@string/edit_user_end"
-                    android:paddingRight="@dimen/datesPadding"/>
+                    android:layout_marginRight="@dimen/dates_margin"/>
 
                 <TextView
                     android:id="@+id/date2"
@@ -221,7 +225,7 @@
                     android:layout_below="@+id/radio_repeat"
                     android:layout_toEndOf="@+id/end"
                     android:layout_toRightOf="@+id/end"
-                    android:paddingRight="@dimen/datesPadding"
+                    android:layout_marginRight="@dimen/dates_margin"
 
                     />
 
@@ -235,7 +239,9 @@
                     android:layout_alignTop="@+id/date2"
                     android:layout_toRightOf="@+id/date2"
                     android:layout_toEndOf="@+id/date2"
-                    android:paddingRight="@dimen/datesPadding"/>
+                    android:layout_marginRight="@dimen/dates_margin"/>
+
+
 
 
                 <TextView
@@ -311,8 +317,10 @@
             </RelativeLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
-        </LinearLayout>
-    </ViewSwitcher>
+
+
 
 
 </ssdl.technion.ac.il.locationnotification.utils_ui.ScrollViewHelper>
+    </LinearLayout>
+</ViewSwitcher>

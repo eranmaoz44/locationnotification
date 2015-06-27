@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,7 +54,7 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
 
     ColorDrawable cd;
     private Reminder reminder;
-    private boolean startedFromTabletLandTag;
+    private boolean startedFromMainActivity;
     private UserDetailsFragment fUserDetails;
 
     @Override
@@ -64,12 +65,12 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
 
 
         if(null!=savedInstanceState){
-            startedFromTabletLandTag=savedInstanceState.getBoolean(Constants.STARTED_FROM_TABLET_LAND_TAG);
+            startedFromMainActivity=savedInstanceState.getBoolean(Constants.STARTED_FROM_MAIN_ACTIVITY);
         } else {
-            startedFromTabletLandTag=getIntent().getBooleanExtra(Constants.STARTED_FROM_TABLET_LAND_TAG,false);
+            startedFromMainActivity=getIntent().getBooleanExtra(Constants.STARTED_FROM_MAIN_ACTIVITY,false);
         }
 
-        Log.v("UserDetailsOnCreate","startedFromTabletLandTag="+startedFromTabletLandTag);
+        Log.v("UserDetailsOnCreate","startedFromMainActivity="+startedFromMainActivity);
 
 
 
@@ -134,9 +135,10 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                 sqlUtils.deleteData(reminder.getId());
             Intent resultIntent = new Intent();
             resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,true);
+            resultIntent.putExtra(Constants.REMINDER_SAVED_TAG,false);
             resultIntent.putExtra(Constants.REMINDER_TAG,reminder);
             setResult(Activity.RESULT_OK, resultIntent);
-            onBackPressed();
+            super.onBackPressed();
             return true;
             case R.id.action_save:
                 saveReminder();
@@ -181,12 +183,17 @@ private void saveReminder() {
         Reminder r=fUserDetails.saveReminder();
         if(null==r)
             return;
+        EditText etTitle = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etTitle.getWindowToken(), 0);
         Intent resultIntent = new Intent();
         resultIntent.putExtra(Constants.REMINDER_DELETED_TAG,false);
         resultIntent.putExtra(Constants.REMINDER_ADDED_TAG,true);
+        resultIntent.putExtra(Constants.REMINDER_SAVED_TAG,true);
         resultIntent.putExtra(Constants.REMINDER_TAG,reminder);
         setResult(Activity.RESULT_OK, resultIntent);
-        onBackPressed();
+        super.onBackPressed();
     }
 
     public void setToolBarAlpha(int alpha) {
@@ -225,14 +232,30 @@ private void saveReminder() {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(Constants.STARTED_FROM_TABLET_LAND_TAG,startedFromTabletLandTag);
+        outState.putBoolean(Constants.STARTED_FROM_MAIN_ACTIVITY,startedFromMainActivity);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if(getResources().getBoolean(R.bool.is_tablet_landscape) ){
-            onBackPressed();
+        if(getResources().getBoolean(R.bool.is_tablet_landscape) && startedFromMainActivity){
+            EditText etTitle = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
+            InputMethodManager imm = (InputMethodManager)getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(etTitle.getWindowToken(), 0);
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(Constants.REMINDER_TAG,reminder);
+            resultIntent.putExtra(Constants.REMINDER_SAVED_TAG,false);
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish(); // here it doesnt know how to do proper animation
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(Constants.BACK_PRESSED_TAG,true);
+        setResult(Activity.RESULT_OK, resultIntent);
     }
 }

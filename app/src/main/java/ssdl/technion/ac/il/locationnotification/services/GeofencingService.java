@@ -22,6 +22,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.MainActivity;
@@ -45,13 +47,18 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
 
     private boolean startedGpsTracking;
 
+    private Map<String,Long> lastTimeNotified;
+    private int stillCounter;
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.v("MyTest", "onCreate service");
+        lastTimeNotified= new HashMap<>();
+        sqlUtils = new SQLUtils(this);
         buildGoogleApiClient();
         mGoogleApiClient.connect();
-        sqlUtils = new SQLUtils(this);
+        Log.v("MyTest","Geofencing service onCreate");
     }
 
 
@@ -71,9 +78,9 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
     @Override
     public void onConnected(Bundle bundle) {
 
-        Log.v("MyTest", "service onConnected");
+        Log.v("MyTest", "geofencing service onConnected");
 
-        geofencingUtils = new GeofencingUtils(this, mGoogleApiClient);
+//        geofencingUtils = new GeofencingUtils(this, mGoogleApiClient);
         startGeofencing();
 
     }
@@ -91,45 +98,53 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
     }
 
     protected LocationRequest createLocationRequest(Location currLocation) {
-        Log.v("MyTest", "createLocationRequest lastLocationAccuracy=" + (lastLocation != null ? lastLocation.getAccuracy() : "nul") + "currLocationAccuracy=" + (currLocation != null ? currLocation.getAccuracy() : "nul"));
+//        Log.v("MyTest", "createLocationRequest lastLocationAccuracy=" + (lastLocation != null ? lastLocation.getAccuracy() : "nul") + "currLocationAccuracy=" + (currLocation != null ? currLocation.getAccuracy() : "nul"));
+//
+//        if (null == lastLocation || null == currLocation || lastLocation.getAccuracy() > Constants.ACCEPTABLE_ACCURAY || currLocation.getAccuracy() > Constants.ACCEPTABLE_ACCURAY) { // system not stable yet,
+//            return null;
+//        }
+//
+//        float distance = lastLocation.distanceTo(currLocation);
+//        Log.v("MyTest", "distance=" + distance);
+//        if (distance < Constants.MIN_DISTANCE_BETWEEN_UPDATES) {
+//            return null;
+//        }
+//
+//        lastLocation = currLocation;
+//
+//        long currTime = System.currentTimeMillis();
+//        long difference = currTime - lastUpdateTime;
+//        Log.v("MyTest", "difference=" + difference);
+//        if (difference < lastInterval) {
+//            return null;
+//        }
+//        lastUpdateTime = currTime;
+//
+//
+//        float closestDistance = getClosestDistance(currLocation);
+//        if (-1.0 == closestDistance) {
+//            return null;
+//        }
+//
+//        int waitingInterval = distanceToWaitingInterval(closestDistance);
+//        lastInterval = waitingInterval;
+//
+//        Log.v("MyTest", "closestDistance=" + closestDistance + " waitingInterval=" + waitingInterval);
+//
+//        Log.v("LocationUpdates", "waitingInterval=" + waitingInterval);
 
-        if (null == lastLocation || null == currLocation || lastLocation.getAccuracy() > Constants.ACCEPTABLE_ACCURAY || currLocation.getAccuracy() > Constants.ACCEPTABLE_ACCURAY) { // system not stable yet,
+        if(currLocation==null){
             return null;
         }
-
-        float distance = lastLocation.distanceTo(currLocation);
-        Log.v("MyTest", "distance=" + distance);
-        if (distance < Constants.MIN_DISTANCE_BETWEEN_UPDATES) {
-            return null;
-        }
-
-        lastLocation = currLocation;
-
-        long currTime = System.currentTimeMillis();
-        long difference = currTime - lastUpdateTime;
-        Log.v("MyTest", "difference=" + difference);
-        if (difference < lastInterval) {
-            return null;
-        }
-        lastUpdateTime = currTime;
-
-
-        float closestDistance = getClosestDistance(currLocation);
-        if (-1.0 == closestDistance) {
-            return null;
-        }
-
-        int waitingInterval = distanceToWaitingInterval(closestDistance);
-        lastInterval = waitingInterval;
-
-        Log.v("MyTest", "closestDistance=" + closestDistance + " waitingInterval=" + waitingInterval);
-
-        Log.v("LocationUpdates", "waitingInterval=" + waitingInterval);
-
+        float minDistance= getClosestDistance(currLocation);
+        Log.v("MyTest","minDist="+minDistance);
+        int interval=distanceToWaitingInterval(minDistance);
+        Log.v("MyTest","interval="+interval);
         LocationRequest request = new LocationRequest();
-        request.setInterval(lastInterval);
-        request.setSmallestDisplacement(Constants.MIN_DISTANCE_BETWEEN_UPDATES);
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setFastestInterval(Constants.FASTEST_INTERVAL);
+        request.setInterval(interval);
+//        request.setSmallestDisplacement(Constants.MIN_DISTANCE_BETWEEN_UPDATES);
+        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         return request;
     }
 
@@ -142,6 +157,7 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
     @Override
     public void onDestroy() {
         Log.v("MyTest", "Service Destroyed");
+        mGoogleApiClient.disconnect();
         super.onDestroy();
     }
 
@@ -194,49 +210,97 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
     }
 
     private int distanceToWaitingInterval(float closestDistance) {
-        if (closestDistance < 0) {
-            return 10 * 60;
-        }
-        float distanceInKm = closestDistance / 1000;
-        int waitingInterval;
-        if (distanceInKm > 100) {
-            waitingInterval = 10 * 60;
-        } else if (distanceInKm > 10) {
-            waitingInterval = 2 * 60;
-        } else if (distanceInKm > 5) {
-            waitingInterval = 1 * 60;
-        } else if (distanceInKm > 1) {
-            waitingInterval = 30;
-        } else if (distanceInKm > 0.5) {
-            waitingInterval = 10;
-        } else {
-            waitingInterval = 2;
-        }
-        return waitingInterval * 1000;
+////        final static
+//        if (closestDistance < 0) {
+//            return 10 * 60;
+//        }
+//        float distanceInKm = closestDistance / 1000;
+//        int waitingInterval;
+//        if (distanceInKm > 100) {
+//            waitingInterval = 10 * 60;
+//        } else if (distanceInKm > 10) {
+//            waitingInterval = 2 * 60;
+//        } else if (distanceInKm > 5) {
+//            waitingInterval = 1 * 60;
+//        } else if (distanceInKm > 1) {
+//            waitingInterval = 30;
+//        } else if (distanceInKm > 0.5) {
+//            waitingInterval = 10;
+//        } else {
+//            waitingInterval = 2;
+//        }
+//        return waitingInterval * 1000;
+        return Math.max(Math.round(closestDistance/Constants.WAITING_PER_DISTANCE*1000),Constants.FASTEST_INTERVAL);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        if (null == lastLocation && null != location && location.getAccuracy() <= Constants.ACCEPTABLE_ACCURAY) {
-            lastLocation = location;
+        Log.v("MyTest","location changed");
+        if ( null == location || location.getAccuracy() > Constants.ACCEPTABLE_ACCURAY) {
+            Log.v("MyTest","unacceptable location");
+            return;
         }
-        Log.v("MyTest", "locationChanged");
-        if (location != null && location.getAccuracy() <= Constants.ACCEPTABLE_ACCURAY && lastLocation != null) {
-            Log.v("MyTest", "entered condition checking whether to send notificatios");
-//            geofencingUtils.updateGeofences(location);
-            for (Reminder r : sqlUtils.getReminderList()) {
-                Log.v("MyTest", "trying to send not to" + r.getTitle());
-                MyLocation rLoc = r.getLocation();
-                int rRadius = rLoc.getRadius();
-                Log.v("MyTest", "distance between curr loc=" + getDistance(location, rLoc));
-                Log.v("MyTest", "distance between last loc=" + getDistance(lastLocation, rLoc));
-                if (r.isActive() && getDistance(location, rLoc) <= rRadius && getDistance(lastLocation, rLoc) >= rRadius) {
-                    Log.v("MyTest", "sending not to" + r.getTitle());
-                    sendNotification(r);
-                }
+
+        if(null==lastLocation){
+            Log.v("MyTest","lastLocation not stable yet");
+            lastLocation=location;
+            return;
+        }
+        if(location.distanceTo(lastLocation)<=Constants.MIN_DISTANCE_BETWEEN_UPDATES){
+            Log.v("MyTest","location received not far enough . stillCounter= "+stillCounter);
+            if(stillCounter>=0 &&stillCounter <=Constants.NOTIFIABLE_STILL_COUNT){
+                notify(location);
             }
+            stillCounter++;
+            return;
         }
+        stillCounter=0;
+        Log.v("MyTest", "location accepted, checking for reminders");
+//        if (location != null && location.getAccuracy() <= Constants.ACCEPTABLE_ACCURAY && lastLocation != null) {
+//            Log.v("MyTest", "entered condition checking whether to send notificatios");
+//            geofencingUtils.updateGeofences(location);
+        notify(location);
+        lastLocation=location;
         updateGpsSamplingRate(location);
+    }
+
+    private void notify(Location location) {
+        long currTime=System.currentTimeMillis();
+        float distBetweenUpdates=location.distanceTo(lastLocation);
+        for (Reminder r : sqlUtils.getReminderList()) {
+            Log.v("MyTest", "trying to send not to" + r.getTitle());
+//                if(null==lastNotified){
+//                    lastNotified=currTime;
+//                    lastTimeNotified.put(r.getId(),lastNotified);
+//                    continue;
+//                }
+            if(!r.isActive()){
+                Log.v("MyTest", "not active");
+                continue;
+            }
+            Long lastNotified=lastTimeNotified.get(r.getId());
+    Log.v("MyTest","currTime="+currTime);
+            Log.v("MyTest","lastNotified="+(lastNotified==null ? "null" : lastNotified));
+            if(lastNotified!=null&&(currTime-lastNotified)<= Constants.MINIMUM_NOTIFICATION_INTERVAL){
+                Log.v("MyTest", "notified recently");
+                continue;
+            }
+            MyLocation rLoc = r.getLocation();
+            int rRadius = rLoc.getRadius();
+            float distToCurrLoc= getDistance(location,rLoc);
+            float distToLastLoc=getDistance(lastLocation,rLoc);
+            Log.v("MyTest","rRadius="+rRadius);
+    Log.v("MyTest","distBetweenUpdates="+distBetweenUpdates);
+            Log.v("MyTest", "distance between curr loc=" + distToCurrLoc);
+            Log.v("MyTest", "distance between last loc=" + distToLastLoc);
+            if (distToCurrLoc<=rRadius ||
+                    (distToCurrLoc<=distBetweenUpdates&&distToLastLoc<=distBetweenUpdates)) {
+                lastTimeNotified.put(r.getId(),currTime);
+                Log.v("MyTest", "sending not to" + r.getTitle());
+                sendNotification(r);
+            }
+//            }
+    }
     }
 
     private float getDistance(Location l, MyLocation m) {
@@ -307,7 +371,7 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
         float minDistance = -1;
         for (Reminder r : sqlUtils.getReminderList()) {
             if (!r.isActive()) {
-                Log.v("MyTest", r.toString());
+//                Log.v("MyTest", r.toString());
                 continue;
             }
             Location loc = new Location("");
@@ -323,9 +387,10 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
 
     void startGeofencing() {
         Log.v("MyTest", "startGeofencing");
-        lastInterval = 0;
-        lastUpdateTime = System.currentTimeMillis();
+//        lastInterval = 0;
+//        lastUpdateTime = System.currentTimeMillis();
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        stillCounter=0;
         startGpsSampling();
 //        geofencingUtils.updateGeofences(lastLocation);
 //        startingLocation
@@ -334,9 +399,9 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
     private void startGpsSampling() {
         Log.v("MyTest", "startGpsSamling()");
         LocationRequest request = new LocationRequest();
-        request.setInterval(2000);
-        request.setSmallestDisplacement(Constants.MIN_DISTANCE_BETWEEN_UPDATES);
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setFastestInterval(Constants.FASTEST_INTERVAL);
+        request.setInterval(Constants.DEFAULT_INTERVAL);
+        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, this);
     }
 }
