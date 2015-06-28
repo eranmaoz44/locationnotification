@@ -56,7 +56,7 @@
                 android:layout_marginBottom="@dimen/edit_componets_margin">
             <ImageView
                 android:id="@+id/img_edit_image"
-
+                android:clickable="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -68,6 +68,7 @@
 
 
                 <com.pkmmte.view.CircularImageView
+                    android:visibility="invisible"
                     android:layout_gravity="bottom|left"
                     android:id="@+id/image_profile"
                     android:layout_centerVertical="true"

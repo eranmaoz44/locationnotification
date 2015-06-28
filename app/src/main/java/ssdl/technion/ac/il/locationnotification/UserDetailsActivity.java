@@ -33,6 +33,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultBus;
 import com.inthecheesefactory.thecheeselibrary.fragment.bus.ActivityResultEvent;
+import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
@@ -48,7 +49,7 @@ import ssdl.technion.ac.il.locationnotification.utilities.SQLUtils;
 public class UserDetailsActivity extends ActionBarActivity implements UserDetailsFragment.OnDataReceive {
     private Toolbar toolBar;
     private ImageView iv;
-
+    private FloatingActionButton fab;
     private MenuItem menuSave;
 
 
@@ -62,7 +63,7 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
 
-
+        setupFab();
 
         if(null!=savedInstanceState){
             startedFromMainActivity=savedInstanceState.getBoolean(Constants.STARTED_FROM_MAIN_ACTIVITY);
@@ -93,6 +94,9 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
 
         //toolBar.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));
         setSupportActionBar(toolBar);
+
+        //getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //getWindow().setStatusBarColor(getResources().getColor(R.color.background_floating_material_dark));
             postponeEnterTransition();
@@ -108,6 +112,16 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
         }
         fUserDetails= (UserDetailsFragment) getFragmentManager().findFragmentById(R.id.f_usersDetails);
 
+    }
+
+    private void setupFab() {
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveReminder();
+            }
+        });
     }
 
 //    public Reminder getReminder() {
@@ -175,6 +189,8 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                     }
                 });
                 request.executeAsync();
+            case android.R.id.home:
+                onBackPressed();
             default:
                 return super.onOptionsItemSelected(item);
         }
