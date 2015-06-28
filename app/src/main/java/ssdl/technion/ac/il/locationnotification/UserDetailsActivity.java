@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -95,7 +96,7 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
         //toolBar.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));
         setSupportActionBar(toolBar);
 
-        //getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //getWindow().setStatusBarColor(getResources().getColor(R.color.background_floating_material_dark));
@@ -189,8 +190,9 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                     }
                 });
                 request.executeAsync();
-            case android.R.id.home:
-                onBackPressed();
+//            case android.R.id.home:
+//                NavUtils.navigateUpFromSameTask(this);
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

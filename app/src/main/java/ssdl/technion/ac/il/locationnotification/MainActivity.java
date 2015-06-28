@@ -250,6 +250,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     protected void onStart() {
         super.onStart();
+        showViews();
         mGoogleApiClient.connect();
     }
 
