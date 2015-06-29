@@ -891,9 +891,11 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         senderImage.setVisibility(View.INVISIBLE);
 
         if (reminder == null) {
+            Log.v("NewRotateSaveBug","displaying child 0");
             viewSwitcher.setDisplayedChild(0);
             return;
         } else {
+            Log.v("NewRotateSaveBug","displaying child 1");
             viewSwitcher.setDisplayedChild(1);
 
         }

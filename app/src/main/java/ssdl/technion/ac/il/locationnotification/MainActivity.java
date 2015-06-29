@@ -69,6 +69,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     private static final String STARTED_ACTIVITIY_ON_CREATE_TAG = "started_activity_on_create_tag";
     private static final java.lang.String IN_EDIT_MODE = "in_edit_mode" ;
     public static final int CREATE_REMINDER_TAG = 32013 ;
+    private static final int EXTRA_ACTIVITY_TAG = 36669;
     private Toolbar toolbar;
     private FloatingActionButton fab;
     private DrawerFragment drawerFragment;
@@ -177,6 +178,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void saveReminder() {
         Reminder r=fUserDetails.saveReminder();
+        Log.v("NewRotateSaveBug","r= "+r);
         if(null==r)
             return;
         fMain.updateRecyclerView();
@@ -296,7 +298,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 startAddReminder();
                 break;
             case R.id.search_button:
-                startActivity(new Intent(this, SearchActivity.class));
+                startActivityForResult(new Intent(this, SearchActivity.class),EXTRA_ACTIVITY_TAG);
                 break;
             case R.id.action_show_on_map:
                 Location location = null;
@@ -305,7 +307,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 }
                 Intent intent = new Intent(this, ShowOnMapActivity.class);
                 intent.putExtra(Constants.LOCATION_TAG, location);
-                startActivity(intent);
+                startActivityForResult(intent, EXTRA_ACTIVITY_TAG);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -451,6 +453,18 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                     return;
                 }
                 break;
+            case EXTRA_ACTIVITY_TAG:
+                if(currReminder!=null && getResources().getBoolean(R.bool.is_tablet_landscape)){
+                    List<Reminder> reminders=getList();
+                    for(Reminder r : reminders){
+                        if(r.getId().equals(currReminder.getId())){
+                            currReminder=r;
+                            fUserDetails.setReminder(currReminder);
+                            break;
+                        }
+                    }
+                }
+                break;
             default:
 
                 break;
@@ -520,8 +534,10 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void editOff(Reminder r){
         currReminder=r;
+        Log.v("NewRotateSaveBug","currReminder= "+currReminder);
         Log.v("ReminderEdit","fUserDetails==null ? "+ fUserDetails==null ? "yes"  : "no");
         if(getResources().getBoolean(R.bool.is_tablet_landscape)) {
+            Log.v("NewRotateSaveBug","is tablet landspace= ");
             fUserDetails.setReminder(currReminder);
         }
 

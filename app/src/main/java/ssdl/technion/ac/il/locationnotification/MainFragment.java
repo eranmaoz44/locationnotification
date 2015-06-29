@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -317,14 +318,15 @@ public class MainFragment extends Fragment {
                 }
             });
 
-            onOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            onOff.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    reminder.setOnOff(isChecked);
+                public void onClick(View v) {
+                    boolean checked = ((Switch)v).isChecked();
+                    reminder.setOnOff(checked);
                     SQLUtils sqlUtils = new SQLUtils(getActivity());
                     sqlUtils.updateData(reminder);
                     if(null!=currReminder&&reminder.getId().equals(currReminder.getId())){
-                        currReminder.setOnOff(isChecked);
+                        currReminder.setOnOff(checked);
                         dataPasser.onReminderPass(currReminder);
                     }
                 }
@@ -467,7 +469,7 @@ public class MainFragment extends Fragment {
             for(Reminder r : reminders){
                 if(r.getId().equals(currReminder.getId())){
                     currReminder=r;
-                    dataPasser.onReminderPass(currReminder);
+//                    dataPasser.onReminderPass(currReminder);
                     break;
                 }
             }

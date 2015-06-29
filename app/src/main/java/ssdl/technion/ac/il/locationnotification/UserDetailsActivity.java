@@ -213,7 +213,7 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                 InputMethodManager imm2 = (InputMethodManager)getSystemService(
                         Context.INPUT_METHOD_SERVICE);
                 imm2.hideSoftInputFromWindow(etTitle2.getWindowToken(), 0);
-                onBackPressed();
+                super.onBackPressed();
             default:
                 return super.onOptionsItemSelected(item);
         }

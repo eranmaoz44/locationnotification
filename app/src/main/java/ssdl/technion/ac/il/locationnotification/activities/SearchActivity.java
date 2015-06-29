@@ -211,4 +211,11 @@ public class SearchActivity extends ActionBarActivity implements TextWatcher, Vi
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent resultIntent = new Intent();
+        setResult(Activity.RESULT_OK, resultIntent);
+    }
 }
