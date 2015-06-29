@@ -111,6 +111,10 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
             });
         }
         fUserDetails= (UserDetailsFragment) getFragmentManager().findFragmentById(R.id.f_usersDetails);
+        EditText etTitle = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etTitle.getWindowToken(), 0);
 
     }
 
@@ -138,6 +142,13 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menuSave=menu.findItem(R.id.action_save);
+        Log.v("ViewMode","menuSave = "+menuSave);
+        Log.v("ViewMode","reminder.getSenderId() = " + reminder.getSenderId());
+        if(!reminder.getSenderId().equals("null")){
+            Log.v("ViewMode","entered if");
+            menuSave.setVisible(false);
+            fab.setVisibility(View.INVISIBLE);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -231,15 +242,16 @@ private void saveReminder() {
 
     @Override
     public void turnEditingOff() {
-        if(null!=menuSave)
-            menuSave.setVisible(false);
+//        if(null!=menuSave) {
+//            menuSave.setVisible(false);
+//        }
 
     }
 
     @Override
     public void turnEditingOn() {
-        if(null!=menuSave)
-            menuSave.setVisible(true);
+//        if(null!=menuSave)
+//            menuSave.setVisible(true);
     }
 
     @Override

@@ -52,8 +52,7 @@
             android:name=".UserDetailsActivity"
             android:exported="true"
             android:label="@string/title_activity_user_details"
-            android:windowSoftInputMode="stateHidden"
-            android:configChanges="orientation|keyboardHidden|screenSize"></activity>
+            android:configChanges="orientation|screenSize"></activity>
         <activity
             android:name=".activities.SearchActivity"
             android:label="@string/title_activity_search"

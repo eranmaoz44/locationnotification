@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -126,6 +127,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
     private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
+    private AsyncTask<Reminder, Void, Void> imageFetcherTask;
+    private AsyncTask<MyLocation, Void, String> nameFetcherTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -216,7 +219,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         //textViewDate2.setOnClickListener(dateDialogHelper2);
 
         ivPlacePicker = (ImageView) view.findViewById(R.id.iv_location_ic);
-        if(editable)
             ivPlacePicker.setOnClickListener(new PlacePickerListener());
 
 
@@ -251,43 +253,44 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     }
 
     private void setImageUpload() {
-        if(editable)
-        imageOfReminder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Choose Image Source");
-                builder.setItems(new CharSequence[]{"Gallery", "Remove image"},
-                        new DialogInterface.OnClickListener() {
+        imageOfReminder.setOnClickListener(new ImageClickListener());
 
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
+    }
 
-                                        // GET IMAGE FROM THE GALLERY
-                                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                        intent.setType("image/*");
+    private class ImageClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Choose Image Source");
+            builder.setItems(new CharSequence[]{"Gallery", "Remove image"},
+                    new DialogInterface.OnClickListener() {
 
-                                        Intent chooser = Intent.createChooser(intent, "Choose a Picture");
-                                        startActivityForResult(chooser, ACTION_REQUEST_GALLERY);
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
 
-                                        break;
-                                    case 1:
-                                        if (null == reminder) {
-                                            return;
-                                        }
-                                        reminder.setImgPath("Drawable/");
-                                        imageOfReminder.setImageResource(R.drawable.image_3);
-                                    default:
-                                        break;
-                                }
+                                    // GET IMAGE FROM THE GALLERY
+                                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                    intent.setType("image/*");
+
+                                    Intent chooser = Intent.createChooser(intent, "Choose a Picture");
+                                    startActivityForResult(chooser, ACTION_REQUEST_GALLERY);
+
+                                    break;
+                                case 1:
+                                    if (null == reminder) {
+                                        return;
+                                    }
+                                    reminder.setImgPath("Drawable/");
+                                    imageOfReminder.setImageResource(R.drawable.image_3);
+                                default:
+                                    break;
                             }
-                        });
-                builder.show();
-            }
-        });
-
+                        }
+                    });
+            builder.show();
+        }
     }
 
     private void setDateButtons(View view) {
@@ -400,9 +403,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
 
         // TODO(Developer): Check error code and notify the user of error state and resolution.
-        Toast.makeText(getActivity(),
-                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(),
+//                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+//                Toast.LENGTH_SHORT).show();
     }
 
     private class DateDialogHelper implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
@@ -537,7 +540,10 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                     Place place = PlacePicker.getPlace(data, getActivity());
                     MyLocation myLocation = new MyLocation(place.getLatLng().latitude, place.getLatLng().longitude, Constants.RADIUS);
                     reminder.setLocation(myLocation);
-                    (new NameFetcher()).execute(myLocation);
+                    if(nameFetcherTask!=null){
+                        nameFetcherTask.cancel(true);
+                    }
+                    nameFetcherTask=(new NameFetcher()).execute(myLocation);
 
 //                    String toastMsg = String.format("Place: %s", place.getName());
 //                    Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_LONG).show();
@@ -566,6 +572,10 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             }
             geocoder = new Geocoder(UserDetailsFragment.this.getActivity().getApplicationContext(), Locale.getDefault());
 
+            if(isCancelled()){
+                return latLngStr;
+            }
+
             try {
                 addresses = geocoder.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             } catch (IOException e) {
@@ -582,6 +592,10 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             //TODO: get location name some how, like "Nola pub" instead of "Hankin 32" etc..
             String name = null;
             String address = addr.getAddressLine(0);
+
+            if(isCancelled()){
+                return latLngStr;
+            }
             if (null != name) {
                 return name;
             } else if (null != address) {
@@ -709,20 +723,32 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         if (null == reminder) {
             return;
         }
-        onOffSwitch.setEnabled(false);
-        imageOfReminder.setOnClickListener(null);
+        imageOfReminder.setEnabled(false);
         editTextTitle.setEnabled(false);
         for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
             radioGroupRepeate.getChildAt(i).setEnabled(false);
         }
         buttonDate1.setEnabled(false);
         buttonDate2.setEnabled(false);
-        textViewDate1.setOnClickListener(null);
-        textViewDate2.setOnClickListener(null);
         mAutocompleteView.setEnabled(false);
-        ivPlacePicker.setOnClickListener(null);
+        ivPlacePicker.setEnabled(false);
         editDescription.setEnabled(false);
-        dataPasser.turnEditingOff();
+    }
+
+    private void transformIntoEditMode() {
+        if (null == reminder) {
+            return;
+        }
+        imageOfReminder.setEnabled(true);
+        editTextTitle.setEnabled(true);
+        for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
+            radioGroupRepeate.getChildAt(i).setEnabled(true);
+        }
+        buttonDate1.setEnabled(true);
+        buttonDate2.setEnabled(true);
+        mAutocompleteView.setEnabled(true);
+        ivPlacePicker.setEnabled(true);
+        editDescription.setEnabled(true);
     }
 
     public interface OnDataReceive {
@@ -776,8 +802,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             // Get the Place object from the buffer.
             final Place place = places.get(0);
             LatLng queried_location = place.getLatLng();
-            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.clicked_user_details) + queried_location.toString(),
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.clicked_user_details) + queried_location.toString(),
+//                    Toast.LENGTH_SHORT).show();
             MyLocation myLocation = new MyLocation(place.getLatLng().latitude, place.getLatLng().longitude, Constants.RADIUS);
             reminder.setLocation(myLocation);
 
@@ -809,10 +835,20 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                 websiteUri));
 
     }
-    boolean editable = true;
+//    boolean editable = true;
 
     public void setReminder(Reminder r) {
         reminder = r;
+
+        if(nameFetcherTask!=null){
+            nameFetcherTask.cancel(true);
+        }
+        if(imageFetcherTask!=null){
+            imageFetcherTask.cancel(true);
+        }
+
+
+        senderImage.setVisibility(View.INVISIBLE);
 
         if (reminder == null) {
             viewSwitcher.setDisplayedChild(0);
@@ -821,8 +857,6 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             viewSwitcher.setDisplayedChild(1);
 
         }
-        if(null==reminder.getSenderId())
-            editable = false;
 
 
             editTextTitle.setText(reminder.getTitle());
@@ -853,7 +887,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         MyLocation loc = reminder.getLocation();
         if (-1 != loc.getRadius()) {
-            (new NameFetcher()).execute(loc);
+            nameFetcherTask=(new NameFetcher()).execute(loc);
         } else {
             mAutocompleteView.setText(getString(R.string.edit_user_pick_location));
 //            mAutocompleteView.setEnabled(editable);
@@ -871,7 +905,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
         onOffSwitch.setChecked(reminder.getOnOff());
 
-        (new AsyncTask<Reminder, Void, Void>() {
+        imageFetcherTask=(new AsyncTask<Reminder, Void, Void>() {
             Bitmap bitmap;
 
             @Override
@@ -882,8 +916,10 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
                         id = ParseUser.getCurrentUser().getString("FacebookId");
                     URL url = new URL("https://graph.facebook.com/" + id + "/picture?type=small");
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.connect();
-                    bitmap = BitmapFactory.decodeStream(con.getInputStream());
+                    if(!isCancelled())
+                        con.connect();
+                    if(!isCancelled())
+                        bitmap = BitmapFactory.decodeStream(con.getInputStream());
                 } catch (IOException|NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -892,13 +928,19 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                if (bitmap != null)
+                if (bitmap != null) {
                     senderImage.setVisibility(View.VISIBLE);
                     senderImage.setImageBitmap(bitmap);
+                }
             }
         }).execute(r);
 //        dataPasser.turnEditingOn();
-        transformIntoViewMode();
+        if(!reminder.getSenderId().equals("null")){
+            transformIntoViewMode();
+        } else {
+            transformIntoEditMode();
+        }
+
     }
 
     public Reminder saveReminder() {

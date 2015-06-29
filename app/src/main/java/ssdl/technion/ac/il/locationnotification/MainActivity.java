@@ -159,7 +159,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             if(inEditMode && getResources().getBoolean(R.bool.is_tablet_landscape)){
                 editOn(currReminder);
             } else {
-                editOff();
+                editOff(null);
             }
         }
 
@@ -180,7 +180,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         if(null==r)
             return;
         fMain.updateRecyclerView();
-        editOff();
+        editOff(null);
         EditText etTitle = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
         InputMethodManager imm = (InputMethodManager)getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -343,7 +343,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             myLocation = new MyLocation(-1.0, -1.0, -1);
         }
 
-        return new Reminder(true, "", imageUri, false, date, date, Constants.NEW_REMINDER_ID, myLocation, "");
+        return new Reminder(true, "", imageUri, false, date, date, Constants.NEW_REMINDER_ID, myLocation, "","null");
     }
 
     @Override
@@ -434,12 +434,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 if (resultCode==RESULT_OK&&getResources().getBoolean(R.bool.is_tablet_landscape)) {
                     boolean backPressed=data.getBooleanExtra(Constants.BACK_PRESSED_TAG,false);
                     if(backPressed){
-                        editOff();
+                        editOff(null);
                         break;
                     }
                     boolean saved=data.getBooleanExtra(Constants.REMINDER_SAVED_TAG,false);
                     if(saved){
-                        editOff();
+                        editOff(null);
                         break;
                     }
                     Reminder r=data.getParcelableExtra(Constants.REMINDER_TAG);
@@ -485,10 +485,10 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         if(getResources().getBoolean(R.bool.is_tablet_landscape)) {
 
             showFab();
-            if(null!=r) {
+            if(null!=r && r.getSenderId().equals("null")) {
                 editOn(r);
             } else {
-                editOff();
+                editOff(r);
             }
         }
     }
@@ -517,8 +517,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         inEditMode = true;
     }
 
-    private void editOff(){
-        currReminder=null;
+    private void editOff(Reminder r){
+        currReminder=r;
         Log.v("ReminderEdit","fUserDetails==null ? "+ fUserDetails==null ? "yes"  : "no");
         if(getResources().getBoolean(R.bool.is_tablet_landscape)) {
             fUserDetails.setReminder(currReminder);
