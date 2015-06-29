@@ -415,6 +415,7 @@ public class MainFragment extends Fragment {
 //                                        getFragmentManager().beginTransaction().replace(R.id.details_container, selectReminderFragment).commit();
 //                                    }
                                     updateRecyclerView();
+                                    ((MainActivity)getActivity()).showViews();
                                     break;
                                 default:
                                     break;
