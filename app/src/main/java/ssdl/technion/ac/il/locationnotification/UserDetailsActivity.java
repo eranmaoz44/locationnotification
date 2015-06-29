@@ -149,6 +149,10 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
             menuSave.setVisible(false);
             fab.setVisibility(View.INVISIBLE);
         }
+        MenuItem menuRemove=menu.findItem(R.id.action_remove);
+        if(reminder.getId().equals(Constants.NEW_REMINDER_ID)){
+            menuRemove.setVisible(false);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -163,7 +167,11 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
             resultIntent.putExtra(Constants.REMINDER_SAVED_TAG,false);
             resultIntent.putExtra(Constants.REMINDER_TAG,reminder);
             setResult(Activity.RESULT_OK, resultIntent);
-            super.onBackPressed();
+            EditText etTitle = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
+            InputMethodManager imm = (InputMethodManager)getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(etTitle.getWindowToken(), 0);
+            finish();
             return true;
             case R.id.action_save:
                 saveReminder();
@@ -201,10 +209,10 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
 //                });
 //                request.executeAsync();
             case android.R.id.home:
-                EditText etTitle = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
-                InputMethodManager imm = (InputMethodManager)getSystemService(
+                EditText etTitle2 = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
+                InputMethodManager imm2 = (InputMethodManager)getSystemService(
                         Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(etTitle.getWindowToken(), 0);
+                imm2.hideSoftInputFromWindow(etTitle2.getWindowToken(), 0);
                 onBackPressed();
             default:
                 return super.onOptionsItemSelected(item);
