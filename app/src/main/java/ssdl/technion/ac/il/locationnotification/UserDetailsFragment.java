@@ -129,6 +129,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         bundle = this.getArguments();
         horizantalTablet = getResources().getBoolean(R.bool.is_tablet_landscape);
 
@@ -892,6 +893,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             @Override
             protected void onPostExecute(Void aVoid) {
                 if (bitmap != null)
+                    senderImage.setVisibility(View.VISIBLE);
                     senderImage.setImageBitmap(bitmap);
             }
         }).execute(r);
