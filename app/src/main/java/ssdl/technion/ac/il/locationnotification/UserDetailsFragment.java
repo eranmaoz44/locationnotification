@@ -43,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import at.markushi.ui.CircleButton;
 import ssdl.technion.ac.il.locationnotification.Constants.Constants;
 import ssdl.technion.ac.il.locationnotification.utilities.MyLocation;
 import ssdl.technion.ac.il.locationnotification.utilities.Reminder;
@@ -107,6 +108,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     final int ACTION_REQUEST_GALLERY = 21235;
     Reminder reminder;
     String iconPath;
+
+    CircleButton editImageButtom;
 
     boolean horizantalTablet;
 
@@ -211,7 +214,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         editDescription.addTextChangedListener(new UpdateListener(R.id.et_description));
         imageOfReminder = (ImageView) view.findViewById(R.id.img_edit_image);
         senderImage = (CircularImageView) view.findViewById(R.id.image_profile);
-
+        editImageButtom=(CircleButton) view.findViewById(R.id.edit_image_button);
         setImageUpload();
         setAutoCompletePlacePicker(view);
         textViewDate1 = (TextView) view.findViewById(R.id.date1);
@@ -254,7 +257,8 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
     }
 
     private void setImageUpload() {
-        imageOfReminder.setOnClickListener(new ImageClickListener());
+       // imageOfReminder.setOnClickListener(new ImageClickListener());
+        editImageButtom.setOnClickListener(new ImageClickListener());
 
     }
 
@@ -755,7 +759,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
         onOffSwitch.setClickable(false);
         imageOfReminder.setEnabled(false);
+        editImageButtom.setEnabled(false);
         editTextTitle.setEnabled(false);
+        editImageButtom.setVisibility(View.GONE);
         for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
             radioGroupRepeate.getChildAt(i).setEnabled(false);
         }
@@ -772,7 +778,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
         onOffSwitch.setClickable(true);
         imageOfReminder.setEnabled(true);
+        editImageButtom.setEnabled(true);
         editTextTitle.setEnabled(true);
+        editImageButtom.setVisibility(View.VISIBLE);
         for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
             radioGroupRepeate.getChildAt(i).setEnabled(true);
         }

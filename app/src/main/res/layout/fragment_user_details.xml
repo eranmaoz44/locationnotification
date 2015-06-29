@@ -69,7 +69,7 @@
 
                 <com.pkmmte.view.CircularImageView
                     android:visibility="invisible"
-                    android:layout_gravity="bottom|left"
+                    android:layout_gravity="top|left"
                     android:id="@+id/image_profile"
                     android:layout_centerVertical="true"
                     android:layout_width="@dimen/profile_image_dim"
@@ -83,6 +83,14 @@
                     app:border_color="@android:color/white"
                     app:border_width="4dp"
                     app:shadow="true" />
+                <at.markushi.ui.CircleButton
+                    android:id="@+id/edit_image_button"
+                    android:layout_gravity="bottom|left"
+                    android:layout_width="64dip"
+                    android:layout_height="64dip"
+                    android:src="@drawable/ic_edit_image"
+                    app:cb_color="#99CC00"
+                    app:cb_pressedRingWidth="8dip" />
 
 
             </FrameLayout>
