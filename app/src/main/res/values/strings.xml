@@ -55,5 +55,7 @@
     <string name="autocomplete_hint">Enter place name or address</string>
     <string name="place_details"><![CDATA[&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s]]></string>
     <string name="clicked_user_details">"Clicked: "</string>
+    <string name="choose_gallery">Gallery</string>
+    <string name="remove_picture">Remove</string>
 
 </resources>

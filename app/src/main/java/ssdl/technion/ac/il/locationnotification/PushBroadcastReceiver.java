@@ -127,10 +127,14 @@ public class PushBroadcastReceiver extends ParsePushBroadcastReceiver {
                     Intent notificationIntent = new Intent(context, UserDetailsActivity.class);
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                     int rId = sharedPref.getInt(Constants.ID_KEY, 0);
+                    Log.v("DeleteBug","onPostExecute rId= " + rId);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt(Constants.ID_KEY, rId + 1);
                     editor.commit();
+                    Log.v("DeleteBug","onPostExecute String.valueOf(rId)= " +String.valueOf(rId));
+
                     r.setId(String.valueOf(rId));
+                    Log.v("DeleteBug","onPostExecute r.getId()= " +r.getId());
                     notificationIntent.putExtra(Constants.REMINDER_TAG, r);
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                     stackBuilder.addParentStack(MainActivity.class);

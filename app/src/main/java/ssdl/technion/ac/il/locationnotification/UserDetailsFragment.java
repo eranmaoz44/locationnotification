@@ -19,6 +19,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -262,34 +263,63 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         public void onClick(View v) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Choose Image Source");
-            builder.setItems(new CharSequence[]{"Gallery", "Remove image"},
-                    new DialogInterface.OnClickListener() {
+            File image = new File(reminder.getImgPath());
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0:
+            //TODO: add support to default picture, when creating new reminder.
+            if (image.exists()) {
+                builder.setItems(new CharSequence[]{getActivity().getString(R.string.choose_gallery), getActivity().getString(R.string.remove_picture)},
+                        new DialogInterface.OnClickListener() {
 
-                                    // GET IMAGE FROM THE GALLERY
-                                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                    intent.setType("image/*");
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        StartGalleryPicker();
 
-                                    Intent chooser = Intent.createChooser(intent, "Choose a Picture");
-                                    startActivityForResult(chooser, ACTION_REQUEST_GALLERY);
 
-                                    break;
-                                case 1:
-                                    if (null == reminder) {
-                                        return;
-                                    }
-                                    reminder.setImgPath("Drawable/");
-                                    imageOfReminder.setImageResource(R.drawable.image_3);
-                                default:
-                                    break;
+                                        break;
+                                    case 1:
+                                        if (null == reminder) {
+                                            return;
+                                        }
+                                        reminder.setImgPath("Drawable/");
+                                        imageOfReminder.setImageResource(R.drawable.image_3);
+                                    default:
+                                        break;
+                                }
                             }
-                        }
-                    });
-            builder.show();
+                        });
+                builder.show();
+            } else {
+                builder.setItems(new CharSequence[]{"Gallery"},
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+
+                                        // GET IMAGE FROM THE GALLERY
+                                        StartGalleryPicker();
+
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        });
+                builder.show();
+            }
+            
+        }
+
+        private void StartGalleryPicker() {
+            // GET IMAGE FROM THE GALLERY
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+
+            Intent chooser = Intent.createChooser(intent, "Choose a Picture");
+            startActivityForResult(chooser, ACTION_REQUEST_GALLERY);
         }
     }
 
@@ -723,6 +753,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         if (null == reminder) {
             return;
         }
+        onOffSwitch.setClickable(false);
         imageOfReminder.setEnabled(false);
         editTextTitle.setEnabled(false);
         for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
@@ -739,6 +770,7 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         if (null == reminder) {
             return;
         }
+        onOffSwitch.setClickable(true);
         imageOfReminder.setEnabled(true);
         editTextTitle.setEnabled(true);
         for (int i = 0; i < radioGroupRepeate.getChildCount(); i++) {
@@ -912,8 +944,12 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
             protected Void doInBackground(Reminder... params) {
                 try {
                     String id = params[0].getSenderId();
-                    if(id == null)
+                    if(id.equals("null")) {
+                        if(ParseUser.getCurrentUser()==null ||ParseUser.getCurrentUser().getString("FacebookId")==null ){
+                            return null;
+                        }
                         id = ParseUser.getCurrentUser().getString("FacebookId");
+                    }
                     URL url = new URL("https://graph.facebook.com/" + id + "/picture?type=small");
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     if(!isCancelled())
@@ -950,8 +986,9 @@ public class UserDetailsFragment extends StatedFragment implements CompoundButto
         }
         SQLUtils sqlUtils = new SQLUtils(getActivity());
         if (0 == reminder.getId().compareTo(Constants.NEW_REMINDER_ID)) {
-            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             int rId = sharedPref.getInt(Constants.ID_KEY, 0);
+            Log.v("DeleteBug","userDetailsFragment rId= " + rId);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt(Constants.ID_KEY, rId + 1);
             editor.commit();

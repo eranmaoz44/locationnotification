@@ -169,38 +169,42 @@ public class UserDetailsActivity extends ActionBarActivity implements UserDetail
                 saveReminder();
 
                 return true;
-            case R.id.action_share:
-                final Dialog shareDialog = new Dialog(this);
-                shareDialog.setContentView(R.layout.popup_share);
-                shareDialog.setTitle("Share to:");
-                shareDialog.show();
-                GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
-                    @Override
-                    public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
-                        shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
-                        try {
-                            String facebookId= (String) ParseUser.getCurrentUser().get(Constants.FACEBOOK_ID);
-
-                            Log.v("facebook", "facebookId" + facebookId);
-                            ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, reminder, shareDialog));
-                        }catch (FacebookException e){
-                            shareDialog.dismiss();
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(UserDetailsActivity.this);
-                            builder.setMessage("Please connect to facebook first!");
-                            builder.setCancelable(true);
-                            builder.setPositiveButton("connect", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    MainActivity.connectToFacebook(UserDetailsActivity.this);
-                                }
-                            });
-                            builder.create().show();
-                        }
-                    }
-                });
-                request.executeAsync();
+//            case R.id.action_share:
+//                final Dialog shareDialog = new Dialog(this);
+//                shareDialog.setContentView(R.layout.popup_share);
+//                shareDialog.setTitle("Share to:");
+//                shareDialog.show();
+//                GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
+//                    @Override
+//                    public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
+//                        shareDialog.findViewById(R.id.pb_share_wait).setVisibility(View.GONE);
+//                        try {
+//                            String facebookId= (String) ParseUser.getCurrentUser().get(Constants.FACEBOOK_ID);
+//
+//                            Log.v("facebook", "facebookId" + facebookId);
+//                            ((ListView) shareDialog.findViewById(R.id.lv_share_friends)).setAdapter(new ShareListAdapter(getApplicationContext(), jsonArray, reminder, shareDialog));
+//                        }catch (FacebookException e){
+//                            shareDialog.dismiss();
+//
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(UserDetailsActivity.this);
+//                            builder.setMessage("Please connect to facebook first!");
+//                            builder.setCancelable(true);
+//                            builder.setPositiveButton("connect", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    MainActivity.connectToFacebook(UserDetailsActivity.this);
+//                                }
+//                            });
+//                            builder.create().show();
+//                        }
+//                    }
+//                });
+//                request.executeAsync();
             case android.R.id.home:
+                EditText etTitle = (EditText)fUserDetails.getView().findViewById(R.id.et_edit_title);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(etTitle.getWindowToken(), 0);
                 onBackPressed();
             default:
                 return super.onOptionsItemSelected(item);

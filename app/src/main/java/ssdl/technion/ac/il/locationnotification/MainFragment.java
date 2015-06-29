@@ -408,6 +408,10 @@ public class MainFragment extends Fragment {
                             switch (which) {
                                 case 0:
                                     SQLUtils sqlUtils = new SQLUtils(getActivity());
+                                    List<Reminder> reminders=getList();
+                                    for(Reminder r : reminders){
+                                        Log.v("DeleteBug","r = " + r);
+                                    }
                                     sqlUtils.deleteData(r.getId());
 //                                    if(null!=currReminder&&currReminder.getId().equals(r.getId())){
                                     currReminder = null;

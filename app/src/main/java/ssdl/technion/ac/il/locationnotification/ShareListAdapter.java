@@ -101,6 +101,8 @@ public class ShareListAdapter extends BaseAdapter {
         ids = new LinkedList();
         images = new LinkedList();
         i = 0;
+        if(jsonarray == null)
+            throw new FacebookException();
         while (i < jsonarray.length()) {
             try {
                 names.add(((JSONObject) jsonarray.get(i)).get("name").toString());
