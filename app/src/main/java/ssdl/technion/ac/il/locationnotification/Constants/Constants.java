@@ -10,9 +10,9 @@ public class Constants {
     static public final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     static public final String REMINDER_TAG = "locationnotification.reminder";
-    static public final int RADIUS=256;
-    static public final float MIN_DISTANCE_BETWEEN_UPDATES=128;
-    static public final float ACCEPTABLE_ACCURAY=128;
+    static public final int RADIUS=128;
+    static public final float MIN_DISTANCE_BETWEEN_UPDATES=64;
+    static public final float ACCEPTABLE_ACCURAY=1024;
 //    static public final float STILL_DISTANCE=32;
     static public final int NOTIFIABLE_STILL_COUNT=5;
     static public final String NEW_REMINDER_ID="-1";

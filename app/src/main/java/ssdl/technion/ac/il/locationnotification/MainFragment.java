@@ -475,13 +475,15 @@ public class MainFragment extends Fragment {
             viewSwitcher.setDisplayedChild(1);
         }
         adapter.setList(list);
-        if (lastPosChange == -1) {
-            adapter.notifyDataSetChanged();
-            animateAdater.notifyDataSetChanged();
-        } else {
-            adapter.notifyItemChanged(lastPosChange);
-            animateAdater.notifyItemChanged(lastPosChange);
-        }
+//        if (lastPosChange == -1) {
+//            adapter.notifyDataSetChanged();
+//            animateAdater.notifyDataSetChanged();
+//        } else {
+//            adapter.notifyItemChanged(lastPosChange);
+//            animateAdater.notifyItemChanged(lastPosChange);
+//        }
+        adapter.notifyDataSetChanged();
+        animateAdater.notifyDataSetChanged();
     }
 
     public interface OnDataPass {

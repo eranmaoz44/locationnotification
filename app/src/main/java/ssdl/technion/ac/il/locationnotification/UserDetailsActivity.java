@@ -208,10 +208,6 @@ private void saveReminder() {
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void setSaveButtonVisibility(boolean visibility){
-        menuSave.setVisible(visibility);
-    }
-
     @Override
     public Reminder onReminderReceive() {
         return reminder;
@@ -219,7 +215,8 @@ private void saveReminder() {
 
     @Override
     public void turnEditingOff() {
-        menuSave.setVisible(false);
+        if(null!=menuSave)
+            menuSave.setVisible(false);
 
     }
 

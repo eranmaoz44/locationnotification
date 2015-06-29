@@ -51,6 +51,7 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
 
     private Map<String,Long> lastTimeNotified;
     private int stillCounter;
+    private final int LOCATION_REQUEST_TYPE= LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
 
     @Override
     public void onCreate() {
@@ -146,7 +147,7 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
         request.setFastestInterval(Constants.FASTEST_INTERVAL);
         request.setInterval(interval);
 //        request.setSmallestDisplacement(Constants.MIN_DISTANCE_BETWEEN_UPDATES);
-        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        request.setPriority(LOCATION_REQUEST_TYPE);
         return request;
     }
 
@@ -403,7 +404,7 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
         LocationRequest request = new LocationRequest();
         request.setFastestInterval(Constants.FASTEST_INTERVAL);
         request.setInterval(Constants.DEFAULT_INTERVAL);
-        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        request.setPriority(LOCATION_REQUEST_TYPE);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, this);
     }
 
